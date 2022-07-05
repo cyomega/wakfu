@@ -137,7 +137,7 @@ $(document).ready(function() {
 		columns: [3, 4, 5, 17, -15],
 		controls: false,
 		layout: 'columns-6',
-		dtOpts: {select: {style: 'multi'}}
+		dtOpts: {select: {style: 'multi'}},
 	},
 	buttons: [
 		{
@@ -185,16 +185,11 @@ $(document).ready(function() {
 			orderSequence: ['desc', 'asc']
 		},
 		{
-			targets: [0, 1, 2, 3, 5, 17],
-			render: $.fn.dataTable.render.text(),
-			type: $.fn.dataTable.absoluteOrder([])
-		},
-		{
 			targets: [18, 20],
 			render: $.fn.dataTable.render.number('', '.', 1, '')
 		},
 		{
-			targets: '_all',
+			targets: [4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37],
 			render: $.fn.dataTable.render.number('', '.', 0, ''),
 			type: $.fn.dataTable.absoluteOrderNumber([{value: '', position: 'bottom'}])
 		},
