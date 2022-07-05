@@ -14,6 +14,7 @@
 <script src="https://cdn.datatables.net/select/1.4.0/js/dataTables.select.min.js"></script>
 <script src="https://cdn.datatables.net/searchpanes/2.0.1/js/dataTables.searchPanes.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.12.1/sorting/enum.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.12.1/sorting/absolute.js"></script>
 </head>
 <body>
 <table id="tableArray" class="display" width="100%" style="white-space: nowrap; font-size: 14px"></table>
@@ -182,6 +183,20 @@ $(document).ready(function() {
 		{
 			targets: '_all',
 			orderSequence: ['desc', 'asc']
+		},
+		{
+			targets: [0, 1, 2, 3, 5, 17],
+			render: $.fn.dataTable.render.text(),
+			type: $.fn.dataTable.absoluteOrder([])
+		},
+		{
+			targets: [18, 20],
+			render: $.fn.dataTable.render.number('', '.', 1, '')
+		},
+		{
+			targets: '_all',
+			render: $.fn.dataTable.render.number('', '.', 0, ''),
+			type: $.fn.dataTable.absoluteOrderNumber([{value: '', position: 'bottom'}])
 		},
 		{
 			targets: [1, 2, 5, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13],
