@@ -1,6 +1,6 @@
 ﻿<html>
 <head>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.2.3/css/fixedHeader.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.1.0/css/fixedColumns.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
@@ -10,85 +10,263 @@
 <script src="https://cdn.datatables.net/fixedheader/3.2.3/js/dataTables.fixedHeader.min.js"></script>
 <script src="https://cdn.datatables.net/fixedcolumns/4.1.0/js/dataTables.fixedColumns.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.colVis.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/select/1.4.0/js/dataTables.select.min.js"></script>
 <script src="https://cdn.datatables.net/searchpanes/2.0.1/js/dataTables.searchPanes.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.12.1/sorting/enum.js"></script>
 </head>
 <body>
-<table id="tableArray" class="display" style="width:100%"></table>
+<table id="tableArray" class="display" width="100%" style="white-space: nowrap; font-size: 14px"></table>
 <script>
-$(document).ready( function () {
-var table = $('#tableArray').DataTable({
-	ajax: "equipments.txt",
-        "columns": [
-          { title: "name" },
-          { title: "type" },
-          { title: "level" },
-          { title: "rarity" },
-          { title: "ap" },
-          { title: "mp" },
-          { title: "wp" },
-          { title: "range" },
-          { title: "control" },
-          { title: "hp" },
-          { title: "lock" },
-          { title: "dodge" },
-          { title: "ini" },
-          { title: "cri" },
-          { title: "block" },
-          { title: "elr" },
-          { title: "ag" },
-          { title: "ar" },
-          { title: "elm_n" },
-          { title: "elm" },
-          { title: "crim" },
-          { title: "st" },
-          { title: "aoe" },
-          { title: "dis" },
-          { title: "mel" },
-          { title: "ber" },
-          { title: "rear" },
-          { title: "heal" },
-          { title: "crir" },
-          { title: "rr" },
-          { title: "pro" },
-          { title: "wis" },
-          { title: "ks" },
-        ],
-fixedHeader: true,
-fixedColumns: true,
-"order": [[1, "desc"], [2, "desc"], [19, "desc"], [15, "desc"]],
-dom: 'BPlfrtip',
-columnDefs:[
-	{targets: [0, 1, 2, 3], className: 'noVis'},
-	{"orderSequence": ["desc", "asc"], targets:"_all"},
-	{searchPanes: {show: false}, targets: [0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]},
-	{"visible": false, "targets": [3, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13]}
-],
-        buttons: ['copy',{
-                extend: 'colvis',
-                collectionLayout: 'fixed columns',
-		columns: ':not(.noVis)'
-            }],
-        select: true,
-    processing: true,
-  rowCallback: function( row, data ) {
-    if ( data[3] == "金" ) {
-      $('td:eq(0)', row).css({"background-color": "#F9E79F"});}
-    else if ( data[3] == "橘" ) {
-      $('td:eq(0)', row).css({"background-color": "#E59866"});}
-    else if ( data[3] == "綠" ) {
-      $('td:eq(0)', row).css({"background-color": "#ABEBC6"});}
-    else if ( data[3] == "粉" ) {
-      $('td:eq(0)', row).css({"background-color": "#F2D7D5"});}
-    else if ( data[3] == "紫" ) {
-      $('td:eq(0)', row).css({"background-color": "#D7BDE2"});}
-    else if ( data[3] == "藍" ) {
-      $('td:eq(0)', row).css({"background-color": "#AED6F1"});}
-  }
-    });
+$(document).ready(function() {
+	function levelPane() {
+		let options = [];
+		level.forEach(function (max) {
+			var min = (max != 20) ? (max - 15) : 0;
+			options.push({
+				label: max,
+				value: function (rowData) {
+					return (rowData[4] <= max && rowData[4] > min);
+				}
+			});
+		});
+		return options;
+	}
+	function masteryPane() {
+		let options = [{
+			label: '無副傷',
+			value: function (rowData) {
+				let total = 0;
+				let i = mastery.length;
+				while (i--) {
+					total += rowData[(i + 22)];
+				}
+				return total == 0;
+			}
+		}];
+		mastery.forEach(function (name, index) {
+			options.push({
+				label: '無' + name,
+				value: function (rowData) {
+					return rowData[(index + 22)] > 0 ? false : true;
+				}
+			});
+		});
+		return options;
+	}
+	function newData(data) {
+		let _2ndMastery = '';
+		let totalMastery = Number(data[21]);
+		let i = mastery.length;
+		while (i--) {
+			if (data[(i + 22)] > 0) {
+				_2ndMastery = mastery[i] + _2ndMastery;
+				totalMastery += Number(data[(i + 22)]);
+			}
+		}
+		data.mastery = _2ndMastery;
+		data.score = (totalMastery/30 + Number(data[17])/6.25).toFixed(1);
+		data.total = totalMastery;
+	}
+	const rarity = ['紫', '粉', '藍', '金', '橘', '綠', '白'];
+	const rarityColor = ['#D7BDE2', '#F2D7D5', '#AED6F1', '#F9E79F', '#E59866', '#ABEBC6'];
+	const level = [230, 215, 200, 185, 170, 155, 140, 125, 110, 95, 80, 65, 50, 35, 20];
+	const mastery = ['遠', '近', '單', '範', '暴', '背', '狂', '治'];
+	const type = ['頭盔', '肩甲', '披風', '胸甲', '腰帶', '鞋子', '項鍊', '戒指', '徽章', '單手', '副手', '雙手'];
+	const noMastery = ['無副傷'];
+	for (m of mastery) {
+		noMastery.push('無' + m);
+	}
+	$.fn.dataTable.enum(rarity);
+	$.fn.dataTable.enum(type);
+	$.fn.dataTable.enum(mastery);
+	$.fn.dataTable.enum(noMastery);
+	let table = $('#tableArray').DataTable({
+	columns: [
+		{title: '名稱'},
+		null,	//en
+		null,	//id
+		{title: '類型'},
+		{title: '等級'},
+		{title: '稀有'},	//5
+		{title: '行動'},
+		{title: '移動'},
+		{title: '創生'},
+		{title: '射程'},
+		{title: '統率'},	//10
+		{title: '生命'},
+		{title: '鎖定'},
+		{title: '閃避'},
+		{title: '先手'},
+		{title: '暴擊'},	//15
+		{title: '格擋'},
+		{title: '正值<br>副傷', data: 'mastery'},
+		{title: '傷抗<br>分數', data: 'score'},
+		{title: '正值<br>總傷', data: 'total'},
+		{title: '元素<br>均抗', data: 17},	//20
+		{title: '護甲<br>給予', data: 18},
+		{title: '護甲<br>獲得', data: 19},
+		{title: '元素<br>數量', data: 20},	//-15
+		{title: '元素<br>傷害', data: 21},
+		{title: '遠程<br>傷害', data: 22},	//25
+		{title: '近戰<br>傷害', data: 23},
+		{title: '單體<br>傷害', data: 24},
+		{title: '範圍<br>傷害', data: 25},	//-10
+		{title: '暴擊<br>傷害', data: 26},
+		{title: '背刺<br>傷害', data: 27},
+		{title: '狂暴<br>傷害', data: 28},
+		{title: '治療<br>強度', data: 29},
+		{title: '暴擊<br>抗性', data: 30},	//-5
+		{title: '背刺<br>抗性', data: 31},
+		{title: '勘探', data: 32},
+		{title: '悟性', data: 33},
+		{title: '裝備<br>熟練', data: 34}
+	],
+	fixedHeader: true,
+	fixedColumns: true,
+	scrollY: '75%',
+	scrollX: true,
+	scrollCollapse: true,
+	deferRender: true,
+	scroller: true,
+	search: {regex: true},
+	order: [[3, 'asc'], [4, 'desc'], [18, 'desc'], [19, 'desc'], [20, 'desc']],
+	dom: 'PBlfrtip',
+	searchPanes: {
+		columns: [3, 4, 5, 17, -15],
+		controls: false,
+		layout: 'columns-6',
+		dtOpts: {select: {style: 'multi'}}
+	},
+	buttons: [
+		{
+			extend: 'collection',
+			collectionLayout: 'fixed columns',
+			text: '等級',
+			buttons: []
+		},
+		{
+			extend: 'collection',
+			text: '顯示',
+			buttons: [
+				{
+					text: '副傷',
+					action: function (e, dt) {
+						dt.columns([-6, -7, -8, -9, -10, -11, -12, -13]).visible(!dt.column(-6).visible());
+						this.active(!this.active());
+					}
+				},
+				{
+					text: '副抗',
+					action: function (e, dt) {
+						dt.columns([-4, -5]).visible(!dt.column(-4).visible());
+						this.active(!this.active());
+					}
+				},
+				{
+					text: '其它',
+					action: function (e, dt) {
+						dt.columns([-1, -2, -3]).visible(!dt.column(-1).visible());
+						this.active(!this.active());
+					}
+				}
+			]
+		},
+	],
+	columnDefs: [
+		{
+			targets: 3,
+			orderSequence: ['asc', 'desc'],
+			searchPanes: {dtOpts: {select: {style: 'single'}}}
+		},
+		{
+			targets: '_all',
+			orderSequence: ['desc', 'asc']
+		},
+		{
+			targets: [1, 2, 5, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13],
+			visible: false
+		},
+		{
+			targets: 4,
+			searchPanes: {
+				dtOpts: {order: [0, 'desc']},
+				options: levelPane()
+			}
+		},
+		{
+			targets: 17,
+			searchPanes: {
+				header: '正值副傷',
+				combiner: 'and',
+				options: masteryPane()
+			}
+		},
+		{
+			targets: -15,
+			searchPanes: {header: '元素數量'}
+		}
+	],
+	rowCallback: function(row, data) {
+		$('td:eq(0)', row).css('background-color', function() {
+			if (data[5] == rarity[7])
+				return;
+			for (let i in rarity) {
+				if (data[5] == rarity[i])
+					return rarityColor[i];
+			}
+		});
+		$('td:eq(0)', row).html(function() {
+			if (data[3] == type[8])
+				var t = 'accessories/';
+			else if (data[3] == type[9] || data[3] == type[10] || data[3] == type[11])
+				var t = 'weapons/';
+			else
+				var t = 'armors/';
+			return '<a href="https://www.wakfu.com/en/mmorpg/encyclopedia/' + t + data[2] + '" target="_blank">' + data[0] + '</a><br>' + data[1];
+		});
+	}
+	});
+	for (let i in level) {
+		table.button(0).add('0-' + i, {
+			text: level[i],
+			action: function() {
+				$.get('tw/' + level[i] + '.txt', function(data) {
+					table.rows.add(JSON.parse(data)).every(function() {
+						newData(this.data());
+					})
+					.searchPanes.rebuildPane().draw(false);
+				});
+				this.disable();
+			}
+		});
+	};
+	table.button(0).add('0-15', {
+		text: 'All',
+		action: function() {
+			table.clear();
+			let result = [];
+			for (let lv of level) {
+				$.ajax({
+					url: 'tw/' + lv + '.txt',
+					type: 'get',
+					dataType: 'json',
+					async: false,
+					success: function(data) {
+						result.push(...data);
+					}
+				});
+			}
+			$('.dt-button-background').trigger('click');
+			table.button(0).disable();
+			for (let i = 0; i < 16; i++)
+				table.button('0-' + i).disable();
+			table.rows.add(result).every(function() {
+				newData(this.data());
+			})
+			.searchPanes.rebuildPane().draw(false);
+		}
+	});
 });
 </script>
 </body>
