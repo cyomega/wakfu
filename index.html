@@ -69,7 +69,7 @@ $(document).ready(function() {
 		data.score = (totalMastery/30 + Number(data[17])/6.25).toFixed(1);
 		data.total = totalMastery;
 	}
-	const rarity = ['紫', '粉', '藍', '金', '橘', '綠', '白'];
+	const rarity = ['紫', '粉', '藍', '金', '橘', '綠', '白', '灰'];
 	const rarityColor = ['#D7BDE2', '#F2D7D5', '#AED6F1', '#F9E79F', '#E59866', '#ABEBC6'];
 	const level = [230, 215, 200, 185, 170, 155, 140, 125, 110, 95, 80, 65, 50, 35, 20];
 	const mastery = ['遠', '近', '單', '範', '暴', '背', '狂', '治'];
@@ -123,15 +123,14 @@ $(document).ready(function() {
 		{title: '悟性', data: 33},
 		{title: '裝備<br>熟練', data: 34}
 	],
-	fixedHeader: true,
 	fixedColumns: true,
-	scrollY: '75%',
-	scrollX: true,
+	fixedHeader: true,
+	scrollY: '85%',
 	scrollCollapse: true,
 	deferRender: true,
 	scroller: true,
 	search: {regex: true},
-	order: [[3, 'asc'], [4, 'desc'], [18, 'desc'], [19, 'desc'], [20, 'desc']],
+	order: [[3, 'asc'], [18, 'desc'], [19, 'desc']],
 	dom: 'PBlfrtip',
 	searchPanes: {
 		columns: [3, 4, 5, 17, -15],
@@ -176,6 +175,10 @@ $(document).ready(function() {
 	],
 	columnDefs: [
 		{
+			targets: 0,
+			width: 200
+		},
+		{
 			targets: 3,
 			orderSequence: ['asc', 'desc'],
 			searchPanes: {dtOpts: {select: {style: 'single'}}}
@@ -189,7 +192,7 @@ $(document).ready(function() {
 			render: $.fn.dataTable.render.number('', '.', 1, '')
 		},
 		{
-			targets: [4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37],
+			targets: [4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 22, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37],
 			render: $.fn.dataTable.render.number('', '.', 0, ''),
 			type: $.fn.dataTable.absoluteOrderNumber([{value: '', position: 'bottom'}])
 		},
@@ -219,7 +222,7 @@ $(document).ready(function() {
 	],
 	rowCallback: function(row, data) {
 		$('td:eq(0)', row).css('background-color', function() {
-			if (data[5] == rarity[7])
+			if (data[5] == rarity[6] || data[5] == rarity[7])
 				return;
 			for (let i in rarity) {
 				if (data[5] == rarity[i])
