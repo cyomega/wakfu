@@ -238,6 +238,9 @@ $(document).ready(function() {
 				var t = 'armors/';
 			return '<a href="https://www.wakfu.com/en/mmorpg/encyclopedia/' + t + data[2] + '" target="_blank">' + data[0] + '</a><br>' + data[1];
 		});
+	},
+	initComplete: function() {
+		$('th:eq(15)').attr('title', '傷害與抗性相當於多少個 10 級附魔孔的數值');
 	}
 	});
 	for (let i in level) {
