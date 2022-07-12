@@ -83,163 +83,160 @@ $(document).ready(function() {
 	$.fn.dataTable.enum(mastery);
 	$.fn.dataTable.enum(noMastery);
 	let table = $('#tableArray').DataTable({
-	columns: [
-		{title: '名稱'},
-		null,	//en
-		null,	//id
-		{title: '類型'},
-		{title: '等級'},
-		{title: '稀有'},	//5
-		{title: '行動'},
-		{title: '移動'},
-		{title: '創生'},
-		{title: '射程'},
-		{title: '統率'},	//10
-		{title: '生命'},
-		{title: '鎖定'},
-		{title: '閃避'},
-		{title: '先手'},
-		{title: '暴擊'},	//15
-		{title: '格擋'},
-		{title: '正值<br>副傷', data: 'mastery'},
-		{title: '傷抗<br>分數', data: 'score'},
-		{title: '正值<br>總傷', data: 'total'},
-		{title: '元素<br>均抗', data: 17},	//20
-		{title: '護甲<br>給予', data: 18},
-		{title: '護甲<br>獲得', data: 19},
-		{title: '元素<br>數量', data: 20},	//-15
-		{title: '元素<br>傷害', data: 21},
-		{title: '遠程<br>傷害', data: 22},	//25
-		{title: '近戰<br>傷害', data: 23},
-		{title: '單體<br>傷害', data: 24},
-		{title: '範圍<br>傷害', data: 25},	//-10
-		{title: '暴擊<br>傷害', data: 26},
-		{title: '背刺<br>傷害', data: 27},
-		{title: '狂暴<br>傷害', data: 28},
-		{title: '治療<br>強度', data: 29},
-		{title: '暴擊<br>抗性', data: 30},	//-5
-		{title: '背刺<br>抗性', data: 31},
-		{title: '勘探', data: 32},
-		{title: '悟性', data: 33},
-		{title: '裝備<br>熟練', data: 34}
-	],
-	fixedColumns: true,
-	fixedHeader: true,
-	scrollX: true,
-	scrollY: '85%',
-	scrollCollapse: true,
-	deferRender: true,
-	scroller: true,
-	search: {regex: true},
-	order: [[3, 'asc'], [18, 'desc'], [19, 'desc']],
-	dom: 'PBlfrtip',
-	searchPanes: {
-		columns: [3, 4, 5, 17, -15],
-		controls: false,
-		layout: 'columns-6',
-		dtOpts: {select: {style: 'multi'}},
-	},
-	buttons: [
-		{
-			extend: 'collection',
-			collectionLayout: 'fixed columns',
-			text: '等級',
-			buttons: []
+		columns: [
+			{title: '名稱'},
+			null,	//en
+			null,	//id
+			{title: '類型'},
+			{title: '等級'},
+			{title: '稀有'},	//5
+			{title: '行動'},
+			{title: '移動'},
+			{title: '創生'},
+			{title: '射程'},
+			{title: '統率'},	//10
+			{title: '生命'},
+			{title: '鎖定'},
+			{title: '閃避'},
+			{title: '先手'},
+			{title: '暴擊'},	//15
+			{title: '格擋'},
+			{title: '正值<br>副傷', data: 'mastery'},
+			{title: '傷抗<br>分數', data: 'score'},
+			{title: '正值<br>總傷', data: 'total'},
+			{title: '元素<br>均抗', data: 17},	//20
+			{title: '護甲<br>給予', data: 18},
+			{title: '護甲<br>獲得', data: 19},
+			{title: '元素<br>數量', data: 20},	//-15
+			{title: '元素<br>傷害', data: 21},
+			{title: '遠程<br>傷害', data: 22},	//25
+			{title: '近戰<br>傷害', data: 23},
+			{title: '單體<br>傷害', data: 24},
+			{title: '範圍<br>傷害', data: 25},	//-10
+			{title: '暴擊<br>傷害', data: 26},
+			{title: '背刺<br>傷害', data: 27},
+			{title: '狂暴<br>傷害', data: 28},
+			{title: '治療<br>強度', data: 29},
+			{title: '暴擊<br>抗性', data: 30},	//-5
+			{title: '背刺<br>抗性', data: 31},
+			{title: '勘探', data: 32},
+			{title: '悟性', data: 33},
+			{title: '裝備<br>熟練', data: 34}
+		],
+		fixedColumns: true,
+		scrollX: true,
+		scrollY: '85%',
+		scrollCollapse: true,
+		deferRender: true,
+		scroller: true,
+		search: {regex: true},
+		order: [[3, 'asc'], [18, 'desc'], [19, 'desc']],
+		dom: 'P<"toolbar">Blfrtip',
+		searchPanes: {
+			columns: [3, 4, 5, 17, -15],
+			controls: false,
+			layout: 'columns-6',
+			dtOpts: {select: {style: 'multi'}},
 		},
-		{
-			extend: 'collection',
-			text: '顯示',
-			buttons: [
-				{
-					text: '副傷',
-					action: function (e, dt) {
-						dt.columns([-6, -7, -8, -9, -10, -11, -12, -13]).visible(!dt.column(-6).visible());
-						this.active(!this.active());
+		buttons: [
+			{
+				extend: 'collection',
+				collectionLayout: 'fixed columns',
+				text: '等級',
+				buttons: []
+			},
+			{
+				extend: 'collection',
+				text: '顯示',
+				buttons: [
+					{
+						text: '副傷',
+						action: function (e, dt) {
+							dt.columns([-6, -7, -8, -9, -10, -11, -12, -13]).visible(!dt.column(-6).visible());
+							this.active(!this.active());
+						}
+					},
+					{
+						text: '副抗',
+						action: function (e, dt) {
+							dt.columns([-4, -5]).visible(!dt.column(-4).visible());
+							this.active(!this.active());
+						}
+					},
+					{
+						text: '其它',
+						action: function (e, dt) {
+							dt.columns([-1, -2, -3]).visible(!dt.column(-1).visible());
+							this.active(!this.active());
+						}
 					}
-				},
-				{
-					text: '副抗',
-					action: function (e, dt) {
-						dt.columns([-4, -5]).visible(!dt.column(-4).visible());
-						this.active(!this.active());
-					}
-				},
-				{
-					text: '其它',
-					action: function (e, dt) {
-						dt.columns([-1, -2, -3]).visible(!dt.column(-1).visible());
-						this.active(!this.active());
-					}
+				]
+			},
+		],
+		columnDefs: [
+			{
+				targets: 3,
+				orderSequence: ['asc', 'desc'],
+				searchPanes: {dtOpts: {select: {style: 'single'}}}
+			},
+			{
+				targets: '_all',
+				orderSequence: ['desc', 'asc']
+			},
+			{
+				targets: [18, 20],
+				render: $.fn.dataTable.render.number('', '.', 1, '')
+			},
+			{
+				targets: [4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 22, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37],
+				render: $.fn.dataTable.render.number('', '.', 0, ''),
+				type: $.fn.dataTable.absoluteOrderNumber([{value: '', position: 'bottom'}])
+			},
+			{
+				targets: [1, 2, 5, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13],
+				visible: false
+			},
+			{
+				targets: 4,
+				searchPanes: {
+					dtOpts: {order: [0, 'desc']},
+					options: levelPane()
 				}
-			]
-		},
-	],
-	columnDefs: [
-		{
-			targets: 3,
-			orderSequence: ['asc', 'desc'],
-			searchPanes: {dtOpts: {select: {style: 'single'}}}
-		},
-		{
-			targets: '_all',
-			orderSequence: ['desc', 'asc']
-		},
-		{
-			targets: [18, 20],
-			render: $.fn.dataTable.render.number('', '.', 1, '')
-		},
-		{
-			targets: [4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 22, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37],
-			render: $.fn.dataTable.render.number('', '.', 0, ''),
-			type: $.fn.dataTable.absoluteOrderNumber([{value: '', position: 'bottom'}])
-		},
-		{
-			targets: [1, 2, 5, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13],
-			visible: false
-		},
-		{
-			targets: 4,
-			searchPanes: {
-				dtOpts: {order: [0, 'desc']},
-				options: levelPane()
+			},
+			{
+				targets: 17,
+				searchPanes: {
+					header: '正值副傷',
+					combiner: 'and',
+					options: masteryPane()
+				}
+			},
+			{
+				targets: -15,
+				searchPanes: {header: '元素數量'}
 			}
-		},
-		{
-			targets: 17,
-			searchPanes: {
-				header: '正值副傷',
-				combiner: 'and',
-				options: masteryPane()
-			}
-		},
-		{
-			targets: -15,
-			searchPanes: {header: '元素數量'}
+		],
+		rowCallback: function(row, data) {
+			$('td:eq(0)', row).css('background-color', function() {
+				if (data[5] == rarity[6] || data[5] == rarity[7])
+					return;
+				for (let i in rarity) {
+					if (data[5] == rarity[i])
+						return rarityColor[i];
+				}
+			});
+			$('td:eq(0)', row).html(function() {
+				if (data[3] == type[8])
+					var t = 'accessories/';
+				else if (data[3] == type[9] || data[3] == type[10] || data[3] == type[11])
+					var t = 'weapons/';
+				else
+					var t = 'armors/';
+				return '<a href="https://www.wakfu.com/en/mmorpg/encyclopedia/' + t + data[2] + '" target="_blank">' + data[0] + '</a><br>' + data[1];
+			});
 		}
-	],
-	rowCallback: function(row, data) {
-		$('td:eq(0)', row).css('background-color', function() {
-			if (data[5] == rarity[6] || data[5] == rarity[7])
-				return;
-			for (let i in rarity) {
-				if (data[5] == rarity[i])
-					return rarityColor[i];
-			}
-		});
-		$('td:eq(0)', row).html(function() {
-			if (data[3] == type[8])
-				var t = 'accessories/';
-			else if (data[3] == type[9] || data[3] == type[10] || data[3] == type[11])
-				var t = 'weapons/';
-			else
-				var t = 'armors/';
-			return '<a href="https://www.wakfu.com/en/mmorpg/encyclopedia/' + t + data[2] + '" target="_blank">' + data[0] + '</a><br>' + data[1];
-		});
-	},
-	initComplete: function() {
-		$('th:eq(15)').attr('title', '傷害與抗性相當於多少個 10 級附魔孔的數值');
-	}
 	});
+	$('div.toolbar').html('<a style="font-size: 12px">*傷抗分數：傷害與抗性相當於多少個 10 級附魔孔的數值</a>');
 	for (let i in level) {
 		table.button(0).add('0-' + i, {
 			text: level[i],
