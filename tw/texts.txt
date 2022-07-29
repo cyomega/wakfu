@@ -15,8 +15,8 @@
 "setRandom":"隨機配裝",
 "setStatAchieve":"屬性需求",
 "setStatScore":"重視屬性",
-"setExclude":"反白選取的裝備將不納入配裝",
+"setExclude":"點選裝備將其排除配裝",
 "setDepth":"提升演算結果（更耗時）",
 "setRange":"增加演算裝備（更不精確）",
-"setFailed":"無符合結果，請重設條件。"
+"setFailed":"無符合結果，請重設配裝或篩選條件。"
 }
