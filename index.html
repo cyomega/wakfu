@@ -5,20 +5,25 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.1.0/css/fixedColumns.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/2.0.1/css/searchPanes.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/select/1.4.0/css/select.dataTables.min.css">
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.12.0/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/fixedheader/3.2.3/js/dataTables.fixedHeader.min.js"></script>
 <script src="https://cdn.datatables.net/fixedcolumns/4.1.0/js/dataTables.fixedColumns.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/select/1.4.0/js/dataTables.select.min.js"></script>
 <script src="https://cdn.datatables.net/searchpanes/2.0.1/js/dataTables.searchPanes.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.12.1/sorting/enum.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.12.1/sorting/absolute.js"></script>
+<script src="https://cdn.datatables.net/select/1.4.0/js/dataTables.select.min.js"></script>
 </head>
 <body>
 <table id="tableArray" class="display" width="100%" style="white-space: nowrap; font-size: 14px"></table>
 <script>
+let lang = 'tw';
+let ts = {};
+$.get(lang + '/texts.txt', function(data) {
+	ts = JSON.parse(data);
+});
 $(document).ready(function() {
 	function levelPane() {
 		let options = [];
@@ -35,19 +40,19 @@ $(document).ready(function() {
 	}
 	function masteryPane() {
 		let options = [{
-			label: '無副傷',
+			label: ts.no + ts.secMastery,
 			value: function (rowData) {
 				let total = 0;
-				let i = mastery.length;
+				let i = ts.masteryLong.length;
 				while (i--) {
 					total += rowData[(i + 22)];
 				}
 				return total == 0;
 			}
 		}];
-		mastery.forEach(function (name, index) {
+		ts.masteryLong.forEach(function (name, index) {
 			options.push({
-				label: '無' + name,
+				label: ts.no + name,
 				value: function (rowData) {
 					return rowData[(index + 22)] > 0 ? false : true;
 				}
@@ -55,73 +60,340 @@ $(document).ready(function() {
 		});
 		return options;
 	}
+	function setRandomButton() {
+		let options =
+			[
+				{
+					extend: 'spacer',
+					text: ts.setStatAchieve
+				},
+				{
+					text: ts.title[4] + '：' + equipStatMin[0],
+					action: function () {
+						equipStatMin[0]++;
+						if (equipStatMin[0] > 8)
+							equipStatMin[0] = 0;
+						this.text(ts.title[4] + '：' + equipStatMin[0]);
+					}
+				},
+				{
+					text: ts.title[5] + '：' + equipStatMin[1],
+					action: function () {
+						equipStatMin[1]++;
+						if (equipStatMin[1] > 7)
+							equipStatMin[1] = 0;
+						this.text(ts.title[5] + '：' + equipStatMin[1]);
+					}
+				},
+				{
+					text: ts.title[6] + '：' + equipStatMin[2],
+					action: function () {
+						equipStatMin[2]++;
+						if (equipStatMin[2] > 6)
+							equipStatMin[2] = 0;
+						this.text(ts.title[6] + '：' + equipStatMin[2]);
+					}
+				},
+				{
+					text: ts.title[7] + '：' + equipStatMin[3],
+					action: function () {
+						equipStatMin[3]++;
+						if (equipStatMin[3] > 6)
+							equipStatMin[3] = 0;
+						this.text(ts.title[7] + '：' + equipStatMin[3]);
+					}
+				},
+				{
+					text: ts.masteryLong[4] + '：' + equipStatMin[4],
+					action: function () {
+						equipStatMin[4] += 5;
+						if (equipStatMin[4] > 50)
+							equipStatMin[4] = 0;
+						this.text(ts.masteryLong[4] + '：' + equipStatMin[4],);
+					}
+				},
+				{
+					text: ts.title[13] + '：' + equipStatMin[5],
+					action: function () {
+						equipStatMin[5] += 5;
+						if (equipStatMin[5] > 50)
+							equipStatMin[5] = 0;
+						this.text(ts.title[13] + '：' + equipStatMin[5]);
+					}
+				},
+				{
+					extend: 'spacer',
+					text: ts.setStatScore
+				},
+			];
+		ts.title.forEach(function (title, i) {
+			if (i > 8 && i < 13) {
+				options.push({
+					text: title,
+					action: function () {
+						equipStat[i - 9] = !equipStat[i - 9];
+						this.active(!this.active());
+					}
+				});
+			}
+			else if (i > 15 && i < 18) {
+				options.push({
+					text: title,
+					action: function () {
+						equipStat[i - 12] = !equipStat[i - 12];
+						this.active(!this.active());
+					}
+				});
+			}
+		});
+		options.push(
+			{
+				extend: 'spacer',
+				style: 'bar'
+			},
+			{
+				text: ts.setDepth,
+				action: function () {
+					equipSetOption[0] = !equipSetOption[0];
+					this.active(!this.active());
+				}
+			},
+			{
+				text: ts.setRange,
+				action: function () {
+					equipSetOption[1] = !equipSetOption[1];
+					this.active(!this.active());
+				}
+			}
+		);
+		return options;
+	}
 	function newData(data) {
 		let _2ndMastery = '';
 		let totalMastery = Number(data[21]);
-		let i = mastery.length;
+		let i = ts.masteryShort.length;
 		while (i--) {
 			if (data[(i + 22)] > 0) {
-				_2ndMastery = mastery[i] + _2ndMastery;
+				_2ndMastery = ts.masteryShort[i] + _2ndMastery;
 				totalMastery += Number(data[(i + 22)]);
 			}
 		}
 		data.mastery = _2ndMastery;
-		data.score = (totalMastery/30 + Number(data[17])/6.25).toFixed(1);
+		data.score = (totalMastery/30 + Number(data[17]) / 6.25).toFixed(1);
 		data.total = totalMastery;
+		data.type = ts.type[data[3]];
+		data.rarity = ts.rarity[data[5]];
 	}
-	const rarity = ['紫', '粉', '藍', '金', '橘', '綠', '白', '灰'];
+	function equipReference() {
+		table.search('');
+		let set = '';
+		let equipExclude = table.rows({selected: true}).data();
+		if (equipExclude.length > 0) {
+			for (let i in equipExclude) {
+				set += equipExclude[i][2] + '|';
+			}
+			set = set.replace(/.$/, '');
+			table.search('^((?!' + set + ').)*$');
+		}
+		let equip = [[], [], [], [], [], [], [], [], [], [], [], []];
+		let statModifier = [10, 5, 4, 3, 1, 1]
+		//ap mp wp range cri block
+		let statMin = [];
+		for (let i = 0; i < equipStatMin.length; i++) {
+			statMin[i] = Number(equipStatMin[i] * statModifier[i]);
+		}
+		let goal = statMin.reduce((a, c) => a + c);
+		let oneHand = 1;
+		let d = table.rows({search: 'applied'}).data();
+		let statArr = [11, 12, 13, 14, 'total', 17];
+		//hp lock dodge ini dmg res
+		let statWeight = [80, 60, 60, 40, 30, 6.25];
+		let i = d.length;
+		while (i--) {
+			let score = 0;
+			for (j in equipStat) {
+				score += Number(equipStat[j] * d[i][statArr[j]] / statWeight[j]);
+			}
+			score = score.toFixed(1);
+			let arr = [d[i][2], d[i][5], d[i][6], d[i][7], d[i][8], d[i][9], d[i][15], d[i][16], score, d[i][1]];
+			//id rarity ap mp wp range cri block score name
+			equip[d[i][3]].push(arr);
+		}
+		for (let i in equip) {
+			equip[i].sort(function(a, b) {
+				return b[8] - a[8];
+			});
+		}
+		let type = [];
+		for (let i = 0; i < 9; i++) {
+			type[i] = equip[i];
+		}
+		type[9] = equip[7];
+		if (oneHand == 1) {
+			type[10] = equip[9];
+			type[11] = equip[10];
+		}
+		else
+			type[10] = equip[11];
+		let typeWeight = [[], [], [], [], [], [], [], [], [], [], [], []];
+		for (let i = 0; i < type.length; i++) {
+			if (equipSetOption[1] == false)
+				var weight = 15;
+			else
+				var weight = 30;
+			if (type[i].length < weight)
+				weight = type[i].length;
+			for (let j = 0; j < weight; j++) {
+				typeWeight[i].push(j);
+			}
+		}
+		i = 100000;
+		let success = 0;
+		let setSuccess = [];
+		while (i--) {
+			let relic = 0;
+			let epic = 0;
+			let currentStat = [0, 0, 0, 0, 0, 0];
+			let currentIndex = [];
+			let ring = [];
+			let currentID = [];
+			let currentScore = 0;
+			for (let i = 0; i < type.length; i++) {
+				let j = typeWeight[i][Math.floor(Math.random() * typeWeight[i].length)];
+				currentIndex.push(j);
+				currentID.push(type[i][j][0]);
+				currentScore += Number(type[i][j][8]);
+				if (i == 7 || i == 9)
+					ring.push(type[i][j][9]);
+				if (type[i][j][1] == 0)
+					relic++;
+				else if (type[i][j][1] == 1)
+					epic++;
+				for (let m = 0; m < statMin.length; m++) {
+					let n = m + 2
+					currentStat[m] += Number(type[i][j][n] * statModifier[m]);
+				}
+			}
+			function achieveCheck(stat) {
+				if (relic > 1 || epic > 1 || ring[0] == ring[1])
+					return 0;
+				let achieve = 0;
+				for (let i = 0; i < stat.length; i++) {
+					if (statMin[i] == 0)
+						stat[i] = 0;
+					else if (stat[i] > statMin[i])
+						stat[i] = statMin[i];
+					achieve += Number(stat[i]);
+				}
+				if (achieve == goal)
+					return 1;
+				else
+					return Number(achieve/goal);
+			}
+			let achieveRate = achieveCheck(currentStat);
+			if (achieveRate == 0)
+				continue;
+			else if (achieveRate == 1) {
+				for (let i = 0; i < type.length; i++) {
+					if (type[i][currentIndex[i]][1] < 2)
+						continue;
+					for (let j = 0; j < currentIndex[i]; j++) {
+						if (type[i][j][1] < 2 || (i == 9 && type[i][j][9] == ring[0]))
+							continue;
+						let tempStat = [0, 0, 0, 0, 0, 0];
+						for (let m = 0; m < statMin.length; m++) {
+							let n = m + 2;
+							tempStat[m] = Number(currentStat[m] + (type[i][j][n] - type[i][currentIndex[i]][n]) * statModifier[m]);
+						}
+						let tempAchieveRate = achieveCheck(tempStat);
+						if (tempAchieveRate >= 1) {
+							currentID[i] = type[i][j][0];
+							currentScore = Number(currentScore + type[i][j][8] - type[i][currentIndex[i]][8]);
+							if (i == 7)
+								ring[0] = type[i][j][9];
+							break;
+						}
+					}
+				}
+				setSuccess.push({"id": currentID, "score": currentScore});
+				success++
+				if (success > 50 && equipSetOption[0] == false)
+					break;
+			}
+			else if (achieveRate > 0.7) {
+				for (let i = 0; i < type.length; i++) {
+					typeWeight[i].push(currentIndex[i]);
+				}
+			}
+		}
+		if (success > 0) {
+			setSuccess.sort(function(a, b) {
+				return b.score - a.score;
+			});
+			set = '';
+			for (x of setSuccess[0].id) {
+				set += x + '|';
+			}
+			set = set.replace(/.$/, '');
+			table.search('(' + set + ')').draw(false);
+		}
+		else
+			alert(ts.autoFailed);
+	}
 	const rarityColor = ['#D7BDE2', '#F2D7D5', '#AED6F1', '#F9E79F', '#E59866', '#ABEBC6'];
 	const level = [230, 215, 200, 185, 170, 155, 140, 125, 110, 95, 80, 65, 50, 35, 20];
-	const mastery = ['遠', '近', '單', '範', '暴', '背', '狂', '治'];
-	const type = ['頭盔', '肩甲', '披風', '胸甲', '腰帶', '鞋子', '項鍊', '戒指', '徽章', '單手', '副手', '雙手'];
-	const noMastery = ['無副傷'];
-	for (m of mastery) {
-		noMastery.push('無' + m);
+	const linkType = ['armors', 'armors', 'armors', 'armors', 'armors', 'armors', 'armors', 'armors', 'accessories', 'weapons', 'weapons', 'weapons'];
+	const noMastery = [ts.no + ts.secMastery];
+	for (m of ts.masteryLong) {
+		noMastery.push(ts.no + m);
 	}
-	$.fn.dataTable.enum(rarity);
-	$.fn.dataTable.enum(type);
-	$.fn.dataTable.enum(mastery);
+	let equipStat = [0, 0, 0, 0, 0, 0];
+	let equipStatMin = [5, 2, 0, 0, 0, 0];
+	let equipSetOption = [false, false];
+	$.fn.dataTable.enum(ts.rarity);
+	$.fn.dataTable.enum(ts.type);
+	$.fn.dataTable.enum(ts.masteryShort);
 	$.fn.dataTable.enum(noMastery);
 	let table = $('#tableArray').DataTable({
 		columns: [
-			{title: '名稱'},
+			{title: ts.title[0]},
 			null,	//en
 			null,	//id
-			{title: '類型'},
-			{title: '等級'},
-			{title: '稀有'},	//5
-			{title: '行動'},
-			{title: '移動'},
-			{title: '創生'},
-			{title: '射程'},
-			{title: '統率'},	//10
-			{title: '生命'},
-			{title: '鎖定'},
-			{title: '閃避'},
-			{title: '先手'},
-			{title: '暴擊'},	//15
-			{title: '格擋'},
-			{title: '正值<br>副傷', data: 'mastery'},
-			{title: '傷抗<br>分數', data: 'score'},
-			{title: '正值<br>總傷', data: 'total'},
-			{title: '元素<br>均抗', data: 17},	//20
-			{title: '護甲<br>給予', data: 18},
-			{title: '護甲<br>獲得', data: 19},
-			{title: '元素<br>數量', data: 20},	//-15
-			{title: '元素<br>傷害', data: 21},
-			{title: '遠程<br>傷害', data: 22},	//25
-			{title: '近戰<br>傷害', data: 23},
-			{title: '單體<br>傷害', data: 24},
-			{title: '範圍<br>傷害', data: 25},	//-10
-			{title: '暴擊<br>傷害', data: 26},
-			{title: '背刺<br>傷害', data: 27},
-			{title: '狂暴<br>傷害', data: 28},
-			{title: '治療<br>強度', data: 29},
-			{title: '暴擊<br>抗性', data: 30},	//-5
-			{title: '背刺<br>抗性', data: 31},
-			{title: '勘探', data: 32},
-			{title: '悟性', data: 33},
-			{title: '裝備<br>熟練', data: 34}
+			{title: ts.title[1], data: 'type'},
+			{title: ts.title[2]},
+			{title: ts.title[3], data: 'rarity'},	//5
+			{title: ts.title[4]},
+			{title: ts.title[5]},
+			{title: ts.title[6]},
+			{title: ts.title[7]},
+			{title: ts.title[8]},	//10
+			{title: ts.title[9]},
+			{title: ts.title[10]},
+			{title: ts.title[11]},
+			{title: ts.title[12]},
+			{title: ts.masteryLong[4]},	//15
+			{title: ts.title[13]},
+			{title: ts.title[14], data: 'mastery'},
+			{title: ts.title[15], data: 'score'},
+			{title: ts.title[16], data: 'total'},
+			{title: ts.title[17], data: 17},	//20
+			{title: ts.title[18], data: 18},
+			{title: ts.title[19], data: 19},
+			{title: ts.title[20], data: 20},	//-15
+			{title: ts.title[21], data: 21},
+			{title: ts.masteryLong[0] + '<br>' + ts.mastery, data: 22},	//25
+			{title: ts.masteryLong[1] + '<br>' + ts.mastery, data: 23},
+			{title: ts.masteryLong[2] + '<br>' + ts.mastery, data: 24},
+			{title: ts.masteryLong[3] + '<br>' + ts.mastery, data: 25},	//-10
+			{title: ts.masteryLong[4] + '<br>' + ts.mastery, data: 26},
+			{title: ts.masteryLong[5] + '<br>' + ts.mastery, data: 27},
+			{title: ts.masteryLong[6] + '<br>' + ts.mastery, data: 28},
+			{title: ts.masteryLong[7] + '<br>' + ts.mastery, data: 29},
+			{title: ts.masteryLong[4] + '<br>' + ts.res, data: 30},	//-5
+			{title: ts.masteryLong[5] + '<br>' + ts.res, data: 31},
+			{title: ts.title[22], data: 32},
+			{title: ts.title[23], data: 33},
+			{title: ts.title[24], data: 34}
 		],
 		fixedColumns: true,
 		scrollX: true,
@@ -130,11 +402,16 @@ $(document).ready(function() {
 		deferRender: true,
 		scroller: true,
 		search: {regex: true},
+		select: true,
 		order: [[3, 'asc'], [18, 'desc'], [19, 'desc']],
 		dom: 'P<"toolbar">Blfrtip',
+		select: {
+			style: 'multi',
+			selector: 'td:not(:first-child)'
+		},
 		searchPanes: {
 			columns: [3, 4, 5, 17, -15],
-			controls: false,
+			orderable: false,
 			layout: 'columns-6',
 			dtOpts: {select: {style: 'multi'}},
 		},
@@ -142,29 +419,29 @@ $(document).ready(function() {
 			{
 				extend: 'collection',
 				collectionLayout: 'fixed columns',
-				text: '等級',
+				text: ts.title[2],
 				buttons: []
 			},
 			{
 				extend: 'collection',
-				text: '顯示',
+				text: ts.visable[0],
 				buttons: [
 					{
-						text: '副傷',
+						text: ts.secMastery,
 						action: function (e, dt) {
 							dt.columns([-6, -7, -8, -9, -10, -11, -12, -13]).visible(!dt.column(-6).visible());
 							this.active(!this.active());
 						}
 					},
 					{
-						text: '副抗',
+						text: ts.visable[1],
 						action: function (e, dt) {
 							dt.columns([-4, -5]).visible(!dt.column(-4).visible());
 							this.active(!this.active());
 						}
 					},
 					{
-						text: '其它',
+						text: ts.visable[2],
 						action: function (e, dt) {
 							dt.columns([-1, -2, -3]).visible(!dt.column(-1).visible());
 							this.active(!this.active());
@@ -172,16 +449,29 @@ $(document).ready(function() {
 					}
 				]
 			},
+			{
+				extend: 'spacer',
+				text: ts.setExclude
+			},
+			{
+				text: ts.setRandom,
+				collectionLayout: 'fixed columns',
+				action: function() {
+					$('.dtsp-searchPane:eq(0) .clearButton').click();
+					equipReference();
+				},
+				split: setRandomButton()
+			},
+			{
+				extend: 'spacer',
+				style: 'bar'
+			}
 		],
 		columnDefs: [
 			{
 				targets: 3,
 				orderSequence: ['asc', 'desc'],
-				searchPanes: {dtOpts: {select: {style: 'single'}}}
-			},
-			{
-				targets: '_all',
-				orderSequence: ['desc', 'asc']
+				searchPanes: {dtOpts: {select: {style: 'os'}}}
 			},
 			{
 				targets: [18, 20],
@@ -206,42 +496,58 @@ $(document).ready(function() {
 			{
 				targets: 17,
 				searchPanes: {
-					header: '正值副傷',
+					header: ts.positive + ts.secMastery,
 					combiner: 'and',
 					options: masteryPane()
 				}
 			},
 			{
 				targets: -15,
-				searchPanes: {header: '元素數量'}
-			}
+				searchPanes: {header: ts.eleNum}
+			},
+			{
+				targets: '_all',
+				orderSequence: ['desc', 'asc']
+			},
 		],
 		rowCallback: function(row, data) {
 			$('td:eq(0)', row).css('background-color', function() {
-				if (data[5] == rarity[6] || data[5] == rarity[7])
-					return;
-				for (let i in rarity) {
-					if (data[5] == rarity[i])
-						return rarityColor[i];
-				}
+				return rarityColor[data[5]];
 			});
 			$('td:eq(0)', row).html(function() {
-				if (data[3] == type[8])
-					var t = 'accessories/';
-				else if (data[3] == type[9] || data[3] == type[10] || data[3] == type[11])
-					var t = 'weapons/';
-				else
-					var t = 'armors/';
-				return '<a href="https://www.wakfu.com/en/mmorpg/encyclopedia/' + t + data[2] + '" target="_blank">' + data[0] + '</a><br>' + data[1];
+				return '<a href="https://www.wakfu.com/en/mmorpg/encyclopedia/' + linkType[data[3]] + '/' + data[2] + '" target="_blank">' + data[0] + '</a><br>' + data[1];
 			});
-		}
+		},
+		headerCallback: function (thead, data, start, end, display) {
+			let api = this.api();
+			let intVal = function (i) {
+				return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+			};
+			let title;
+			for (let i = 6; i < 21; i++) {
+				if (i == 17 || i == 18)
+					continue;
+				let total = api.column(i, { search: 'applied' }).data().reduce(function (a, b) {
+					return intVal(a) + intVal(b);
+				}, 0);
+				if (i == 20)
+					total = total.toFixed(1);
+				if (i < 15)
+					title = ts.title[i - 2]
+				else if (i == 15)
+					title = ts.masteryLong[4];
+				else if (i > 15)
+					title = ts.title[i - 3]
+				$(api.column(i).header()).html(title + '<br>' + '<center>' + total);
+			}
+		},
 	});
-	$('div.toolbar').html('<a style="font-size: 12px">*傷抗分數：傷害與抗性相當於多少個 10 級附魔孔的數值</a>');
+	$('div.toolbar').html('<a style="font-size: 12px">' + ts.scoreDes + '</a>');
 	for (let i in level) {
 		table.button(0).add('0-' + i, {
 			text: level[i],
 			action: function() {
-				$.get('tw/' + level[i] + '.txt', function(data) {
+				$.get(lang + '/' + level[i] + '.txt', function(data) {
 					table.rows.add(JSON.parse(data)).every(function() {
 						newData(this.data());
 					})
@@ -258,7 +564,7 @@ $(document).ready(function() {
 			let result = [];
 			for (let lv of level) {
 				$.ajax({
-					url: 'tw/' + lv + '.txt',
+					url: lang + '/' + lv + '.txt',
 					type: 'get',
 					dataType: 'json',
 					async: false,
