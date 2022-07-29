@@ -250,6 +250,7 @@ $(document).ready(function() {
 		i = 100000;
 		let success = 0;
 		let setSuccess = [];
+		let typeWeight = Array.from(typeWeightZero);
 		while (i--) {
 			let relic = 0;
 			let epic = 0;
@@ -258,7 +259,6 @@ $(document).ready(function() {
 			let ring = [];
 			let currentID = [];
 			let currentScore = 0;
-			let typeWeight = Array.from(typeWeightZero);
 			for (let i = 0; i < type.length; i++) {
 				let j = typeWeight[i][Math.floor(Math.random() * typeWeight[i].length)];
 				currentIndex.push(j);
@@ -320,6 +320,7 @@ $(document).ready(function() {
 				success++
 				if (success > 50 && equipSetOption[0] == false)
 					break;
+				typeWeight = Array.from(typeWeightZero)
 			}
 			else if (achieveRate > 0.7) {
 				for (let i = 0; i < type.length; i++) {
