@@ -235,7 +235,7 @@ $(document).ready(function() {
 		}
 		else
 			type[10] = equip[11];
-		let typeWeight = [[], [], [], [], [], [], [], [], [], [], [], []];
+		let typeWeightZero = [[], [], [], [], [], [], [], [], [], [], [], []];
 		for (let i = 0; i < type.length; i++) {
 			if (equipSetOption[1] == false)
 				var weight = 15;
@@ -244,7 +244,7 @@ $(document).ready(function() {
 			if (type[i].length < weight)
 				weight = type[i].length;
 			for (let j = 0; j < weight; j++) {
-				typeWeight[i].push(j);
+				typeWeightZero[i].push(j);
 			}
 		}
 		i = 100000;
@@ -258,6 +258,7 @@ $(document).ready(function() {
 			let ring = [];
 			let currentID = [];
 			let currentScore = 0;
+			let typeWeight = Array.from(typeWeightZero);
 			for (let i = 0; i < type.length; i++) {
 				let j = typeWeight[i][Math.floor(Math.random() * typeWeight[i].length)];
 				currentIndex.push(j);
@@ -288,7 +289,7 @@ $(document).ready(function() {
 				if (achieve == goal)
 					return 1;
 				else
-					return Number(achieve/goal);
+					return Number(achieve / goal);
 			}
 			let achieveRate = achieveCheck(currentStat);
 			if (achieveRate == 0)
