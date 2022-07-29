@@ -152,6 +152,13 @@ $(document).ready(function() {
 				style: 'bar'
 			},
 			{
+				text: ts.type[11],
+				action: function () {
+					equipOneHand = !equipOneHand;
+					this.active(!this.active());
+				}
+			},
+			{
 				text: ts.setDepth,
 				action: function () {
 					equipSetOption[0] = !equipSetOption[0];
@@ -203,7 +210,6 @@ $(document).ready(function() {
 			statMin[i] = Number(equipStatMin[i] * statModifier[i]);
 		}
 		let goal = statMin.reduce((a, c) => a + c);
-		let oneHand = 1;
 		let d = table.rows({search: 'applied'}).data();
 		let statArr = [11, 12, 13, 14, 'total', 17];
 		//hp lock dodge ini dmg res
@@ -229,7 +235,7 @@ $(document).ready(function() {
 			type[i] = equip[i];
 		}
 		type[9] = equip[7];
-		if (oneHand == 1) {
+		if (equipOneHand == true) {
 			type[10] = equip[9];
 			type[11] = equip[10];
 		}
@@ -247,7 +253,7 @@ $(document).ready(function() {
 				typeWeightZero[i].push(j);
 			}
 		}
-		i = 100000;
+		i = 150000;
 		let success = 0;
 		let setSuccess = [];
 		let typeWeight = Array.from(typeWeightZero);
@@ -352,6 +358,7 @@ $(document).ready(function() {
 	let equipStat = [0, 0, 0, 0, 0, 0];
 	let equipStatMin = [5, 2, 0, 0, 0, 0];
 	let equipSetOption = [false, false];
+	let equipOneHand = true;
 	$.fn.dataTable.enum(ts.rarity);
 	$.fn.dataTable.enum(ts.type);
 	$.fn.dataTable.enum(ts.masteryShort);
