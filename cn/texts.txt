@@ -16,7 +16,7 @@
 "setStatAchieve":"属性需求",
 "setStatScore":"重视属性",
 "setExclude":"点选的装备将不纳入配装",
-"setDepth":"提升演算结果（更耗时）",
-"setRange":"增加演算装备（更不精确）",
-"setFailed":"无符合结果，请重设配装或筛选条件。"
+"setDepth":"增加演算次数",
+"setRange":"增加演算装备",
+"setFailed":"无符合结果，请修改演算设定或筛选条件。"
 }
