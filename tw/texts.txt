@@ -16,7 +16,7 @@
 "setStatAchieve":"屬性需求",
 "setStatScore":"重視屬性",
 "setExclude":"點選的裝備將不納入配裝",
-"setDepth":"提升演算結果（更耗時）",
-"setRange":"增加演算裝備（更不精確）",
-"setFailed":"無符合結果，請重設配裝或篩選條件。"
+"setDepth":"增加演算次數",
+"setRange":"增加演算裝備",
+"setFailed":"無符合結果，請修改演算設定或篩選條件。"
 }
