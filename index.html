@@ -24,9 +24,15 @@ const urlParams = new URLSearchParams(queryString);
 let lang = urlParams.get('lang');
 if (lang != 'cn')
 	lang = 'tw';
-let ts = {};
-$.get(lang + '/texts.txt', function(data) {
-	ts = JSON.parse(data);
+let uits = {};
+$.ajax({
+	url: lang + '/texts.txt',
+	type: 'get',
+	dataType: 'json',
+	async: false,
+	success: function(data) {
+		uits = data;
+	}
 });
 $(document).ready(function() {
 	function levelPane() {
@@ -44,19 +50,19 @@ $(document).ready(function() {
 	}
 	function masteryPane() {
 		let options = [{
-			label: ts.no + ts.secMastery,
+			label: uits.no + uits.secMastery,
 			value: function (rowData) {
 				let total = 0;
-				let i = ts.masteryLong.length;
+				let i = uits.masteryLong.length;
 				while (i--) {
 					total += rowData[(i + 22)];
 				}
 				return total == 0;
 			}
 		}];
-		ts.masteryLong.forEach(function (name, index) {
+		uits.masteryLong.forEach(function (name, index) {
 			options.push({
-				label: ts.no + name,
+				label: uits.no + name,
 				value: function (rowData) {
 					return rowData[(index + 22)] > 0 ? false : true;
 				}
@@ -69,68 +75,68 @@ $(document).ready(function() {
 			[
 				{
 					extend: 'spacer',
-					text: ts.setStatAchieve
+					text: uits.setStatAchieve
 				},
 				{
-					text: ts.title[4] + '：' + equipStatMin[0],
+					text: uits.title[4] + '：' + equipStatMin[0],
 					action: function () {
 						equipStatMin[0]++;
 						if (equipStatMin[0] > 8)
 							equipStatMin[0] = 0;
-						this.text(ts.title[4] + '：' + equipStatMin[0]);
+						this.text(uits.title[4] + '：' + equipStatMin[0]);
 					}
 				},
 				{
-					text: ts.title[5] + '：' + equipStatMin[1],
+					text: uits.title[5] + '：' + equipStatMin[1],
 					action: function () {
 						equipStatMin[1]++;
-						if (equipStatMin[1] > 7)
+						if (equipStatMin[1] > 8)
 							equipStatMin[1] = 0;
-						this.text(ts.title[5] + '：' + equipStatMin[1]);
+						this.text(uits.title[5] + '：' + equipStatMin[1]);
 					}
 				},
 				{
-					text: ts.title[6] + '：' + equipStatMin[2],
+					text: uits.title[6] + '：' + equipStatMin[2],
 					action: function () {
 						equipStatMin[2]++;
-						if (equipStatMin[2] > 6)
+						if (equipStatMin[2] > 8)
 							equipStatMin[2] = 0;
-						this.text(ts.title[6] + '：' + equipStatMin[2]);
+						this.text(uits.title[6] + '：' + equipStatMin[2]);
 					}
 				},
 				{
-					text: ts.title[7] + '：' + equipStatMin[3],
+					text: uits.title[7] + '：' + equipStatMin[3],
 					action: function () {
 						equipStatMin[3]++;
-						if (equipStatMin[3] > 6)
+						if (equipStatMin[3] > 8)
 							equipStatMin[3] = 0;
-						this.text(ts.title[7] + '：' + equipStatMin[3]);
+						this.text(uits.title[7] + '：' + equipStatMin[3]);
 					}
 				},
 				{
-					text: ts.masteryLong[4] + '：' + equipStatMin[4],
+					text: uits.masteryLong[4] + '：' + equipStatMin[4],
 					action: function () {
-						equipStatMin[4] += 5;
-						if (equipStatMin[4] > 50)
+						equipStatMin[4] += 10;
+						if (equipStatMin[4] > 80)
 							equipStatMin[4] = 0;
-						this.text(ts.masteryLong[4] + '：' + equipStatMin[4],);
+						this.text(uits.masteryLong[4] + '：' + equipStatMin[4],);
 					}
 				},
 				{
-					text: ts.title[13] + '：' + equipStatMin[5],
+					text: uits.title[13] + '：' + equipStatMin[5],
 					action: function () {
-						equipStatMin[5] += 5;
-						if (equipStatMin[5] > 50)
+						equipStatMin[5] += 10;
+						if (equipStatMin[5] > 80)
 							equipStatMin[5] = 0;
-						this.text(ts.title[13] + '：' + equipStatMin[5]);
+						this.text(uits.title[13] + '：' + equipStatMin[5]);
 					}
 				},
 				{
 					extend: 'spacer',
-					text: ts.setStatScore
+					text: uits.setStatScore
 				},
 			];
-		ts.title.forEach(function (title, i) {
+		uits.title.forEach(function (title, i) {
 			if (i > 8 && i < 13) {
 				options.push({
 					text: title,
@@ -156,21 +162,21 @@ $(document).ready(function() {
 				style: 'bar'
 			},
 			{
-				text: ts.type[11],
+				text: uits.type[11],
 				action: function () {
 					equipOneHand = !equipOneHand;
 					this.active(!this.active());
 				}
 			},
 			{
-				text: ts.setDepth,
+				text: uits.setDepth,
 				action: function () {
 					equipSetOption[0] = !equipSetOption[0];
 					this.active(!this.active());
 				}
 			},
 			{
-				text: ts.setRange,
+				text: uits.setRange,
 				action: function () {
 					equipSetOption[1] = !equipSetOption[1];
 					this.active(!this.active());
@@ -182,25 +188,26 @@ $(document).ready(function() {
 	function newData(data) {
 		let _2ndMastery = '';
 		let totalMastery = Number(data[21]);
-		let i = ts.masteryShort.length;
+		let i = uits.masteryShort.length;
 		while (i--) {
 			if (data[(i + 22)] > 0) {
-				_2ndMastery = ts.masteryShort[i] + _2ndMastery;
+				_2ndMastery = uits.masteryShort[i] + _2ndMastery;
 				totalMastery += Number(data[(i + 22)]);
 			}
 		}
 		data.mastery = _2ndMastery;
 		data.score = (totalMastery/30 + Number(data[17]) / 6.25).toFixed(1);
 		data.total = totalMastery;
-		data.type = ts.type[data[3]];
-		data.rarity = ts.rarity[data[5]];
+		data.type = uits.type[data[3]];
+		data.rarity = uits.rarity[data[5]];
 	}
 	function equipReference() {
 		table.search('');
 		let set = '';
 		let equipExclude = table.rows({selected: true}).data();
 		if (equipExclude.length > 0) {
-			for (let i in equipExclude) {
+			let i = equipExclude.length;
+			while (i--) {
 				set += equipExclude[i][2] + '|';
 			}
 			set = set.replace(/.$/, '');
@@ -257,7 +264,10 @@ $(document).ready(function() {
 				typeWeightZero[i].push(j);
 			}
 		}
-		i = 500000;
+		if (equipSetOption[0] == false)
+			i = 100000;
+		else
+			i = 500000;
 		let success = 0;
 		let setSuccess = [];
 		let typeWeight = Array.from(typeWeightZero);
@@ -265,51 +275,62 @@ $(document).ready(function() {
 			let relic = 0;
 			let epic = 0;
 			let currentStat = [0, 0, 0, 0, 0, 0];
+			let currentOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 			let currentIndex = [];
 			let ring = [];
 			let currentID = [];
 			let currentScore = 0;
-			for (let i = 0; i < type.length; i++) {
-				let j = typeWeight[i][Math.floor(Math.random() * typeWeight[i].length)];
-				currentIndex.push(j);
-				currentID.push(type[i][j][0]);
+			if (equipOneHand == true) {
+				currentOrder.push(11);
+			}
+			for (let i = currentOrder.length - 1; i > 0; i--) {
+				let j = Math.floor(Math.random() * (i + 1));
+				[currentOrder[i], currentOrder[j]] = [currentOrder[j], currentOrder[i]];
+			}
+			for (let m = type.length - 1; m >= 0; m--) {
+				let i = currentOrder[m];
+				let j;
+				for (let n = 999; n >= 0; n--) {
+					j = typeWeight[i][Math.floor(Math.random() * typeWeight[i].length)];
+					if ((type[i][j][1] == 0 && relic == 1) || (type[i][j][1] == 1 && epic == 1) || type[i][j][9] == ring[0] || type[i][j][9] == ring[1])
+						continue;
+					break;
+				}
+				currentIndex[i] = j;
+				currentID[i] = type[i][j][0];
 				currentScore += Number(type[i][j][8]);
-				if (i == 7 || i == 9)
-					ring.push(type[i][j][9]);
+				if (i == 7)
+					ring[0] = type[i][j][9];
+				else if (i == 9)
+					ring[1] = type[i][j][9];
 				if (type[i][j][1] == 0)
-					relic++;
+					relic = 1;
 				else if (type[i][j][1] == 1)
-					epic++;
-				for (let m = 0; m < statMin.length; m++) {
+					epic = 1;
+				for (let m = statMin.length - 1; m >= 0; m--) {
 					let n = m + 2
 					currentStat[m] += Number(type[i][j][n] * statModifier[m]);
 				}
 			}
 			function achieveCheck(stat) {
-				if (relic > 1 || epic > 1 || ring[0] == ring[1])
-					return 0;
 				let achieve = 0;
-				for (let i = 0; i < stat.length; i++) {
+				let i = stat.length;
+				while (i--) {
 					if (statMin[i] == 0)
 						stat[i] = 0;
 					else if (stat[i] > statMin[i])
 						stat[i] = statMin[i];
 					achieve += Number(stat[i]);
 				}
-				if (achieve == goal)
-					return 1;
-				else
-					return Number(achieve / goal);
+				return Number(achieve / goal);
 			}
 			let achieveRate = achieveCheck(currentStat);
-			if (achieveRate == 0)
-				continue;
-			else if (achieveRate == 1) {
+			if (achieveRate == 1) {
 				for (let i = 0; i < type.length; i++) {
 					if (type[i][currentIndex[i]][1] < 2)
 						continue;
 					for (let j = 0; j < currentIndex[i]; j++) {
-						if (type[i][j][1] < 2 || (i == 9 && type[i][j][9] == ring[0]))
+						if (type[i][j][1] < 2 || (i == 7 && type[i][j][9] == ring[1]) || (i == 9 && type[i][j][9] == ring[0]))
 							continue;
 						let tempStat = [0, 0, 0, 0, 0, 0];
 						for (let m = 0; m < statMin.length; m++) {
@@ -317,7 +338,7 @@ $(document).ready(function() {
 							tempStat[m] = Number(currentStat[m] + (type[i][j][n] - type[i][currentIndex[i]][n]) * statModifier[m]);
 						}
 						let tempAchieveRate = achieveCheck(tempStat);
-						if (tempAchieveRate >= 1) {
+						if (tempAchieveRate == 1) {
 							currentID[i] = type[i][j][0];
 							currentScore = Number(currentScore + type[i][j][8] - type[i][currentIndex[i]][8]);
 							if (i == 7)
@@ -328,12 +349,12 @@ $(document).ready(function() {
 				}
 				setSuccess.push({"id": currentID, "score": currentScore});
 				success++
-				if (success > 50 && equipSetOption[0] == false)
+				if (success > 50)
 					break;
 				typeWeight = Array.from(typeWeightZero)
 			}
 			else if (achieveRate > 0.8) {
-				for (let i = 0; i < type.length; i++) {
+				for (let i = type.length - 1; i >= 0; i--) {
 					typeWeight[i].push(currentIndex[i]);
 				}
 			}
@@ -347,66 +368,68 @@ $(document).ready(function() {
 				set += x + '|';
 			}
 			set = set.replace(/.$/, '');
-			table.search('(' + set + ')').draw(false);
+			table.search('(' + set + ')').draw();
 		}
-		else
-			alert(ts.setFailed);
+		else {
+			alert(uits.setFailed);
+			table.search('').draw();
+		}
 	}
 	const rarityColor = ['#D7BDE2', '#F2D7D5', '#AED6F1', '#F9E79F', '#E59866', '#ABEBC6'];
 	const level = [230, 215, 200, 185, 170, 155, 140, 125, 110, 95, 80, 65, 50, 35, 20];
 	const linkType = ['armors', 'armors', 'armors', 'armors', 'armors', 'armors', 'armors', 'armors', 'accessories', 'weapons', 'weapons', 'weapons'];
-	const noMastery = [ts.no + ts.secMastery];
-	for (m of ts.masteryLong) {
-		noMastery.push(ts.no + m);
+	const noMastery = [uits.no + uits.secMastery];
+	for (m of uits.masteryLong) {
+		noMastery.push(uits.no + m);
 	}
 	let equipStat = [0, 0, 0, 0, 0, 0];
 	let equipStatMin = [5, 2, 0, 0, 0, 0];
 	let equipSetOption = [false, false];
 	let equipOneHand = true;
-	$.fn.dataTable.enum(ts.rarity);
-	$.fn.dataTable.enum(ts.type);
-	$.fn.dataTable.enum(ts.masteryShort);
+	$.fn.dataTable.enum(uits.rarity);
+	$.fn.dataTable.enum(uits.type);
+	$.fn.dataTable.enum(uits.masteryShort);
 	$.fn.dataTable.enum(noMastery);
 	let table = $('#tableArray').DataTable({
 		columns: [
-			{title: ts.title[0]},
+			{title: uits.title[0]},
 			null,	//en
 			null,	//id
-			{title: ts.title[1], data: 'type'},
-			{title: ts.title[2]},
-			{title: ts.title[3], data: 'rarity'},	//5
-			{title: ts.title[4]},
-			{title: ts.title[5]},
-			{title: ts.title[6]},
-			{title: ts.title[7]},
-			{title: ts.title[8]},	//10
-			{title: ts.title[9]},
-			{title: ts.title[10]},
-			{title: ts.title[11]},
-			{title: ts.title[12]},
-			{title: ts.masteryLong[4]},	//15
-			{title: ts.title[13]},
-			{title: ts.title[14], data: 'mastery'},
-			{title: ts.title[15], data: 'score'},
-			{title: ts.title[16], data: 'total'},
-			{title: ts.title[17], data: 17},	//20
-			{title: ts.title[18], data: 18},
-			{title: ts.title[19], data: 19},
-			{title: ts.title[20], data: 20},	//-15
-			{title: ts.title[21], data: 21},
-			{title: ts.masteryLong[0] + '<br>' + ts.mastery, data: 22},	//25
-			{title: ts.masteryLong[1] + '<br>' + ts.mastery, data: 23},
-			{title: ts.masteryLong[2] + '<br>' + ts.mastery, data: 24},
-			{title: ts.masteryLong[3] + '<br>' + ts.mastery, data: 25},	//-10
-			{title: ts.masteryLong[4] + '<br>' + ts.mastery, data: 26},
-			{title: ts.masteryLong[5] + '<br>' + ts.mastery, data: 27},
-			{title: ts.masteryLong[6] + '<br>' + ts.mastery, data: 28},
-			{title: ts.masteryLong[7] + '<br>' + ts.mastery, data: 29},
-			{title: ts.masteryLong[4] + '<br>' + ts.res, data: 30},	//-5
-			{title: ts.masteryLong[5] + '<br>' + ts.res, data: 31},
-			{title: ts.title[22], data: 32},
-			{title: ts.title[23], data: 33},
-			{title: ts.title[24], data: 34}
+			{title: uits.title[1], data: 'type'},
+			{title: uits.title[2]},
+			{title: uits.title[3], data: 'rarity'},	//5
+			{title: uits.title[4]},
+			{title: uits.title[5]},
+			{title: uits.title[6]},
+			{title: uits.title[7]},
+			{title: uits.title[8]},	//10
+			{title: uits.title[9]},
+			{title: uits.title[10]},
+			{title: uits.title[11]},
+			{title: uits.title[12]},
+			{title: uits.masteryLong[4]},	//15
+			{title: uits.title[13]},
+			{title: uits.title[14], data: 'mastery'},
+			{title: uits.title[15], data: 'score'},
+			{title: uits.title[16], data: 'total'},
+			{title: uits.title[17], data: 17},	//20
+			{title: uits.title[18], data: 18},
+			{title: uits.title[19], data: 19},
+			{title: uits.title[20], data: 20},	//-15
+			{title: uits.title[21], data: 21},
+			{title: uits.masteryLong[0] + '<br>' + uits.mastery, data: 22},	//25
+			{title: uits.masteryLong[1] + '<br>' + uits.mastery, data: 23},
+			{title: uits.masteryLong[2] + '<br>' + uits.mastery, data: 24},
+			{title: uits.masteryLong[3] + '<br>' + uits.mastery, data: 25},	//-10
+			{title: uits.masteryLong[4] + '<br>' + uits.mastery, data: 26},
+			{title: uits.masteryLong[5] + '<br>' + uits.mastery, data: 27},
+			{title: uits.masteryLong[6] + '<br>' + uits.mastery, data: 28},
+			{title: uits.masteryLong[7] + '<br>' + uits.mastery, data: 29},
+			{title: uits.masteryLong[4] + '<br>' + uits.res, data: 30},	//-5
+			{title: uits.masteryLong[5] + '<br>' + uits.res, data: 31},
+			{title: uits.title[22], data: 32},
+			{title: uits.title[23], data: 33},
+			{title: uits.title[24], data: 34}
 		],
 		fixedColumns: true,
 		scrollX: true,
@@ -432,29 +455,29 @@ $(document).ready(function() {
 			{
 				extend: 'collection',
 				collectionLayout: 'fixed columns',
-				text: ts.title[2],
+				text: uits.title[2],
 				buttons: []
 			},
 			{
 				extend: 'collection',
-				text: ts.visable[0],
+				text: uits.visable[0],
 				buttons: [
 					{
-						text: ts.secMastery,
+						text: uits.secMastery,
 						action: function (e, dt) {
 							dt.columns([-6, -7, -8, -9, -10, -11, -12, -13]).visible(!dt.column(-6).visible());
 							this.active(!this.active());
 						}
 					},
 					{
-						text: ts.visable[1],
+						text: uits.visable[1],
 						action: function (e, dt) {
 							dt.columns([-4, -5]).visible(!dt.column(-4).visible());
 							this.active(!this.active());
 						}
 					},
 					{
-						text: ts.visable[2],
+						text: uits.visable[2],
 						action: function (e, dt) {
 							dt.columns([-1, -2, -3]).visible(!dt.column(-1).visible());
 							this.active(!this.active());
@@ -465,10 +488,10 @@ $(document).ready(function() {
 			{
 				extend: 'spacer',
 				style: 'bar',
-				text: ts.setExclude
+				text: uits.setExclude
 			},
 			{
-				text: ts.setRandom,
+				text: uits.setRandom,
 				collectionLayout: 'fixed columns',
 				action: function() {
 					$('.dtsp-searchPane:eq(0) .clearButton').click();
@@ -510,14 +533,14 @@ $(document).ready(function() {
 			{
 				targets: 17,
 				searchPanes: {
-					header: ts.positive + ts.secMastery,
+					header: uits.positive + uits.secMastery,
 					combiner: 'and',
 					options: masteryPane()
 				}
 			},
 			{
 				targets: -15,
-				searchPanes: {header: ts.eleNum}
+				searchPanes: {header: uits.eleNum}
 			},
 			{
 				targets: '_all',
@@ -547,16 +570,16 @@ $(document).ready(function() {
 				if (i == 20)
 					total = total.toFixed(1);
 				if (i < 15)
-					title = ts.title[i - 2]
+					title = uits.title[i - 2]
 				else if (i == 15)
-					title = ts.masteryLong[4];
+					title = uits.masteryLong[4];
 				else if (i > 15)
-					title = ts.title[i - 3]
+					title = uits.title[i - 3]
 				$(api.column(i).header()).html(title + '<br>' + total);
 			}
 		},
 	});
-	$('div.toolbar').html('<a style="font-size: 12px">' + ts.scoreDes + '</a>');
+	$('div.toolbar').html('<a style="font-size: 12px">' + uits.scoreDes + '</a>');
 	for (let i in level) {
 		table.button(0).add('0-' + i, {
 			text: level[i],
@@ -565,7 +588,7 @@ $(document).ready(function() {
 					table.rows.add(JSON.parse(data)).every(function() {
 						newData(this.data());
 					})
-					.searchPanes.rebuildPane().draw(false);
+					.searchPanes.rebuildPane().draw();
 				});
 				this.disable();
 			}
@@ -594,7 +617,7 @@ $(document).ready(function() {
 			table.rows.add(result).every(function() {
 				newData(this.data());
 			})
-			.searchPanes.rebuildPane().draw(false);
+			.searchPanes.rebuildPane().draw();
 		}
 	});
 });
