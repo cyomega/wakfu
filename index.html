@@ -144,7 +144,6 @@ $(document).ready(function() {
 		data.rarity = uits.rarity[data[5]];
 	}
 	function equipReference() {
-		table.button(4).text(uits.setCalcualting);
 		table.search('');
 		let set = '';
 		let equipExclude = table.rows({selected: true}).data();
@@ -250,7 +249,7 @@ $(document).ready(function() {
 					ring[1] = type[i][j][9];
 				if (type[i][j][1] == 0)
 					relic++;
-				else if (type[i][j][1] == 1 || (currentID[i] > 26493 && currentID[i] < 26498))
+				if (type[i][j][1] == 1 || (currentID[i] > 26493 && currentID[i] < 26498))
 					epic++;
 				if (relic > 1 || epic > 1)
 					break;
@@ -303,7 +302,7 @@ $(document).ready(function() {
 				}
 				setSuccess.push({"id": currentID, "score": currentScore});
 				success++;
-				if (success > 70)
+				if (success >= 70)
 					break;
 				typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
 			}
@@ -323,7 +322,7 @@ $(document).ready(function() {
 			}
 			set = set.replace(/.$/, '');
 			table.search('(' + set + ')').draw();
-			table.button(4).text(uits.setCount + (success - 1));
+			table.button(4).text(uits.setCount + success);
 		}
 		else {
 			table.button(4).text(uits.setFailed);
@@ -448,6 +447,7 @@ $(document).ready(function() {
 				text: uits.setRandom,
 				collectionLayout: 'fixed columns',
 				action: function() {
+					table.button(4).text(uits.setCalcualting);
 					$('.dtsp-searchPane:eq(0) .clearButton').click();
 					equipReference();
 				},
