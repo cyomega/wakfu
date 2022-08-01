@@ -71,118 +71,60 @@ $(document).ready(function() {
 		return options;
 	}
 	function setRandomButton() {
-		let options =
-			[
-				{
-					extend: 'spacer',
-					text: uits.setStatAchieve
-				},
-				{
-					text: uits.title[4] + '：' + equipStatMin[0],
-					action: function () {
-						equipStatMin[0]++;
-						if (equipStatMin[0] > 8)
-							equipStatMin[0] = 0;
-						this.text(uits.title[4] + '：' + equipStatMin[0]);
-					}
-				},
-				{
-					text: uits.title[5] + '：' + equipStatMin[1],
-					action: function () {
-						equipStatMin[1]++;
-						if (equipStatMin[1] > 8)
-							equipStatMin[1] = 0;
-						this.text(uits.title[5] + '：' + equipStatMin[1]);
-					}
-				},
-				{
-					text: uits.title[6] + '：' + equipStatMin[2],
-					action: function () {
-						equipStatMin[2]++;
-						if (equipStatMin[2] > 8)
-							equipStatMin[2] = 0;
-						this.text(uits.title[6] + '：' + equipStatMin[2]);
-					}
-				},
-				{
-					text: uits.title[7] + '：' + equipStatMin[3],
-					action: function () {
-						equipStatMin[3]++;
-						if (equipStatMin[3] > 8)
-							equipStatMin[3] = 0;
-						this.text(uits.title[7] + '：' + equipStatMin[3]);
-					}
-				},
-				{
-					text: uits.masteryLong[4] + '：' + equipStatMin[4],
-					action: function () {
-						equipStatMin[4] += 10;
-						if (equipStatMin[4] > 80)
-							equipStatMin[4] = 0;
-						this.text(uits.masteryLong[4] + '：' + equipStatMin[4],);
-					}
-				},
-				{
-					text: uits.title[13] + '：' + equipStatMin[5],
-					action: function () {
-						equipStatMin[5] += 10;
-						if (equipStatMin[5] > 80)
-							equipStatMin[5] = 0;
-						this.text(uits.title[13] + '：' + equipStatMin[5]);
-					}
-				},
-				{
-					extend: 'spacer',
-					text: uits.setStatScore
-				},
-			];
-		uits.title.forEach(function (title, i) {
-			if (i > 8 && i < 13) {
-				options.push({
-					text: title,
-					action: function () {
-						equipStat[i - 9] = !equipStat[i - 9];
-						this.active(!this.active());
-					}
-				});
-			}
-			else if (i > 15 && i < 18) {
-				options.push({
-					text: title,
-					action: function () {
-						equipStat[i - 12] = !equipStat[i - 12];
-						this.active(!this.active());
-					}
-				});
-			}
+		let options = [
+			{
+				extend: 'spacer',
+				text: uits.setStatAchieve
+			},
+		];
+		let buttonText = [uits.title[4], uits.title[5], uits.title[6], uits.title[7], uits.masteryLong[4], uits.title[13]];
+		buttonText.forEach(function (title, i) {
+			if (i < 4)
+				var j = 1;
+			else
+				var j = 10;
+			options.push({
+				text: title + '：' + equipStatMin[i],
+				action: function () {
+					equipStatMin[i] += j;
+					if (equipStatMin[i] > (8 * j))
+						equipStatMin[i] = 0;
+					this.text(title + '：' + equipStatMin[i]);
+				}
+			});
 		});
 		options.push(
 			{
 				extend: 'spacer',
-				style: 'bar'
-			},
-			{
-				text: uits.type[11],
-				action: function () {
-					equipOneHand = !equipOneHand;
-					this.active(!this.active());
-				}
-			},
-			{
-				text: uits.setDepth,
-				action: function () {
-					equipSetOption[0] = !equipSetOption[0];
-					this.active(!this.active());
-				}
-			},
-			{
-				text: uits.setRange,
-				action: function () {
-					equipSetOption[1] = !equipSetOption[1];
-					this.active(!this.active());
-				}
+				text: uits.setStatScore
 			}
 		);
+		buttonText = [uits.title[9], uits.title[10], uits.title[11], uits.title[12], uits.title[16], uits.title[17]];
+		buttonText.forEach(function (title, i) {
+			options.push({
+				text: title,
+				action: function () {
+					equipStat[i] = !equipStat[i];
+					this.active(!this.active());
+				}
+			});
+		});
+		options.push(
+			{
+				extend: 'spacer',
+				text: uits.setRandomOption
+			},
+		);
+		buttonText = [uits.type[11], uits.setDepth, uits.setRange];
+		buttonText.forEach(function (title, i) {
+			options.push({
+				text: title,
+				action: function () {
+					equipSetOption[i] = !equipSetOption[i];
+					this.active(!this.active());
+				}
+			});
+		});
 		return options;
 	}
 	function newData(data) {
@@ -202,6 +144,7 @@ $(document).ready(function() {
 		data.rarity = uits.rarity[data[5]];
 	}
 	function equipReference() {
+		table.button(4).text(uits.setCalcualting);
 		table.search('');
 		let set = '';
 		let equipExclude = table.rows({selected: true}).data();
@@ -256,7 +199,7 @@ $(document).ready(function() {
 		for (let i = type.length - 1; i >= 0; i--)
 			typeWeightZero.push([]);
 		for (let i = 0; i < type.length; i++) {
-			if (equipSetOption[1] == false)
+			if (equipSetOption[2] == false)
 				var weight = 15;
 			else
 				var weight = 30;
@@ -266,7 +209,7 @@ $(document).ready(function() {
 				typeWeightZero[i].push(j);
 			}
 		}
-		if (equipSetOption[0] == false)
+		if (equipSetOption[1] == false)
 			i = 100000;
 		else
 			i = 500000;
@@ -282,7 +225,7 @@ $(document).ready(function() {
 			let ring = [];
 			let currentID = [];
 			let currentScore = 0;
-			if (equipOneHand == true) {
+			if (equipSetOption[0] == true) {
 				currentOrder.push(11);
 			}
 			for (let i = currentOrder.length - 1; i > 0; i--) {
@@ -301,17 +244,17 @@ $(document).ready(function() {
 				}
 				currentIndex[i] = j;
 				currentID[i] = type[i][j][0];
-				if (currentID[i] > 26493 && currentID[i] < 26498)
-					epic++;
-				currentScore += Number(type[i][j][8]);
 				if (i == 7)
 					ring[0] = type[i][j][9];
 				else if (i == 9)
 					ring[1] = type[i][j][9];
 				if (type[i][j][1] == 0)
 					relic++;
-				else if (type[i][j][1] == 1)
+				else if (type[i][j][1] == 1 || (currentID[i] > 26493 && currentID[i] < 26498))
 					epic++;
+				if (relic > 1 || epic > 1)
+					break;
+				currentScore += Number(type[i][j][8]);
 				for (let m = statMin.length - 1; m >= 0; m--) {
 					let n = m + 2
 					currentStat[m] += Number(type[i][j][n] * statModifier[m]);
@@ -359,7 +302,7 @@ $(document).ready(function() {
 					currentID[9] = Number(currentID[10]) + 81;
 				}
 				setSuccess.push({"id": currentID, "score": currentScore});
-				success++
+				success++;
 				if (success > 70)
 					break;
 				typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
@@ -380,9 +323,10 @@ $(document).ready(function() {
 			}
 			set = set.replace(/.$/, '');
 			table.search('(' + set + ')').draw();
+			table.button(4).text(uits.setCount + (success - 1));
 		}
 		else {
-			alert(uits.setFailed);
+			table.button(4).text(uits.setFailed);
 			table.search('').draw();
 		}
 	}
@@ -395,8 +339,8 @@ $(document).ready(function() {
 	}
 	let equipStat = [0, 0, 0, 0, 0, 0];
 	let equipStatMin = [5, 2, 0, 0, 0, 0];
-	let equipSetOption = [false, false];
-	let equipOneHand = true;
+	let equipSetOption = [true, false, false];
+	//onehand depth range
 	$.fn.dataTable.enum(uits.rarity);
 	$.fn.dataTable.enum(uits.type);
 	$.fn.dataTable.enum(uits.masteryShort);
@@ -498,8 +442,7 @@ $(document).ready(function() {
 			},
 			{
 				extend: 'spacer',
-				style: 'bar',
-				text: uits.setExclude
+				style: 'bar'
 			},
 			{
 				text: uits.setRandom,
@@ -509,6 +452,16 @@ $(document).ready(function() {
 					equipReference();
 				},
 				split: setRandomButton()
+			},
+			{
+				text: uits.setManual,
+				action: function (e) {
+					e.stopPropagation();
+					this.popover(
+						'<div>' + uits.setCondition + '<br>' + uits.setExclude + '</div>',
+						{popoverTitle: uits.setManual}
+					);
+				}
 			},
 			{
 				extend: 'spacer',
@@ -631,6 +584,7 @@ $(document).ready(function() {
 			.searchPanes.rebuildPane().draw();
 		}
 	});
+	table.buttons(['3-12', '3-13']).trigger();
 });
 </script>
 </body>
