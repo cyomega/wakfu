@@ -13,10 +13,15 @@
 "eleNum":"元素數量",
 "scoreDes":"*傷抗分數：傷害與抗性相當於多少個 10 級附魔孔的數值",
 "setRandom":"隨機配裝",
+"setCalcualting":"計算中...",
 "setStatAchieve":"屬性需求",
 "setStatScore":"重視屬性",
-"setExclude":"點選的裝備將不納入配裝",
-"setDepth":"增加演算次數",
-"setRange":"增加演算裝備",
-"setFailed":"無符合結果，請修改演算設定或篩選條件。"
+"setRandomOption":"其它設定",
+"setManual":"使用須知",
+"setCondition":"請注意裝備條件",
+"setExclude":"點選的裝備不列入計算",
+"setCount":"本次計算套裝數：",
+"setDepth":"增加計算次數",
+"setRange":"增加計算裝備",
+"setFailed":"無符合結果，請修改計算設定或篩選條件"
 }
