@@ -89,7 +89,10 @@ $(document).ready(function() {
 					equipStatMin[i] += j;
 					if (equipStatMin[i] > (8 * j))
 						equipStatMin[i] = 0;
-					this.text(title + '：' + equipStatMin[i]);
+					if (equipStatMin[i] == 0)
+						this.text(title + '：' + uits.no);
+					else
+						this.text(title + '：' + equipStatMin[i]);
 				}
 			});
 		});
@@ -125,6 +128,7 @@ $(document).ready(function() {
 				}
 			});
 		});
+		options.push('selectNone');
 		return options;
 	}
 	function newData(data) {
@@ -144,6 +148,7 @@ $(document).ready(function() {
 		data.rarity = uits.rarity[data[5]];
 	}
 	function equipReference() {
+		$('.dtsp-searchPane:eq(0) .clearButton').click();
 		table.search('');
 		let set = '';
 		let equipExclude = table.rows({selected: true}).data();
@@ -234,9 +239,14 @@ $(document).ready(function() {
 			for (let m = type.length - 1; m >= 0; m--) {
 				let i = currentOrder[m];
 				let j;
+				let typeWeightTemp = [];
 				for (let n = 999; n >= 0; n--) {
 					let k = Math.floor(Math.random() * typeWeight[i].length);
 					j = typeWeight[i][k];
+					if (typeWeightTemp.includes(j) == false)
+						typeWeightTemp.push(j);
+					else if (typeWeightTemp.length == typeWeightZero[i].length)
+						break;
 					if ((type[i][j][1] == 0 && relic > 0) || (type[i][j][1] == 1 && epic > 0) || type[i][j][9] == ring[0] || type[i][j][9] == ring[1])
 						continue;
 					break;
@@ -300,11 +310,15 @@ $(document).ready(function() {
 					currentScore -= type[9][currentIndex[9]][8];
 					currentID[9] = Number(currentID[10]) + 81;
 				}
-				setSuccess.push({"id": currentID, "score": currentScore});
-				success++;
-				if (success >= 70)
-					break;
 				typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
+				if (setSuccess.some(e => JSON.stringify(e.id) == JSON.stringify(currentID)) == true)
+					continue;
+				else {
+					setSuccess.push({"id":currentID, "score":currentScore});
+					success++;
+				}
+				if (success >= 99)
+					break;
 			}
 			else if (achieveRate > 0.8) {
 				for (let i = type.length - 1; i >= 0; i--) {
@@ -337,7 +351,7 @@ $(document).ready(function() {
 		noMastery.push(uits.no + m);
 	}
 	let equipStat = [0, 0, 0, 0, 0, 0];
-	let equipStatMin = [5, 2, 0, 0, 0, 0];
+	let equipStatMin = [5, 2, 8, 8, 80, 80];
 	let equipSetOption = [true, false, false];
 	//onehand depth range
 	$.fn.dataTable.enum(uits.rarity);
@@ -447,9 +461,11 @@ $(document).ready(function() {
 				text: uits.setRandom,
 				collectionLayout: 'fixed columns',
 				action: function() {
-					table.button(4).text(uits.setCalcualting);
-					$('.dtsp-searchPane:eq(0) .clearButton').click();
-					equipReference();
+					table.button(4).processing(true);
+					setTimeout(function() {
+						equipReference();
+						table.button(4).processing(false);
+					}, 10);
 				},
 				split: setRandomButton()
 			},
@@ -511,6 +527,11 @@ $(document).ready(function() {
 				orderSequence: ['desc', 'asc']
 			},
 		],
+		language: {
+        		buttons: {
+				selectNone: uits.setSelectNone
+			}
+		},
 		rowCallback: function(row, data) {
 			$('td:eq(0)', row).css('background-color', function() {
 				return rarityColor[data[5]];
@@ -584,7 +605,7 @@ $(document).ready(function() {
 			.searchPanes.rebuildPane().draw();
 		}
 	});
-	table.buttons(['3-12', '3-13']).trigger();
+	table.buttons(['3-3', '3-4', '3-5', '3-6', '3-12', '3-13']).trigger();
 });
 </script>
 </body>
