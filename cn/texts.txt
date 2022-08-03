@@ -19,7 +19,7 @@
 "setManual":"使用须知",
 "setCondition":"请注意装备使用条件",
 "setExclude":"点选的装备不列入计算",
-"setCount":"成功计算配装数：",
+"setCount":"本次计算出的配装数：",
 "setDepth":"增加计算次数",
 "setRange":"增加计算装备",
 "setFailed":"无符合结果，请修改计算设定或筛选条件",
