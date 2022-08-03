@@ -464,7 +464,7 @@ $(document).ready(function() {
 					table.button(4).processing(true);
 					setTimeout(function() {
 						equipReference();
-						table.button(4).processing(false);
+						table.button(4).processing(false).trigger();
 					}, 10);
 				},
 				split: setRandomButton()
@@ -475,7 +475,12 @@ $(document).ready(function() {
 					e.stopPropagation();
 					this.popover(
 						'<div>' + uits.setCondition + '<br>' + uits.setExclude + '</div>',
-						{popoverTitle: uits.setManual}
+						{
+							background: false,
+							closeButton: false,
+							popoverTitle: uits.setManual,
+							dropup: true
+						}
 					);
 				}
 			},
