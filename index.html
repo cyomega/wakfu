@@ -317,7 +317,7 @@ $(document).ready(function() {
 					setSuccess.push({"id":currentID, "score":currentScore});
 					success++;
 				}
-				if (success >= 99 && equipSetOption[1] == false)
+				if (success >= 500 || (success >= 100 && equipSetOption[1] == false))
 					break;
 			}
 			else if (achieveRate > 0.8) {
@@ -354,11 +354,12 @@ $(document).ready(function() {
 	let equipStatMin = [5, 2, 8, 8, 80, 80];
 	let equipSetOption = [true, false, false];
 	//onehand depth range
+	let setRandomClick = 0;
 	$.fn.dataTable.enum(uits.rarity);
 	$.fn.dataTable.enum(uits.type);
 	$.fn.dataTable.enum(uits.masteryShort);
 	$.fn.dataTable.enum(noMastery);
-	let table = $('#tableArray').DataTable({
+	const table = $('#tableArray').DataTable({
 		columns: [
 			{title: uits.title[0]},
 			null,	//en
@@ -466,11 +467,11 @@ $(document).ready(function() {
 					table.button(4).processing(true);
 					setTimeout(function() {
 						equipReference();
-						table.button(4).processing(false).trigger();
-						setTimeout(function() {
-							$('body').trigger('click');
-						}, 3000);
-					}, 10);
+						table.button(4).processing(false);
+						if (setRandomClick == 0)
+							table.button(4).trigger();
+						setRandomClick = 1;
+					}, 50);
 				},
 				split: setRandomButton()
 			},
@@ -484,8 +485,7 @@ $(document).ready(function() {
 						{
 							background: false,
 							closeButton: false,
-							popoverTitle: uits.setManual,
-							dropup: true
+							popoverTitle: uits.setManual
 						}
 					);
 				}
