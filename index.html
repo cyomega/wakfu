@@ -317,7 +317,7 @@ $(document).ready(function() {
 					setSuccess.push({"id":currentID, "score":currentScore});
 					success++;
 				}
-				if (success >= 99)
+				if (success >= 99 && equipSetOption[1] == false)
 					break;
 			}
 			else if (achieveRate > 0.8) {
@@ -467,6 +467,9 @@ $(document).ready(function() {
 					setTimeout(function() {
 						equipReference();
 						table.button(4).processing(false).trigger();
+						setTimeout(function() {
+							$('body').trigger('click');
+						}, 3000);
 					}, 10);
 				},
 				split: setRandomButton()
@@ -475,6 +478,7 @@ $(document).ready(function() {
 				text: uits.setManual,
 				action: function (e) {
 					e.stopPropagation();
+					const that = this;
 					this.popover(
 						'<div>' + uits.setCondition + '<br>' + uits.setExclude + '</div>',
 						{
@@ -489,6 +493,50 @@ $(document).ready(function() {
 			{
 				extend: 'spacer',
 				style: 'bar'
+			},
+			{
+				text: uits.copyTable,
+				action: function() {
+					const d = table.rows({search: 'applied'}).data();
+					let text = '<table><tr>';
+					for (let i = 0; i < 13; i++) {
+						text += '<th>' + uits.title[i] + '</th>';
+					}
+					text += '<th>' + uits.masteryLong[4] + '</th>';
+					for (let i = 13; i < 22; i++) {
+						text += '<th>' + uits.title[i] + '</th>';
+					}
+					for (let i = 0; i < 8; i++) {
+						text += '<th>' + uits.masteryLong[i] + '<br>' + uits.mastery + '</th>';
+					}
+					text += '<th>' + uits.masteryLong[4] + '<br>' + uits.res + '</th>'
+						+ '<th>' + uits.masteryLong[5] + '<br>' + uits.res + '</th>'
+						+ '<th>' + uits.title[22] + '</th>'
+						+ '<th>' + uits.title[23] + '</th>'
+						+ '<th>' + uits.title[24] + '</th>'
+						+ '</tr>';
+					for (let i = 0; i < d.length; i++) {
+						text += '<tr><td style="background-color:' + rarityColor[d[i][5]] + '"><a href="https://www.wakfu.com/en/mmorpg/encyclopedia/' + linkType[d[i][3]] + '/' + d[i][2] + '">' + d[i][0] + '</a></td>'
+							+ '<td align="center">' + d[i].type + '</td>'
+							+ '<td align="center">' + d[i][4] + '</td>'
+							+ '<td align="center">' + d[i].rarity + '</td>';
+						for (let j = 6; j < 17; j++) {
+							text += '<td align="center">' + d[i][j] + '</td>';
+						}
+						text += '<td align="center">' + d[i].mastery + '</td>'
+							+ '<td align="center">' + d[i].score + '</td>'
+							+ '<td align="center">' + d[i].total + '</td>';
+						for (let j = 17; j < 35; j++) {
+							text += '<td align="center">' + d[i][j] + '</td>';
+						}
+						text += '</tr>';
+					}
+					text += '</table>';
+					const type = "text/html";
+					const blob = new Blob([text], { type });
+					const data = [new ClipboardItem({ [type]: blob })];
+					navigator.clipboard.write(data);
+				}
 			}
 		],
 		columnDefs: [
