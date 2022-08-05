@@ -607,7 +607,7 @@ $(document).ready(function() {
 				let total = api.column(i, { search: 'applied' }).data().reduce(function (a, b) {
 					return intVal(a) + intVal(b);
 				}, 0);
-				if (i == 20)
+				if (i == 19 || i == 20)
 					total = total.toFixed(1);
 				if (i < 15)
 					title = uits.title[i - 2]
