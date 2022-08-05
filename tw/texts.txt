@@ -23,5 +23,6 @@
 "setDepth":"增加計算次數",
 "setRange":"計算更多裝備",
 "setFailed":"無符合結果，請修改計算設定或篩選條件",
-"setSelectNone":"取消裝備選取"
+"setSelectNone":"取消裝備選取",
+"copyTable":"複製篩選表格到剪貼簿"
 }
