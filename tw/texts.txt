@@ -19,7 +19,7 @@
 "setManual":"使用須知",
 "setCondition":"請注意裝備使用條件",
 "setExclude":"點選的裝備不列入計算",
-"setCount":"本次計算出的配裝數：",
+"setCount":"本次計算出的配裝數及最高分：",
 "setDepth":"增加計算次數",
 "setRange":"計算更多裝備",
 "setFailed":"無符合結果，請修改計算設定或篩選條件",
