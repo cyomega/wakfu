@@ -156,6 +156,8 @@ $(document).ready(function() {
 			let i = equipExclude.length;
 			while (i--) {
 				set += equipExclude[i][2] + '|';
+				if (equipExclude[i][2] > 26574 && equipExclude[i][2] < 26579)
+					set += (equipExclude[i][2] - 81) + '|';
 			}
 			set = set.replace(/.$/, '');
 			table.search('^((?!' + set + ').)*$');
@@ -202,30 +204,49 @@ $(document).ready(function() {
 		let typeWeightZero = [];
 		for (let i = type.length - 1; i >= 0; i--)
 			typeWeightZero.push([]);
-		for (let i = 0; i < type.length; i++) {
+		for (let i = type.length - 1; i >= 0; i--) {
 			if (type[i].length == 0) {
 				table.button(4).text(uits.setFailed);
 				table.search('').draw();
 				return;
 			}
-			if (equipSetOption[2] == false)
-				var weight = 15;
-			else
-				var weight = 30;
+			let weight = 30;
 			if (type[i].length < weight)
 				weight = type[i].length;
 			for (let j = 0; j < weight; j++) {
-				typeWeightZero[i].push(j);
+				let enlist = true;
+				if (type[i][j][1] > 1) {
+					for (let k = 0; k < j; k++) {
+						if (type[i][k][1] < 2)
+							continue;
+						if (
+							(Number(type[i][k][2] - type[i][j][2]) * statMin[0] == 0)
+							&& (Number(type[i][k][3] - type[i][j][3]) * statMin[1] == 0)
+							&& (Number(type[i][k][4] - type[i][j][4]) * statMin[2] == 0)
+							&& (Number(type[i][k][5] - type[i][j][5]) * statMin[3] == 0)
+							&& (Number(type[i][k][6] - type[i][j][6]) * statMin[4] == 0)
+							&& (Number(type[i][k][7] - type[i][j][7]) * statMin[5] == 0)
+						) {
+							enlist = false;
+							break;
+						}
+					}
+				}
+				if (enlist == true)
+					typeWeightZero[i].push(j);
+				if (
+					(equipSetOption[2] == false && typeWeightZero[i].length > 9)
+					|| (equipSetOption[2] == true && typeWeightZero[i].length > 19)
+				)
+					break;
 			}
 		}
-		if (equipSetOption[1] == false)
-			i = 100000;
-		else
-			i = 500000;
-		let success = 0;
-		let duplicate = 0;
-		let setSuccess = [];
 		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
+		i = 500000;
+		if (equipSetOption[1] == true)
+			i += 500000;
+		let success = 0;
+		let setSuccess = [];
 		while (i--) {
 			let relic = 0;
 			let epic = 0;
@@ -253,7 +274,12 @@ $(document).ready(function() {
 						typeWeightTemp.push(j);
 					else if (typeWeightTemp.length == typeWeightZero[i].length)
 						break;
-					if ((type[i][j][1] == 0 && relic > 0) || (type[i][j][1] == 1 && epic > 0) || type[i][j][9] == ring[0] || type[i][j][9] == ring[1])
+					if (
+						(type[i][j][1] == 0 && relic > 0)
+						|| (type[i][j][1] == 1 && epic > 0)
+						|| type[i][j][9] == ring[0]
+						|| type[i][j][9] == ring[1]
+					)
 						continue;
 					break;
 				}
@@ -298,8 +324,14 @@ $(document).ready(function() {
 				for (let i = 0; i < type.length; i++) {
 					if (type[i][currentIndex[i]][1] < 2)
 						continue;
-					for (let j = 0; j < currentIndex[i]; j++) {
-						if (type[i][j][1] < 2 || (i == 7 && type[i][j][9] == ring[1]) || (i == 9 && type[i][j][9] == ring[0]))
+					for (let j of typeWeightZero[i]) {
+						if (j == currentIndex[i])
+							break;
+						if (
+							type[i][j][1] < 2
+							|| (i == 7 && type[i][j][9] == ring[1])
+							|| (i == 9 && type[i][j][9] == ring[0])
+						)
 							continue;
 						let tempStat = [0, 0, 0, 0, 0, 0];
 						for (let m = 0; m < statMin.length; m++) {
@@ -311,6 +343,7 @@ $(document).ready(function() {
 							currentID[i] = type[i][j][0];
 							currentScore = Number(currentScore) + Number(type[i][j][8] - type[i][currentIndex[i]][8]);
 							currentStat = JSON.parse(JSON.stringify(tempStat));
+							currentIndex[i] = j;
 							if (i == 7)
 								ring[0] = type[i][j][9];
 							break;
@@ -322,16 +355,18 @@ $(document).ready(function() {
 					currentID[9] = Number(currentID[10]) + 81;
 				}
 				typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
-				if (setSuccess.some(e => JSON.stringify(e.id) == JSON.stringify(currentID)) == true) {
-					duplicate++;
-					if (duplicate > 500 && i < 350000)
-						break;
-					else
-						continue;
+				if (success > 30) {
+					for (let i = typeWeight.length - 1; i >= 0; i--) {
+						for (let j = 5; j >= 0; j--) {
+							let k = Math.floor(Math.random() * setSuccess.length);
+							typeWeight[i].push(setSuccess[k].index[i]);
+						}
+					}
 				}
+				if (setSuccess.some(e => JSON.stringify(e.id) == JSON.stringify(currentID)) == true)
+						continue;
 				else {
-					setSuccess.push({"id":currentID, "score":currentScore.toFixed(1)});
-					duplicate = 0;
+					setSuccess.push({"id":currentID, "score":currentScore.toFixed(1), "index":currentIndex});
 					success++;
 				}
 			}
@@ -340,7 +375,11 @@ $(document).ready(function() {
 					typeWeight[i].push(currentIndex[i]);
 				}
 			}
+			if (success == 0 && i < 300000)
+				break;
 		}
+		console.log(success);
+		console.log(typeWeightZero);
 		if (success > 0) {
 			setSuccess.sort(function(a, b) {
 				return b.score - a.score;
