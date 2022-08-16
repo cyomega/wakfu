@@ -191,8 +191,8 @@ $(document).ready(function() {
 				score += Number(equipStat[j] * d[i][statArr[j]] / statWeight[j]);
 			}
 			score = score.toFixed(1);
-			let arr = [d[i][2], d[i][5], d[i][6], d[i][7], d[i][8], d[i][9], d[i][15], d[i][16], score, d[i][1]];
-			//id rarity ap mp wp range cri block score name
+			let arr = [d[i][2], d[i][5], d[i][6], d[i][7], d[i][8], d[i][9], d[i][15], d[i][16], score];
+			//id rarity ap mp wp range cri block score
 			equip[d[i][3]].push(arr);
 		}
 		for (let i in equip) {
@@ -230,12 +230,12 @@ $(document).ready(function() {
 						if (type[i][k][1] < 2)
 							continue;
 						if (
-							(Number(type[i][k][2] - type[i][j][2]) * statMin[0] == 0)
-							&& (Number(type[i][k][3] - type[i][j][3]) * statMin[1] == 0)
-							&& (Number(type[i][k][4] - type[i][j][4]) * statMin[2] == 0)
-							&& (Number(type[i][k][5] - type[i][j][5]) * statMin[3] == 0)
-							&& (Number(type[i][k][6] - type[i][j][6]) * statMin[4] == 0)
-							&& (Number(type[i][k][7] - type[i][j][7]) * statMin[5] == 0)
+							((type[i][k][2] - type[i][j][2]) * statMin[0] == 0)
+							&& ((type[i][k][3] - type[i][j][3]) * statMin[1] == 0)
+							&& ((type[i][k][4] - type[i][j][4]) * statMin[2] == 0)
+							&& ((type[i][k][5] - type[i][j][5]) * statMin[3] == 0)
+							&& ((type[i][k][6] - type[i][j][6]) * statMin[4] == 0)
+							&& ((type[i][k][7] - type[i][j][7]) * statMin[5] == 0)
 						) {
 							enlist = false;
 							break;
@@ -250,20 +250,37 @@ $(document).ready(function() {
 				)
 					break;
 			}
+			let ringCount = 0;
+			for (let i of typeWeightZero[7]) {
+				if (type[7][i][1] > 2)
+					ringCount++;
+			}
+			if (ringCount < 2) {
+				for (let i = 0; i < type[7].length; i++) {
+					if (typeWeightZero[7][i] != i && type[7][i][1] > 1) {
+						typeWeightZero[7].push(i);
+						break;
+					}
+					else
+						i = typeWeightZero[7][i];
+				}
+				typeWeightZero[7].sort(function(a, b) {
+					return a - b;
+				});
+				typeWeightZero[9] = typeWeightZero[7];
+			}
 		}
 		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
 		i = 500000;
 		if (equipSetOption[1] == true)
 			i += 500000;
-		let success = 0;
-		setSuccess = [];
+		let setSuccess = [];
 		while (i--) {
 			let relic = 0;
 			let epic = 0;
 			let currentStat = [0, 0, 0, 0, 0, 0];
 			let currentOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 			let currentIndex = [];
-			let ring = [];
 			let currentID = [];
 			let currentScore = 0;
 			if (equipSetOption[0] == true) {
@@ -287,18 +304,14 @@ $(document).ready(function() {
 					if (
 						(type[i][j][1] == 0 && relic > 0)
 						|| (type[i][j][1] == 1 && epic > 0)
-						|| type[i][j][9] == ring[0]
-						|| type[i][j][9] == ring[1]
+						|| (i == 7 && j == currentIndex[9])
+						|| (i == 9 && j == currentIndex[7])
 					)
 						continue;
 					break;
 				}
 				currentIndex[i] = j;
 				currentID[i] = type[i][j][0];
-				if (i == 7)
-					ring[0] = type[i][j][9];
-				else if (i == 9)
-					ring[1] = type[i][j][9];
 				if (type[i][j][1] == 0)
 					relic++;
 				if (type[i][j][1] == 1 || (currentID[i] > 26493 && currentID[i] < 26498))
@@ -339,8 +352,8 @@ $(document).ready(function() {
 							break;
 						if (
 							type[i][j][1] < 2
-							|| (i == 7 && type[i][j][9] == ring[1])
-							|| (i == 9 && type[i][j][9] == ring[0])
+							|| (i == 7 && j == currentIndex[9])
+							|| (i == 9 && j == currentIndex[7])
 						)
 							continue;
 						let tempStat = [0, 0, 0, 0, 0, 0];
@@ -354,8 +367,6 @@ $(document).ready(function() {
 							currentScore = Number(currentScore) + Number(type[i][j][8] - type[i][currentIndex[i]][8]);
 							currentStat = JSON.parse(JSON.stringify(tempStat));
 							currentIndex[i] = j;
-							if (i == 7)
-								ring[0] = type[i][j][9];
 							break;
 						}
 					}
@@ -365,7 +376,7 @@ $(document).ready(function() {
 					currentID[9] = Number(currentID[10]) + 81;
 				}
 				typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
-				if (success > 30) {
+				if (setSuccess.length > 30) {
 					for (let i = typeWeight.length - 1; i >= 0; i--) {
 						for (let j = 5; j >= 0; j--) {
 							let k = Math.floor(Math.random() * setSuccess.length);
@@ -373,39 +384,48 @@ $(document).ready(function() {
 						}
 					}
 				}
-				if (setSuccess.some(e => JSON.stringify(e.id) == JSON.stringify(currentID)) == true)
+				if (setSuccess.some(x => currentID.every(y => x.id.some(z => y == z))) == true)
 						continue;
-				else {
+				else
 					setSuccess.push({"id":currentID, "score":currentScore.toFixed(1), "index":currentIndex});
-					success++;
-				}
 			}
 			else if (achieveRate > 0.8) {
 				for (let i = type.length - 1; i >= 0; i--) {
 					typeWeight[i].push(currentIndex[i]);
 				}
 			}
-			if (success == 0 && i < 300000)
+			if (setSuccess.length == 0 && i < 300000)
 				break;
 		}
-		console.log(success);
+		console.log(setSuccess.length);
 		console.log(typeWeightZero);
-		if (success > 0) {
+		if (setSuccess.length > 0) {
 			setSuccess.sort(function(a, b) {
 				return b.score - a.score;
 			});
-			set = '';
-			for (x of setSuccess[0].id) {
-				set += x + '|';
+			setResult = [];
+			for (i = 0; i < 10; i++) {
+				if (i >= setSuccess.length)
+					break;
+				set = '';
+				for (x of setSuccess[i].id) {
+					set += x + '|';
+				}
+				set = set.replace(/.$/, '');
+				setResult.push({"id":set, "score":setSuccess[i].score});
 			}
-			set = set.replace(/.$/, '');
-			table.search('(' + set + ')').draw();
-			table.button(4).text(uits.setScore + setSuccess[0].score);
+			table.buttons(['5', '6', '7']).enable();
+			table.button(5).trigger();
 		}
 		else {
+			table.buttons(['5', '6', '7']).disable();
 			table.button(4).text(uits.setFailed);
 			table.search('').draw();
 		}
+	}
+	function setResultShow(i) {
+		table.search('(' + setResult[i].id + ')').draw();
+		table.button(4).text('（' + (setResultIndex + 1) + '/' + setResult.length + '）' + uits.setScore + setResult[i].score);
 	}
 	const rarityColor = ['#D7BDE2', '#F2D7D5', '#AED6F1', '#F9E79F', '#E59866', '#ABEBC6'];
 	const level = [230, 215, 200, 185, 170, 155, 140, 125, 110, 95, 80, 65, 50, 35, 20];
@@ -419,8 +439,8 @@ $(document).ready(function() {
 	let equipSetOption = [true, false, false, false];
 	//onehand depth range tweak
 	let setRandomClick = 0;
-	let setSuccess = [];
-	let setSuccessIndex = 0;
+	let setResult = [];
+	let setResultIndex = 0;
 	$.fn.dataTable.enum(uits.rarity);
 	$.fn.dataTable.enum(uits.type);
 	$.fn.dataTable.enum(uits.masteryShort);
@@ -555,19 +575,35 @@ $(document).ready(function() {
 					);
 				}
 			},
-//			{
-//				text: '|<',
-//				action: function () {
-//					let set = '';
-//					setSuccessIndex++;
-//					for (x of setSuccess[setSuccessIndex].id) {
-//						set += x + '|';
-//					}
-//					set = set.replace(/.$/, '');
-//					table.search('(' + set + ')').draw();
-//					table.button(4).text(uits.setScore + setSuccess[setSuccessIndex].score);
-//				}
-//			},
+			{
+				text: '|<',
+				action: function () {
+					setResultIndex = 0;
+					setResultShow(setResultIndex);
+				}
+			},
+			{
+				text: '<',
+				action: function () {
+					setResultIndex--;
+					if (setResultIndex < 0)
+						setResultIndex = setResult.length - 1;
+					setResultShow(setResultIndex);
+				}
+			},
+			{
+				text: '>',
+				action: function () {
+					setResultIndex++;
+					if (setResultIndex >= setResult.length)
+						setResultIndex = 0;
+					setResultShow(setResultIndex);
+				}
+			},
+			{
+				extend: 'spacer',
+				style: 'bar'
+			},
 			{
 				text: uits.copyTable,
 				action: function() {
@@ -735,6 +771,7 @@ $(document).ready(function() {
 		}
 	});
 	table.buttons(['3-3', '3-4', '3-5', '3-6', '3-13', '3-14']).trigger();
+	table.buttons(['5', '6', '7']).disable();
 });
 </script>
 </body>
