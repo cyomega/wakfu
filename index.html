@@ -196,9 +196,7 @@ $(document).ready(function() {
 			equip[d[i][3]].push(arr);
 		}
 		for (let i in equip) {
-			equip[i].sort(function(a, b) {
-				return b[8] - a[8];
-			});
+			equip[i].sort((a, b) => b[8] - a[8]);
 		}
 		let type = [];
 		for (let i = 0; i < 9; i++) {
@@ -220,7 +218,7 @@ $(document).ready(function() {
 				table.search('').draw();
 				return;
 			}
-			let weight = 30;
+			let weight = 40;
 			if (type[i].length < weight)
 				weight = type[i].length;
 			for (let j = 0; j < weight; j++) {
@@ -250,25 +248,21 @@ $(document).ready(function() {
 				)
 					break;
 			}
-			let ringCount = 0;
-			for (let i of typeWeightZero[7]) {
-				if (type[7][i][1] > 2)
-					ringCount++;
-			}
-			if (ringCount < 2) {
-				for (let i = 0; i < type[7].length; i++) {
-					if (typeWeightZero[7][i] != i && type[7][i][1] > 1) {
-						typeWeightZero[7].push(i);
-						break;
-					}
-					else
-						i = typeWeightZero[7][i];
+		}
+		let ringCount = 0;
+		for (let i of typeWeightZero[7]) {
+			if (type[7][i][1] > 1)
+				ringCount++;
+		}
+		if (ringCount < 2) {
+			for (let i = 0; i < type[7].length; i++) {
+				if (type[7][i][1] > 1 && typeWeightZero[7].some(e => e == i) == false) {
+					typeWeightZero[7].push(i);
+					break;
 				}
-				typeWeightZero[7].sort(function(a, b) {
-					return a - b;
-				});
-				typeWeightZero[9] = typeWeightZero[7];
 			}
+			typeWeightZero[7].sort((a, b) => a - b);
+			typeWeightZero[9] = typeWeightZero[7];
 		}
 		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
 		i = 500000;
@@ -400,9 +394,7 @@ $(document).ready(function() {
 		console.log(setSuccess.length);
 		console.log(typeWeightZero);
 		if (setSuccess.length > 0) {
-			setSuccess.sort(function(a, b) {
-				return b.score - a.score;
-			});
+			setSuccess.sort((a, b) => b.score - a.score);
 			setResult = [];
 			for (i = 0; i < 10; i++) {
 				if (i >= setSuccess.length)
