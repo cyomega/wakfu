@@ -249,6 +249,13 @@ $(document).ready(function() {
 					break;
 			}
 		}
+		if (equipSetOption[0] == true)
+			type[10].some((stat, index) => {
+				if (stat[0] == 26593 && typeWeightZero[10].some(e => e == index) == false) {
+					typeWeightZero[10].push(index);
+					return true;
+				}
+			});
 		let ringCount = 0;
 		for (let i of typeWeightZero[7]) {
 			if (type[7][i][1] > 1)
@@ -712,11 +719,11 @@ $(document).ready(function() {
 				if (i == 19 || i == 20)
 					total = total.toFixed(1);
 				if (i < 15)
-					title = uits.title[i - 2]
+					title = uits.title[i - 2];
 				else if (i == 15)
 					title = uits.masteryLong[4];
 				else if (i > 15)
-					title = uits.title[i - 3]
+					title = uits.title[i - 3];
 				$(api.column(i).header()).html(title + '<br>' + total);
 			}
 		},
