@@ -1,5 +1,6 @@
 ﻿<html>
 <head>
+<title>Wakfu 1.76</title>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.2.3/css/fixedHeader.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.1.0/css/fixedColumns.dataTables.min.css">
@@ -191,8 +192,8 @@ $(document).ready(function() {
 				score += Number(equipStat[j] * d[i][statArr[j]] / statWeight[j]);
 			}
 			score = score.toFixed(1);
-			let arr = [d[i][2], d[i][5], d[i][6], d[i][7], d[i][8], d[i][9], d[i][15], d[i][16], score];
-			//id rarity ap mp wp range cri block score
+			let arr = [d[i][2], d[i][5], d[i][6], d[i][7], d[i][8], d[i][9], d[i][15], d[i][16], score, d[i][1]];
+			//id rarity ap mp wp range cri block score name
 			equip[d[i][3]].push(arr);
 		}
 		for (let i in equip) {
@@ -221,30 +222,38 @@ $(document).ready(function() {
 			let weight = 40;
 			if (type[i].length < weight)
 				weight = type[i].length;
+			let count = 0;
 			for (let j = 0; j < weight; j++) {
 				let enlist = true;
+				let noCount = true;
 				if (type[i][j][1] > 1) {
+					noCount = false;
 					for (let k = 0; k < j; k++) {
 						if (type[i][k][1] < 2)
 							continue;
 						if (
-							((type[i][k][2] - type[i][j][2]) * statMin[0] == 0)
-							&& ((type[i][k][3] - type[i][j][3]) * statMin[1] == 0)
-							&& ((type[i][k][4] - type[i][j][4]) * statMin[2] == 0)
-							&& ((type[i][k][5] - type[i][j][5]) * statMin[3] == 0)
-							&& ((type[i][k][6] - type[i][j][6]) * statMin[4] == 0)
-							&& ((type[i][k][7] - type[i][j][7]) * statMin[5] == 0)
+							type[i][k][9] == type[i][j][9]
+							|| (
+								((type[i][k][2] - type[i][j][2]) * statMin[0] == 0)
+								&& ((type[i][k][3] - type[i][j][3]) * statMin[1] == 0)
+								&& ((type[i][k][4] - type[i][j][4]) * statMin[2] == 0)
+								&& ((type[i][k][5] - type[i][j][5]) * statMin[3] == 0)
+								&& ((type[i][k][6] - type[i][j][6]) * statMin[4] == 0)
+								&& ((type[i][k][7] - type[i][j][7]) * statMin[5] == 0)
+							)
 						) {
 							enlist = false;
 							break;
 						}
 					}
 				}
-				if (enlist == true)
+				if (enlist == true && noCount == false) {
 					typeWeightZero[i].push(j);
+					count++;
+				}
 				if (
-					(equipSetOption[2] == false && typeWeightZero[i].length > 9)
-					|| (equipSetOption[2] == true && typeWeightZero[i].length > 19)
+					(equipSetOption[2] == false && count > 9)
+					|| (equipSetOption[2] == true && count > 19)
 				)
 					break;
 			}
@@ -321,7 +330,7 @@ $(document).ready(function() {
 					break;
 				currentScore += Number(type[i][j][8]);
 				for (let m = statMin.length - 1; m >= 0; m--) {
-					let n = m + 2
+					let n = m + 2;
 					currentStat[m] += Number(type[i][j][n] * statModifier[m]);
 				}
 			}
