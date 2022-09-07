@@ -174,7 +174,7 @@ $(document).ready(function() {
 			table.search('^((?!' + set + ').)*$');
 		}
 		let equip = [[], [], [], [], [], [], [], [], [], [], [], []];
-		let statModifier = [10, 5, 4, 3, 1, 1]
+		let statModifier = [10, 5, 4, 3, 1, 1];
 		//ap mp wp range cri block
 		let statMin = [];
 		for (let i = 0; i < equipStatMin.length; i++) {
@@ -232,14 +232,16 @@ $(document).ready(function() {
 						if (type[i][k][1] < 2)
 							continue;
 						if (
-							(type[i][k][9] == type[i][j][9])
-							|| (
-								((type[i][k][2] - type[i][j][2]) * statMin[0] == 0)
-								&& ((type[i][k][3] - type[i][j][3]) * statMin[1] == 0)
-								&& ((type[i][k][4] - type[i][j][4]) * statMin[2] == 0)
-								&& ((type[i][k][5] - type[i][j][5]) * statMin[3] == 0)
-								&& ((type[i][k][6] - type[i][j][6]) * statMin[4] == 0)
-								&& ((type[i][k][7] - type[i][j][7]) * statMin[5] == 0)
+							(
+								i != 9
+								&& (type[i][k][2] - type[i][j][2]) * statMin[0] >= 0
+								&& (type[i][k][3] - type[i][j][3]) * statMin[1] >= 0
+								&& (type[i][k][4] - type[i][j][4]) * statMin[2] >= 0
+								&& (type[i][k][5] - type[i][j][5]) * statMin[3] >= 0
+								&& (type[i][k][6] - type[i][j][6]) * statMin[4] >= 0
+								&& (type[i][k][7] - type[i][j][7]) * statMin[5] >= 0
+							) || (
+								i == 9 && type[i][k][9] == type[i][j][9]
 							)
 						) {
 							enlist = false;
@@ -256,6 +258,11 @@ $(document).ready(function() {
 				}
 			}
 		}
+		if (typeWeightZero[9].length < 2) {
+			table.button(4).text(uits.setFailed);
+			table.search('').draw();
+			return;
+		}
 		if (equipSetOption[0] == true)
 			type[10].some((stat, index) => {
 				if (stat[0] == 26593 && typeWeightZero[10].some(e => e == index) == false) {
@@ -263,21 +270,6 @@ $(document).ready(function() {
 					return true;
 				}
 			});
-		let ringCount = 0;
-		for (let i of typeWeightZero[7]) {
-			if (type[7][i][1] > 1)
-				ringCount++;
-		}
-		if (ringCount < 2) {
-			for (let i = 0; i < type[7].length; i++) {
-				if (type[7][i][1] > 1 && typeWeightZero[7].some(e => e == i) == false) {
-					typeWeightZero[7].push(i);
-					break;
-				}
-			}
-			typeWeightZero[7].sort((a, b) => a - b);
-			typeWeightZero[9] = typeWeightZero[7];
-		}
 		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
 		i = 500000;
 		if (equipSetOption[1] == true)
