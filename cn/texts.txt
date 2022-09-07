@@ -24,5 +24,6 @@
 "setRange":"增加计算装备",
 "setFailed":"无符合结果，请修改计算设定或筛选条件",
 "setSelectNone":"取消装备选取",
-"copyTable":"复制筛选表格到剪贴簿"
+"copyTable":"复制筛选表格到剪贴簿",
+"selectAllSearch":"当前全选"
 }
