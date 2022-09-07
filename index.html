@@ -600,6 +600,12 @@ $(document).ready(function() {
 				}
 			},
 			{
+				text: uits.selectAllSearch,
+				action: function (e, dt) {
+					dt.rows({search: 'applied'}).select();
+				}
+			},
+			{
 				extend: 'spacer',
 				style: 'bar'
 			},
