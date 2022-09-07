@@ -192,7 +192,7 @@ $(document).ready(function() {
 				score += Number(equipStat[j] * d[i][statArr[j]] / statWeight[j]);
 			}
 			score = score.toFixed(1);
-			let arr = [d[i][2], d[i][5], d[i][6], d[i][7], d[i][8], d[i][9], d[i][15], d[i][16], score, d[i][0]];
+			let arr = [d[i][2], d[i][5], d[i][6], d[i][7], d[i][8], d[i][9], d[i][15], d[i][16], score, d[i][1]];
 			//id rarity ap mp wp range cri block score name
 			equip[d[i][3]].push(arr);
 		}
@@ -232,7 +232,7 @@ $(document).ready(function() {
 						if (type[i][k][1] < 2)
 							continue;
 						if (
-							type[i][k][9] == type[i][j][9]
+							(type[i][k][9] == type[i][j][9])
 							|| (
 								((type[i][k][2] - type[i][j][2]) * statMin[0] == 0)
 								&& ((type[i][k][3] - type[i][j][3]) * statMin[1] == 0)
@@ -251,12 +251,9 @@ $(document).ready(function() {
 					typeWeightZero[i].push(j);
 					if (noCount == false)	
 						count++;
+					if ((equipSetOption[2] == false && count > 9) || (equipSetOption[2] == true && count > 19))
+						break;
 				}
-				if (
-					(equipSetOption[2] == false && count > 9)
-					|| (equipSetOption[2] == true && count > 19)
-				)
-					break;
 			}
 		}
 		if (equipSetOption[0] == true)
