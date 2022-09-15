@@ -173,23 +173,46 @@ $(document).ready(function() {
 			set = set.replace(/.$/, '');
 			table.search('^((?!' + set + ').)*$');
 		}
-		let equip = [[], [], [], [], [], [], [], [], [], [], [], []];
-		let statModifier = [10, 5, 4, 3, 1, 1];
+		const statModifier = [10, 5, 4, 3, 1, 1];
 		//ap mp wp range cri block
+		let d = table.rows({search: 'applied'}).data();
+		const statWeight = [80, 60, 60, 40, 30, 6.25];
+		const setSuccess = autoSets(statModifier, equipStatMin, d, statWeight, equipStat, equipSetOption);
+		if (setSuccess.length > 0) {
+			setSuccess.sort((a, b) => b.score - a.score);
+			setResult = [];
+			for (i = 0; i < 10; i++) {
+				if (i >= setSuccess.length)
+					break;
+				let set = '';
+				for (x of setSuccess[i].id) {
+					set += x + '|';
+				}
+				set = set.replace(/.$/, '');
+				setResult.push({"id":set, "score":setSuccess[i].score});
+			}
+			table.buttons(['5', '6', '7']).enable();
+			table.button(5).trigger();
+		}
+		else {
+			table.buttons(['5', '6', '7']).disable();
+			table.button(4).text(uits.setFailed);
+			table.search('').draw();
+		}
+	}
+	function autoSets(statModifier, equipStatMin, d, statWeight, equipStat, equipSetOption) {
+		let equip = [[], [], [], [], [], [], [], [], [], [], [], []];
 		let statMin = [];
 		for (let i = 0; i < equipStatMin.length; i++) {
-			statMin[i] = Number(equipStatMin[i] * statModifier[i]);
+			statMin[i] = Number(equipStatMin[i]) * Number(statModifier[i]);
 		}
 		let goal = statMin.reduce((a, c) => a + c);
-		let d = table.rows({search: 'applied'}).data();
 		let statArr = [11, 12, 13, 14, 'total', 17];
 		//hp lock dodge ini dmg res
-		let statWeight = [80, 60, 60, 40, 30, 6.25];
-		let i = d.length;
-		while (i--) {
+		for (let i = d.length - 1; i >= 0; i--) {
 			let score = 0;
 			for (j in equipStat) {
-				score += Number(equipStat[j] * d[i][statArr[j]] / statWeight[j]);
+				score += Number(equipStat[j]) * Number(d[i][statArr[j]]) / Number(statWeight[j]);
 			}
 			score = score.toFixed(1);
 			let arr = [d[i][2], d[i][5], d[i][6], d[i][7], d[i][8], d[i][9], d[i][15], d[i][16], score, d[i][1]];
@@ -214,11 +237,8 @@ $(document).ready(function() {
 		for (let i = type.length - 1; i >= 0; i--)
 			typeWeightZero.push([]);
 		for (let i = type.length - 1; i >= 0; i--) {
-			if (type[i].length == 0) {
-				table.button(4).text(uits.setFailed);
-				table.search('').draw();
-				return;
-			}
+			if (type[i].length == 0)
+				return false;
 			let weight = 40;
 			if (type[i].length < weight)
 				weight = type[i].length;
@@ -258,11 +278,8 @@ $(document).ready(function() {
 				}
 			}
 		}
-		if (typeWeightZero[9].length < 2) {
-			table.button(4).text(uits.setFailed);
-			table.search('').draw();
-			return;
-		}
+		if (typeWeightZero[9].length < 2)
+			return false;
 		if (equipSetOption[0] == true)
 			type[10].some((stat, index) => {
 				if (stat[0] == 26593 && typeWeightZero[10].some(e => e == index) == false) {
@@ -271,7 +288,7 @@ $(document).ready(function() {
 				}
 			});
 		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
-		i = 500000;
+		let i = 500000;
 		if (equipSetOption[1] == true)
 			i += 500000;
 		let setSuccess = [];
@@ -399,27 +416,7 @@ $(document).ready(function() {
 		}
 		console.log(setSuccess.length);
 		console.log(typeWeightZero);
-		if (setSuccess.length > 0) {
-			setSuccess.sort((a, b) => b.score - a.score);
-			setResult = [];
-			for (i = 0; i < 10; i++) {
-				if (i >= setSuccess.length)
-					break;
-				set = '';
-				for (x of setSuccess[i].id) {
-					set += x + '|';
-				}
-				set = set.replace(/.$/, '');
-				setResult.push({"id":set, "score":setSuccess[i].score});
-			}
-			table.buttons(['5', '6', '7']).enable();
-			table.button(5).trigger();
-		}
-		else {
-			table.buttons(['5', '6', '7']).disable();
-			table.button(4).text(uits.setFailed);
-			table.search('').draw();
-		}
+		return setSuccess;
 	}
 	function setResultShow(i) {
 		table.search('(' + setResult[i].id + ')').draw();
