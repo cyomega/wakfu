@@ -85,18 +85,18 @@ $(document).ready(function() {
 			else
 				var j = 10;
 			options.push({
-				text: title + '：' + equipStatMin[i],
+				text: title + '：' + statRequire[i],
 				action: function () {
-					if (j == 10 && equipSetOption[3] == true)
-						equipStatMin[i]++;
+					if (j == 10 && setOption[3] == true)
+						statRequire[i]++;
 					else
-						equipStatMin[i] += j;
-					if (equipStatMin[i] > (8 * j))
-						equipStatMin[i] = 0;
-					if (equipStatMin[i] == 0)
+						statRequire[i] += j;
+					if (statRequire[i] > (8 * j))
+						statRequire[i] = 0;
+					if (statRequire[i] == 0)
 						this.text(title + '：' + uits.no);
 					else
-						this.text(title + '：' + equipStatMin[i]);
+						this.text(title + '：' + statRequire[i]);
 				}
 			});
 		});
@@ -104,7 +104,7 @@ $(document).ready(function() {
 			{
 				text: '+10 -> +1',
 				action: function () {
-					equipSetOption[3] = !equipSetOption[3];
+					setOption[3] = !setOption[3];
 					this.active(!this.active());
 				}
 			},
@@ -118,7 +118,7 @@ $(document).ready(function() {
 			options.push({
 				text: title,
 				action: function () {
-					equipStat[i] = !equipStat[i];
+					statImportant[i] = !statImportant[i];
 					this.active(!this.active());
 				}
 			});
@@ -134,7 +134,7 @@ $(document).ready(function() {
 			options.push({
 				text: title,
 				action: function () {
-					equipSetOption[i] = !equipSetOption[i];
+					setOption[i] = !setOption[i];
 					this.active(!this.active());
 				}
 			});
@@ -173,11 +173,13 @@ $(document).ready(function() {
 			set = set.replace(/.$/, '');
 			table.search('^((?!' + set + ').)*$');
 		}
-		const statModifier = [10, 5, 4, 3, 1, 1];
-		//ap mp wp range cri block
-		let d = table.rows({search: 'applied'}).data();
-		const statWeight = [80, 60, 60, 40, 30, 6.25];
-		const setSuccess = autoSets(statModifier, equipStatMin, d, statWeight, equipStat, equipSetOption);
+		const d = table.rows({search: 'applied'}).data();
+		let statWeight = [1/80, 1/60, 1/60, 1/40, 1/30, 1/6.25];
+		//hp lock dodge ini dmg res
+		for (let i in statWeight) {
+			statWeight[i] = Number(statWeight[i]) * Number(statImportant[i]);
+		}
+		let setSuccess = autoSets(statRequire, d, statWeight, setOption);
 		if (setSuccess.length > 0) {
 			setSuccess.sort((a, b) => b.score - a.score);
 			setResult = [];
@@ -200,19 +202,21 @@ $(document).ready(function() {
 			table.search('').draw();
 		}
 	}
-	function autoSets(statModifier, equipStatMin, d, statWeight, equipStat, equipSetOption) {
+	function autoSets(statRequire, d, statWeight, setOption) {
 		let equip = [[], [], [], [], [], [], [], [], [], [], [], []];
 		let statMin = [];
-		for (let i = 0; i < equipStatMin.length; i++) {
-			statMin[i] = Number(equipStatMin[i]) * Number(statModifier[i]);
+		const statModifier = [10, 5, 4, 3, 1, 1];
+		//ap mp wp range cri block
+		for (let i in statModifier) {
+			statMin[i] = Number(statRequire[i]) * Number(statModifier[i]);
 		}
-		let goal = statMin.reduce((a, c) => a + c);
-		let statArr = [11, 12, 13, 14, 'total', 17];
+		const goal = statMin.reduce((a, c) => a + c);
+		const statArr = [11, 12, 13, 14, 'total', 17];
 		//hp lock dodge ini dmg res
 		for (let i = d.length - 1; i >= 0; i--) {
 			let score = 0;
-			for (j in equipStat) {
-				score += Number(equipStat[j]) * Number(d[i][statArr[j]]) / Number(statWeight[j]);
+			for (let j in statWeight) {
+				score += Number(d[i][statArr[j]]) * Number(statWeight[j]);
 			}
 			score = score.toFixed(1);
 			let arr = [d[i][2], d[i][5], d[i][6], d[i][7], d[i][8], d[i][9], d[i][15], d[i][16], score, d[i][1]];
@@ -227,7 +231,7 @@ $(document).ready(function() {
 			type[i] = equip[i];
 		}
 		type[9] = equip[7];
-		if (equipSetOption[0] == true) {
+		if (setOption[0] == true) {
 			type[10] = equip[9];
 			type[11] = equip[10];
 		}
@@ -273,14 +277,14 @@ $(document).ready(function() {
 					typeWeightZero[i].push(j);
 					if (noCount == false)	
 						count++;
-					if ((equipSetOption[2] == false && count > 9) || (equipSetOption[2] == true && count > 19))
+					if ((setOption[2] == false && count > 9) || (setOption[2] == true && count > 19))
 						break;
 				}
 			}
 		}
 		if (typeWeightZero[9].length < 2)
 			return false;
-		if (equipSetOption[0] == true)
+		if (setOption[0] == true)
 			type[10].some((stat, index) => {
 				if (stat[0] == 26593 && typeWeightZero[10].some(e => e == index) == false) {
 					typeWeightZero[10].push(index);
@@ -289,7 +293,7 @@ $(document).ready(function() {
 			});
 		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
 		let i = 500000;
-		if (equipSetOption[1] == true)
+		if (setOption[1] == true)
 			i += 500000;
 		let setSuccess = [];
 		while (i--) {
@@ -300,7 +304,7 @@ $(document).ready(function() {
 			let currentIndex = [];
 			let currentID = [];
 			let currentScore = 0;
-			if (equipSetOption[0] == true) {
+			if (setOption[0] == true) {
 				currentOrder.push(11);
 			}
 			for (let i = currentOrder.length - 1; i > 0; i--) {
@@ -429,9 +433,9 @@ $(document).ready(function() {
 	for (m of uits.masteryLong) {
 		noMastery.push(uits.no + m);
 	}
-	let equipStat = [0, 0, 0, 0, 0, 0];
-	let equipStatMin = [5, 2, 8, 8, 80, 80];
-	let equipSetOption = [true, false, false, false];
+	let statImportant = [0, 0, 0, 0, 0, 0];
+	let statRequire = [5, 2, 8, 8, 80, 80];
+	let setOption = [true, false, false, false];
 	//onehand depth range tweak
 	let setRandomClick = 0;
 	let setResult = [];
