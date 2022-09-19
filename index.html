@@ -174,12 +174,46 @@ $(document).ready(function() {
 			table.search('^((?!' + set + ').)*$');
 		}
 		const d = table.rows({search: 'applied'}).data();
-		let statWeight = [1/80, 1/60, 1/60, 1/40, 1/30, 1/6.25];
-		//hp lock dodge ini dmg res
-		for (let i in statWeight) {
-			statWeight[i] = Number(statWeight[i]) * Number(statImportant[i]);
+		let data = [];
+		for (let i = d.length - 1; i >= 0; i--) {
+			data[i] = {
+				name: d[i][1],
+				id: d[i][2],
+				type: d[i][3],
+				rarity: d[i][5],
+				ap: d[i][6],
+				mp: d[i][7],
+				wp: d[i][8],
+				range: d[i][9],
+				hp: d[i][11],
+				lock: d[i][12],
+				dodge: d[i][13],
+				ini: d[i][14],
+				cri: d[i][15],
+				block: d[i][16],
+				dmg: d[i].total,
+				res: d[i][17]
+			};
 		}
-		let setSuccess = autoSets(statRequire, d, statWeight, setOption);
+		let statName = ['ap', 'mp', 'wp', 'range', 'cri', 'block'];
+		let statRequireObj = {};
+		for (let i in statRequire) {
+			let j = statName[i];
+			statRequireObj[j] = statRequire[i];
+		}
+		statName = ['hp', 'lock', 'dodge', 'ini', 'dmg', 'res'];
+		let statWeight = {hp: 1/80, lock: 1/60, dodge: 1/60, ini: 1/40, dmg: 1/30, res: 1/6.25};
+		for (let i in statImportant) {
+			let j = statName[i];
+			statWeight[j] = Number(statWeight[j]) * Number(statImportant[i]);
+		}
+		let randomCount = 500000;
+		if (setOption[1] == true)
+			randomCount += 500000;
+		let equipQuantity = 10;
+		if (setOption[2] == true)
+			equipQuantity += 10;
+		let setSuccess = autoSets(data, statRequireObj, statWeight, setOption[0], randomCount, equipQuantity);
 		if (setSuccess.length > 0) {
 			setSuccess.sort((a, b) => b.score - a.score);
 			setResult = [];
@@ -202,26 +236,34 @@ $(document).ready(function() {
 			table.search('').draw();
 		}
 	}
-	function autoSets(statRequire, d, statWeight, setOption) {
+	function autoSets(data, statRequire, statWeight, twoHandWeapon, randomCount, equipQuantity) {
 		let equip = [[], [], [], [], [], [], [], [], [], [], [], []];
 		let statMin = [];
+		let statName = ['ap', 'mp', 'wp', 'range', 'cri', 'block'];
 		const statModifier = [10, 5, 4, 3, 1, 1];
-		//ap mp wp range cri block
-		for (let i in statModifier) {
-			statMin[i] = Number(statRequire[i]) * Number(statModifier[i]);
+		for (let i in statName) {
+			let j = statName[i];
+			statMin[i] = Number(statRequire[j]) * Number(statModifier[i]);
 		}
 		const goal = statMin.reduce((a, c) => a + c);
-		const statArr = [11, 12, 13, 14, 'total', 17];
-		//hp lock dodge ini dmg res
-		for (let i = d.length - 1; i >= 0; i--) {
+		statName = ['hp', 'lock', 'dodge', 'ini', 'dmg', 'res'];
+		for (let i = data.length - 1; i >= 0; i--) {
 			let score = 0;
-			for (let j in statWeight) {
-				score += Number(d[i][statArr[j]]) * Number(statWeight[j]);
+			for (let j of statName) {
+				score += Number(data[i][j]) * Number(statWeight[j]);
 			}
-			score = score.toFixed(1);
-			let arr = [d[i][2], d[i][5], d[i][6], d[i][7], d[i][8], d[i][9], d[i][15], d[i][16], score, d[i][1]];
-			//id rarity ap mp wp range cri block score name
-			equip[d[i][3]].push(arr);
+			equip[data[i].type].push([
+				data[i].id,
+				data[i].rarity,
+				data[i].ap,
+				data[i].mp,
+				data[i].wp,
+				data[i].range,
+				data[i].cri,
+				data[i].block,
+				score.toFixed(1),
+				data[i].name
+			]);
 		}
 		for (let i in equip) {
 			equip[i].sort((a, b) => b[8] - a[8]);
@@ -231,7 +273,7 @@ $(document).ready(function() {
 			type[i] = equip[i];
 		}
 		type[9] = equip[7];
-		if (setOption[0] == true) {
+		if (twoHandWeapon == false) {
 			type[10] = equip[9];
 			type[11] = equip[10];
 		}
@@ -277,14 +319,14 @@ $(document).ready(function() {
 					typeWeightZero[i].push(j);
 					if (noCount == false)	
 						count++;
-					if ((setOption[2] == false && count > 9) || (setOption[2] == true && count > 19))
+					if (count >= equipQuantity)
 						break;
 				}
 			}
 		}
 		if (typeWeightZero[9].length < 2)
 			return false;
-		if (setOption[0] == true)
+		if (twoHandWeapon == false)
 			type[10].some((stat, index) => {
 				if (stat[0] == 26593 && typeWeightZero[10].some(e => e == index) == false) {
 					typeWeightZero[10].push(index);
@@ -292,11 +334,8 @@ $(document).ready(function() {
 				}
 			});
 		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
-		let i = 500000;
-		if (setOption[1] == true)
-			i += 500000;
 		let setSuccess = [];
-		while (i--) {
+		for (let i = randomCount; i >= 0; i--) {
 			let relic = 0;
 			let epic = 0;
 			let currentStat = [0, 0, 0, 0, 0, 0];
@@ -304,9 +343,8 @@ $(document).ready(function() {
 			let currentIndex = [];
 			let currentID = [];
 			let currentScore = 0;
-			if (setOption[0] == true) {
+			if (twoHandWeapon == false)
 				currentOrder.push(11);
-			}
 			for (let i = currentOrder.length - 1; i > 0; i--) {
 				let j = Math.floor(Math.random() * (i + 1));
 				[currentOrder[i], currentOrder[j]] = [currentOrder[j], currentOrder[i]];
@@ -415,12 +453,13 @@ $(document).ready(function() {
 					typeWeight[i].push(currentIndex[i]);
 				}
 			}
-			if (setSuccess.length == 0 && i < 300000)
-				break;
 		}
 		console.log(setSuccess.length);
 		console.log(typeWeightZero);
-		return setSuccess;
+		if (setSuccess.length > 0)
+			return setSuccess;
+		else
+			return false;
 	}
 	function setResultShow(i) {
 		table.search('(' + setResult[i].id + ')').draw();
@@ -435,8 +474,8 @@ $(document).ready(function() {
 	}
 	let statImportant = [0, 0, 0, 0, 0, 0];
 	let statRequire = [5, 2, 8, 8, 80, 80];
-	let setOption = [true, false, false, false];
-	//onehand depth range tweak
+	let setOption = [false, false, false, false];
+	//twohand depth range tweak
 	let setRandomClick = 0;
 	let setResult = [];
 	let setResultIndex = 0;
