@@ -459,7 +459,7 @@ $(document).ready(function() {
 						continue;
 				else
 					setSuccess.push({id:currentID, score:currentScore.toFixed(1), index:currentIndex});
-				if (setSuccessLength > 99)
+				if (setSuccess.length > 99 || setSuccess.length == 50)
 					setSuccess.sort((a, b) => b.score - a.score).splice(50);
 			}
 			else if (achieveRate > 0.8) {
