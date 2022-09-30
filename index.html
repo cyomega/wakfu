@@ -223,7 +223,6 @@ $(document).ready(function() {
 			equipQuantity += 10;
 		let setSuccess = autoSets(data, statRequireObj, statWeight, setOption[0], randomCount, equipQuantity);
 		if (setSuccess.length > 0) {
-			setSuccess.sort((a, b) => b.score - a.score);
 			setResult = [];
 			for (i = 0; i < 10; i++) {
 				if (i >= setSuccess.length)
@@ -443,18 +442,25 @@ $(document).ready(function() {
 					currentID[9] = Number(currentID[10]) + 81;
 				}
 				typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
-				if (setSuccess.length > 30) {
+				let setSuccessLength = setSuccess.length;
+				if (setSuccessLength > 30) {
 					for (let i = typeWeight.length - 1; i >= 0; i--) {
 						for (let j = 5; j >= 0; j--) {
-							let k = Math.floor(Math.random() * setSuccess.length);
+							let k = Math.floor(Math.random() * setSuccessLength);
 							typeWeight[i].push(setSuccess[k].index[i]);
 						}
 					}
 				}
-				if (setSuccess.some(x => currentID.every(y => x.id.some(z => y == z))) == true)
+				if (
+					(setSuccessLength > 49 && currentScore < setSuccess[49].score)
+					|| currentID[7] == currentID[9]
+					|| setSuccess.some(x => currentID.every(y => x.id.some(z => y == z))) == true
+				)
 						continue;
 				else
-					setSuccess.push({"id":currentID, "score":currentScore.toFixed(1), "index":currentIndex});
+					setSuccess.push({id:currentID, score:currentScore.toFixed(1), index:currentIndex});
+				if (setSuccessLength > 99)
+					setSuccess.sort((a, b) => b.score - a.score).splice(50);
 			}
 			else if (achieveRate > 0.8) {
 				for (let i = type.length - 1; i >= 0; i--) {
@@ -462,10 +468,10 @@ $(document).ready(function() {
 				}
 			}
 		}
-		console.log(setSuccess.length);
-		console.log(typeWeightZero);
-		if (setSuccess.length > 0)
+		if (setSuccess.length > 0) {
+			setSuccess.sort((a, b) => b.score - a.score).splice(30);
 			return setSuccess;
+		}
 		else
 			return false;
 	}
