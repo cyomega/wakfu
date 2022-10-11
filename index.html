@@ -1,6 +1,6 @@
 ﻿<html>
 <head>
-<title>Wakfu 1.76</title>
+<title>Wakfu 1.77</title>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.2.3/css/fixedHeader.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.1.0/css/fixedColumns.dataTables.min.css">
@@ -521,22 +521,21 @@ $(document).ready(function() {
 			{title: uits.title[16], data: 'total'},
 			{title: uits.title[17], data: 17},	//20
 			{title: uits.title[18], data: 18},
-			{title: uits.title[19], data: 19},
-			{title: uits.title[20], data: 20},	//-15
+			{title: uits.title[19], data: 19},	//-15
+			{title: uits.title[20], data: 20},
 			{title: uits.title[21], data: 21},
 			{title: uits.masteryLong[0] + '<br>' + uits.mastery, data: 22},	//25
 			{title: uits.masteryLong[1] + '<br>' + uits.mastery, data: 23},
-			{title: uits.masteryLong[2] + '<br>' + uits.mastery, data: 24},
-			{title: uits.masteryLong[3] + '<br>' + uits.mastery, data: 25},	//-10
+			{title: uits.masteryLong[2] + '<br>' + uits.mastery, data: 24},	//-10
+			{title: uits.masteryLong[3] + '<br>' + uits.mastery, data: 25},
 			{title: uits.masteryLong[4] + '<br>' + uits.mastery, data: 26},
 			{title: uits.masteryLong[5] + '<br>' + uits.mastery, data: 27},
 			{title: uits.masteryLong[6] + '<br>' + uits.mastery, data: 28},
-			{title: uits.masteryLong[7] + '<br>' + uits.mastery, data: 29},
-			{title: uits.masteryLong[4] + '<br>' + uits.res, data: 30},	//-5
+			{title: uits.masteryLong[7] + '<br>' + uits.mastery, data: 29},	//-5
+			{title: uits.masteryLong[4] + '<br>' + uits.res, data: 30},
 			{title: uits.masteryLong[5] + '<br>' + uits.res, data: 31},
 			{title: uits.title[22], data: 32},
-			{title: uits.title[23], data: 33},
-			{title: uits.title[24], data: 34}
+			{title: uits.title[23], data: 33}
 		],
 		pageLength: 15,
 		lengthMenu: [15, 25, 50, 100],
@@ -555,7 +554,7 @@ $(document).ready(function() {
 			selector: 'td:not(:first-child)'
 		},
 		searchPanes: {
-			columns: [3, 4, 5, 17, -15],
+			columns: [3, 4, 5, 17, -14],
 			orderable: false,
 			layout: 'columns-6',
 			dtOpts: {select: {style: 'multi'}},
@@ -574,21 +573,21 @@ $(document).ready(function() {
 					{
 						text: uits.secMastery,
 						action: function (e, dt) {
-							dt.columns([-6, -7, -8, -9, -10, -11, -12, -13]).visible(!dt.column(-6).visible());
+							dt.columns([-5, -6, -7, -8, -9, -10, -11, -12]).visible(!dt.column(-5).visible());
 							this.active(!this.active());
 						}
 					},
 					{
 						text: uits.visable[1],
 						action: function (e, dt) {
-							dt.columns([-4, -5]).visible(!dt.column(-4).visible());
+							dt.columns([-3, -4]).visible(!dt.column(-3).visible());
 							this.active(!this.active());
 						}
 					},
 					{
 						text: uits.visable[2],
 						action: function (e, dt) {
-							dt.columns([-1, -2, -3]).visible(!dt.column(-1).visible());
+							dt.columns([-1, -2]).visible(!dt.column(-1).visible());
 							this.active(!this.active());
 						}
 					}
@@ -681,7 +680,6 @@ $(document).ready(function() {
 						+ '<th>' + uits.masteryLong[5] + '<br>' + uits.res + '</th>'
 						+ '<th>' + uits.title[22] + '</th>'
 						+ '<th>' + uits.title[23] + '</th>'
-						+ '<th>' + uits.title[24] + '</th>'
 						+ '</tr>';
 					for (let i = 0; i < d.length; i++) {
 						text += '<tr><td style="background-color:' + rarityColor[d[i][5]] + '"><a href="https://www.wakfu.com/en/mmorpg/encyclopedia/' + linkType[d[i][3]] + '/' + d[i][2] + '">' + d[i][0] + '</a></td>'
@@ -694,7 +692,7 @@ $(document).ready(function() {
 						text += '<td align="center">' + d[i].mastery + '</td>'
 							+ '<td align="center">' + d[i].score + '</td>'
 							+ '<td align="center">' + d[i].total + '</td>';
-						for (let j = 17; j < 35; j++) {
+						for (let j = 17; j < 34; j++) {
 							text += '<td align="center">' + d[i][j] + '</td>';
 						}
 						text += '</tr>';
@@ -718,12 +716,12 @@ $(document).ready(function() {
 				render: $.fn.dataTable.render.number('', '.', 1, '')
 			},
 			{
-				targets: [4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 22, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37],
+				targets: [4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 22, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36],
 				render: $.fn.dataTable.render.number('', '.', 0, ''),
 				type: $.fn.dataTable.absoluteOrderNumber([{value: '', position: 'bottom'}])
 			},
 			{
-				targets: [1, 2, 5, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13],
+				targets: [1, 2, 5, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12],
 				visible: false
 			},
 			{
@@ -742,7 +740,7 @@ $(document).ready(function() {
 				}
 			},
 			{
-				targets: -15,
+				targets: -14,
 				searchPanes: {header: uits.eleNum}
 			},
 			{
