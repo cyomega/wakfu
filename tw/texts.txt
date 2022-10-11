@@ -12,7 +12,7 @@
 "visable":["顯示","副抗","其它"],
 "eleNum":"元素數量",
 "scoreDes":"*分數：相關屬性相當於多少個 10 級附魔孔的數值",
-"setRandom":"隨機配裝",
+"setRandom":"自動配裝",
 "setStatAchieve":"屬性需求",
 "setStatScore":"重視屬性",
 "setRandomOption":"其它設定",
