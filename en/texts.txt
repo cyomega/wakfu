@@ -1,6 +1,6 @@
 ﻿{
 "rarity":["Relic","Epic","Souvenir","Legnedary","Mythical","Rare","Common","Grey"],
-"masteryShort":["Dis ","Mel ","ST ","AOE ","Cri ","Rea ","Ber ","Hea"],
+"masteryShort":["Dis ","Mel ","St ","Aoe ","Cri ","Re ","Ber ","He"],
 "masteryLong":["Distance","Melee","Single","Area","Critical","Rear","Berserk","Heal"],
 "type":["Helmet","Epaulettes","Cloak","Breastplate","Belt","Boots","Amulet","Ring","Emblem","One-Handed","Second Hand","Two-Handed"],
 "no":"No ",
