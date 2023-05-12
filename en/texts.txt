@@ -12,7 +12,7 @@
 "visable":["Visibility","Secondary Resistance","Others"],
 "eleNum":"Element Amount",
 "scoreDes":"*Score: Amount of lvl 10 enchantment slots that equals to related characteristics.",
-"setRandom":"Auto Gear Set",
+"setRandom":"Auto Build",
 "setStatAchieve":"Required Characteristics",
 "setStatScore":"Important Characteristics",
 "setRandomOption":"Other Settings",
