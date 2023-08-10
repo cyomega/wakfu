@@ -18,7 +18,7 @@
 "setRandomOption":"Other Settings",
 "setManual":"Please note:",
 "setCondition":"Mind the requirement for the gears.",
-"setExclude":"Click to choose gears to be exclude from calculation.",
+"setExclude":"Click to choose gears to be excluded from calculation.",
 "setScore":"Important Characteristics Score:",
 "setDepth":"Increase Calculation Count",
 "setRange":"More Gears into Calculation",
