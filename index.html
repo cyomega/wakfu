@@ -88,7 +88,7 @@ $(document).ready(function() {
 				text: uits.setStatAchieve
 			},
 		];
-		let buttonText = [uits.title[4], uits.title[5], uits.title[6], uits.title[7], uits.masteryLong[4], uits.title[13]];
+		let buttonText = [uits.title[4], uits.title[5], uits.title[6], uits.title[7], uits.masteryLong[2], uits.title[13]];
 		buttonText.forEach(function (title, i) {
 			if (i < 4)
 				var j = 1;
@@ -516,28 +516,26 @@ $(document).ready(function() {
 			{title: uits.title[10]},
 			{title: uits.title[11]},
 			{title: uits.title[12]},
-			{title: uits.masteryLong[4]},	//15
+			{title: uits.masteryLong[2]},	//15
 			{title: uits.title[13]},
 			{title: uits.title[14], data: 'mastery'},
 			{title: uits.title[15], data: 'score'},
 			{title: uits.title[16], data: 'total'},
-			{title: uits.title[17], data: 17},	//20
+			{title: uits.title[17], data: 17},	//20 -15
 			{title: uits.title[18], data: 18},
-			{title: uits.title[19], data: 19},	//-15
+			{title: uits.title[19], data: 19},
 			{title: uits.title[20], data: 20},
 			{title: uits.title[21], data: 21},
-			{title: uits.masteryLong[0] + '<br>' + uits.mastery, data: 22},	//25
+			{title: uits.masteryLong[0] + '<br>' + uits.mastery, data: 22},	//25 -10
 			{title: uits.masteryLong[1] + '<br>' + uits.mastery, data: 23},
-			{title: uits.masteryLong[2] + '<br>' + uits.mastery, data: 24},	//-10
+			{title: uits.masteryLong[2] + '<br>' + uits.mastery, data: 24},
 			{title: uits.masteryLong[3] + '<br>' + uits.mastery, data: 25},
 			{title: uits.masteryLong[4] + '<br>' + uits.mastery, data: 26},
-			{title: uits.masteryLong[5] + '<br>' + uits.mastery, data: 27},
-			{title: uits.masteryLong[6] + '<br>' + uits.mastery, data: 28},
-			{title: uits.masteryLong[7] + '<br>' + uits.mastery, data: 29},	//-5
-			{title: uits.masteryLong[4] + '<br>' + uits.res, data: 30},
-			{title: uits.masteryLong[5] + '<br>' + uits.res, data: 31},
-			{title: uits.title[22], data: 32},
-			{title: uits.title[23], data: 33}
+			{title: uits.masteryLong[5] + '<br>' + uits.mastery, data: 27},	//-5
+			{title: uits.masteryLong[2] + '<br>' + uits.res, data: 28},
+			{title: uits.masteryLong[3] + '<br>' + uits.res, data: 29},
+			{title: uits.title[22], data: 30},
+			{title: uits.title[23], data: 31}
 		],
 		pageLength: 15,
 		lengthMenu: [15, 25, 50, 100],
@@ -556,7 +554,7 @@ $(document).ready(function() {
 			selector: 'td:not(:first-child)'
 		},
 		searchPanes: {
-			columns: [3, 4, 5, 17, -14],
+			columns: [3, 4, 5, 17, -12],
 			orderable: false,
 			layout: 'columns-6',
 			dtOpts: {select: {style: 'multi'}},
@@ -575,7 +573,7 @@ $(document).ready(function() {
 					{
 						text: uits.secMastery,
 						action: function (e, dt) {
-							dt.columns([-5, -6, -7, -8, -9, -10, -11, -12]).visible(!dt.column(-5).visible());
+							dt.columns([-5, -6, -7, -8, -9, -10]).visible(!dt.column(-5).visible());
 							this.active(!this.active());
 						}
 					},
@@ -671,15 +669,15 @@ $(document).ready(function() {
 					for (let i = 0; i < 13; i++) {
 						text += '<th>' + uits.title[i] + '</th>';
 					}
-					text += '<th>' + uits.masteryLong[4] + '</th>';
+					text += '<th>' + uits.masteryLong[2] + '</th>';
 					for (let i = 13; i < 22; i++) {
 						text += '<th>' + uits.title[i] + '</th>';
 					}
-					for (let i = 0; i < 8; i++) {
+					for (let i = 0; i < uits.masteryLong.length; i++) {
 						text += '<th>' + uits.masteryLong[i] + '<br>' + uits.mastery + '</th>';
 					}
-					text += '<th>' + uits.masteryLong[4] + '<br>' + uits.res + '</th>'
-						+ '<th>' + uits.masteryLong[5] + '<br>' + uits.res + '</th>'
+					text += '<th>' + uits.masteryLong[2] + '<br>' + uits.res + '</th>'
+						+ '<th>' + uits.masteryLong[3] + '<br>' + uits.res + '</th>'
 						+ '<th>' + uits.title[22] + '</th>'
 						+ '<th>' + uits.title[23] + '</th>'
 						+ '</tr>';
@@ -718,12 +716,12 @@ $(document).ready(function() {
 				render: $.fn.dataTable.render.number('', '.', 1, '')
 			},
 			{
-				targets: [4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 22, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36],
+				targets: [4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 22, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34],
 				render: $.fn.dataTable.render.number('', '.', 0, ''),
 				type: $.fn.dataTable.absoluteOrderNumber([{value: '', position: 'bottom'}])
 			},
 			{
-				targets: [1, 2, 5, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12],
+				targets: [1, 2, 5, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10],
 				visible: false
 			},
 			{
@@ -742,7 +740,7 @@ $(document).ready(function() {
 				}
 			},
 			{
-				targets: -14,
+				targets: -12,
 				searchPanes: {
 					header: uits.eleNum,
 					emptyMessage: '0'
@@ -786,7 +784,7 @@ $(document).ready(function() {
 				if (i < 15)
 					title = uits.title[i - 2];
 				else if (i == 15)
-					title = uits.masteryLong[4];
+					title = uits.masteryLong[2];
 				else if (i > 15)
 					title = uits.title[i - 3];
 				$(api.column(i).header()).html(title + '<br>' + total);
