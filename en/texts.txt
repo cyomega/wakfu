@@ -22,7 +22,7 @@
 "setScore":"Important Characteristics Score:",
 "setDepth":"Increase Calculation Count",
 "setRange":"More Gears into Calculation",
-"setFailed":"No result. Please modify settings or filter.",
+"setFailed":"No result. Check if there are gears missing, or modify settings or filter.",
 "setSelectNone":"Unselect All Gears",
 "copyTable":"Copy Filtered Table to Clipboard",
 "selectAllSearch":"Choose All"
