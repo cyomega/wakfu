@@ -22,7 +22,7 @@
 "setScore":"重视属性总分：",
 "setDepth":"增加计算次数",
 "setRange":"增加计算装备",
-"setFailed":"无符合结果，请修改计算设定或筛选条件",
+"setFailed":"无符合结果，注意装备是否有缺，或修改设定和条件",
 "setSelectNone":"取消装备选取",
 "copyTable":"复制筛选表格到剪贴簿",
 "selectAllSearch":"当前全选"
