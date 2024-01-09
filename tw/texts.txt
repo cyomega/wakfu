@@ -13,7 +13,7 @@
 "eleNum":"元素數量",
 "scoreDes":"*分數：相關屬性相當於多少個 10 級附魔孔的數值",
 "setRandom":"自動配裝",
-"setStatAchieve":"屬性需求",
+"setStatAchieve":"屬性需求（僅含裝備屬性）",
 "setStatScore":"重視屬性",
 "setRandomOption":"其它設定",
 "setManual":"使用須知",
