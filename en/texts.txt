@@ -13,7 +13,7 @@
 "eleNum":"Element Amount",
 "scoreDes":"*Score: Amount of lvl 10 enchantment slots that equals to related characteristics.",
 "setRandom":"Auto Build",
-"setStatAchieve":"Required Characteristics",
+"setStatAchieve":"Required Characteristics (Gears Only)",
 "setStatScore":"Important Characteristics",
 "setRandomOption":"Other Settings",
 "setManual":"Please note:",
