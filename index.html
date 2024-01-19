@@ -245,6 +245,24 @@ $(document).ready(function() {
 			table.search('').draw();
 		}
 	}
+	function achieveCheck(relic, epic, stat, statMin, goal) {
+		if (relic > 1 || epic > 1)
+			return 0;
+		let achieve = 0;
+		let i = stat.length;
+		while (i--) {
+			if (statMin[i] == 0)
+				continue;
+			else if (stat[i] > statMin[i])
+				achieve += Number(statMin[i]);
+			else
+				achieve += Number(stat[i]);
+		}
+		if (achieve == goal)
+			return 1;
+		else
+			return Number(achieve / goal);
+	}
 	function autoSets(data, statRequire, statWeight, twoHandWeapon, randomCount, equipQuantity) {
 		let equip = [[], [], [], [], [], [], [], [], [], [], [], []];
 		let statMin = [];
@@ -344,22 +362,22 @@ $(document).ready(function() {
 			});
 		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
 		let setSuccess = [];
+		let typeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+		if (twoHandWeapon == false)
+			typeOrder.push(11);
 		for (let i = randomCount; i >= 0; i--) {
 			let relic = 0;
 			let epic = 0;
 			let currentStat = [0, 0, 0, 0, 0, 0];
-			let currentOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 			let currentIndex = [];
 			let currentID = [];
 			let currentScore = 0;
-			if (twoHandWeapon == false)
-				currentOrder.push(11);
-			for (let i = currentOrder.length - 1; i > 0; i--) {
+			for (let i = typeOrder.length - 1; i > 0; i--) {
 				let j = Math.floor(Math.random() * (i + 1));
-				[currentOrder[i], currentOrder[j]] = [currentOrder[j], currentOrder[i]];
+				[typeOrder[i], typeOrder[j]] = [typeOrder[j], typeOrder[i]];
 			}
 			for (let m = type.length - 1; m >= 0; m--) {
-				let i = currentOrder[m];
+				let i = typeOrder[m];
 				let j;
 				let typeWeightTemp = [];
 				for (let n = 999; n >= 0; n--) {
@@ -392,25 +410,7 @@ $(document).ready(function() {
 					currentStat[m] += Number(type[i][j][n] * statModifier[m]);
 				}
 			}
-			function achieveCheck(stat) {
-				if (relic > 1 || epic > 1)
-					return 0;
-				let achieve = 0;
-				let i = stat.length;
-				while (i--) {
-					if (statMin[i] == 0)
-						continue;
-					else if (stat[i] > statMin[i])
-						achieve += Number(statMin[i]);
-					else
-						achieve += Number(stat[i]);
-				}
-				if (achieve == goal)
-					return 1;
-				else
-					return Number(achieve / goal);
-			}
-			let achieveRate = achieveCheck(currentStat);
+			let achieveRate = achieveCheck(relic, epic, currentStat, statMin, goal);
 			if (achieveRate == 1) {
 				for (let i = 0; i < type.length; i++) {
 					if (type[i][currentIndex[i]][1] < 2)
@@ -429,7 +429,7 @@ $(document).ready(function() {
 							let n = m + 2;
 							tempStat[m] = Number(currentStat[m]) + Number((type[i][j][n] - type[i][currentIndex[i]][n]) * statModifier[m]);
 						}
-						let tempAchieveRate = achieveCheck(tempStat);
+						let tempAchieveRate = achieveCheck(relic, epic, tempStat, statMin, goal);
 						if (tempAchieveRate == 1) {
 							currentID[i] = type[i][j][0];
 							currentScore = Number(currentScore) + Number(type[i][j][8] - type[i][currentIndex[i]][8]);
