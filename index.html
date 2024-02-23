@@ -1,4 +1,4 @@
-﻿<html>
+<html>
 <head>
 <title>Wakfu 1.82</title>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
@@ -245,25 +245,20 @@ $(document).ready(function() {
 			table.search('').draw();
 		}
 	}
-	function achieveCheck(relic, epic, stat, statMin, goal) {
-		if (relic > 1 || epic > 1)
-			return 0;
-		let achieve = 0;
-		let i = stat.length;
-		while (i--) {
-			if (statMin[i] == 0)
-				continue;
-			else if (stat[i] > statMin[i])
-				achieve += statMin[i];
-			else
-				achieve += stat[i];
-		}
-		if (achieve == goal)
-			return 1;
-		else
-			return achieve / goal;
-	}
 	function autoSets(data, statRequire, statWeight, twoHandWeapon, randomCount, equipQuantity) {
+		function achieveCheck(stat, statMin) {
+			let achieve = 0;
+			let i = stat.length;
+			while (i--) {
+				if (statMin[i] == 0)
+					continue;
+				achieve += Math.min(stat[i], statMin[i]);
+			}
+			if (achieve == goal)
+				return 1;
+			else
+				return achieve / goal;
+		}
 		let equip = [[], [], [], [], [], [], [], [], [], [], [], []];
 		let statMin = [];
 		let statName = ['ap', 'mp', 'wp', 'range', 'cri', 'block'];
@@ -282,10 +277,10 @@ $(document).ready(function() {
 			equip[data[i].type].push([
 				Number(data[i].id),
 				Number(data[i].rarity),
-				Number(data[i].ap),
-				Number(data[i].mp),
-				Number(data[i].wp),
-				Number(data[i].range),
+				Number(data[i].ap * statModifier[0]),
+				Number(data[i].mp * statModifier[1]),
+				Number(data[i].wp * statModifier[2]),
+				Number(data[i].range * statModifier[3]),
 				Number(data[i].cri),
 				Number(data[i].block),
 				Number(score.toFixed(1)),
@@ -324,19 +319,23 @@ $(document).ready(function() {
 					for (let k = 0; k < j; k++) {
 						if (type[i][k][1] < 2)
 							continue;
-						if (
-							(
-								i != 9
-								&& (type[i][k][2] - type[i][j][2]) * statMin[0] >= 0
-								&& (type[i][k][3] - type[i][j][3]) * statMin[1] >= 0
-								&& (type[i][k][4] - type[i][j][4]) * statMin[2] >= 0
-								&& (type[i][k][5] - type[i][j][5]) * statMin[3] >= 0
-								&& (type[i][k][6] - type[i][j][6]) * statMin[4] >= 0
-								&& (type[i][k][7] - type[i][j][7]) * statMin[5] >= 0
-							) || (
-								i == 9 && type[i][k][9] == type[i][j][9]
-							)
-						) {
+						if (i != 9) {
+							let enlistCount = 0;
+							for (let n = statMin.length - 1; n >= 0; n--) {
+								if (statMin[n] == 0) {
+									enlistCount++;
+									continue;
+								}
+								let m = n + 2;
+								if (type[i][k][m] >= type[i][j][m])
+									enlistCount++;
+							}
+							if (enlistCount == statMin.length) {
+								enlist = false;
+								break;
+							}
+						}
+						else if (type[i][k][9] == type[i][j][9]) {
 							enlist = false;
 							break;
 						}
@@ -346,7 +345,7 @@ $(document).ready(function() {
 					typeWeightZero[i].push(j);
 					if (noCount == false)	
 						count++;
-					if (count >= equipQuantity)
+					if ((i != 9 && count >= equipQuantity) || (i == 9 && count >= equipQuantity * 2))
 						break;
 				}
 			}
@@ -365,7 +364,8 @@ $(document).ready(function() {
 		let typeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 		if (twoHandWeapon == false)
 			typeOrder.push(11);
-		for (let i = randomCount; i >= 0; i--) {
+		let failCount = 0;
+		sampling: for (; randomCount >= 0; randomCount--) {
 			let relic = 0;
 			let epic = 0;
 			let currentStat = [0, 0, 0, 0, 0, 0];
@@ -403,14 +403,14 @@ $(document).ready(function() {
 				if (type[i][j][1] == 1 || (currentID[i] > 26493 && currentID[i] < 26498))
 					epic++;
 				if (relic > 1 || epic > 1)
-					break;
+					continue sampling;
 				currentScore += type[i][j][8];
 				for (let m = statMin.length - 1; m >= 0; m--) {
 					let n = m + 2;
-					currentStat[m] += type[i][j][n] * statModifier[m];
+					currentStat[m] += type[i][j][n];
 				}
 			}
-			let achieveRate = achieveCheck(relic, epic, currentStat, statMin, goal);
+			let achieveRate = achieveCheck(currentStat, statMin);
 			if (achieveRate == 1) {
 				for (let i = 0; i < type.length; i++) {
 					if (type[i][currentIndex[i]][1] < 2)
@@ -427,14 +427,12 @@ $(document).ready(function() {
 						let tempStat = [0, 0, 0, 0, 0, 0];
 						for (let m = 0; m < statMin.length; m++) {
 							let n = m + 2;
-							let typeDiff = type[i][j][n] - type[i][currentIndex[i]][n];
-							tempStat[m] = currentStat[m] + typeDiff * statModifier[m];
+							tempStat[m] = currentStat[m] + type[i][j][n] - type[i][currentIndex[i]][n];
 						}
-						let tempAchieveRate = achieveCheck(relic, epic, tempStat, statMin, goal);
-						if (tempAchieveRate == 1) {
+						if (achieveCheck(tempStat, statMin) == 1) {
 							currentID[i] = type[i][j][0];
-							currentScore = currentScore + type[i][j][8] - type[i][currentIndex[i]][8];
-							currentStat = JSON.parse(JSON.stringify(tempStat));
+							currentScore += type[i][j][8] - type[i][currentIndex[i]][8];
+							currentStat = tempStat.concat();
 							currentIndex[i] = j;
 							break;
 						}
@@ -445,34 +443,38 @@ $(document).ready(function() {
 					currentID[9] = currentID[10] + 81;
 				}
 				typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
-				let setSuccessLength = setSuccess.length;
-				if (setSuccessLength > 30) {
+				if (setSuccess.length > 0) {
 					for (let i = typeWeight.length - 1; i >= 0; i--) {
-						for (let j = 5; j >= 0; j--) {
-							let k = Math.floor(Math.random() * setSuccessLength);
+						for (let j = Math.ceil(setSuccess.length / 10); j >= 0; j--) {
+							let k = Math.floor(Math.random() * setSuccess.length);
 							typeWeight[i].push(setSuccess[k].index[i]);
 						}
 					}
 				}
 				if (
-					(setSuccessLength > 49 && currentScore < setSuccess[49].score)
-					|| currentID[7] == currentID[9]
+					currentID[7] == currentID[9]
 					|| setSuccess.some(x => currentID.every(y => x.id.some(z => y == z))) == true
 				)
 						continue;
-				else
-					setSuccess.push({id:currentID, score:currentScore.toFixed(1), index:currentIndex});
-				if (setSuccess.length > 99 || setSuccess.length == 50)
+				setSuccess.push({id:currentID, score:currentScore.toFixed(1), index:currentIndex});
+				if (setSuccess.length > 99)
 					setSuccess.sort((a, b) => b.score - a.score).splice(50);
 			}
 			else if (achieveRate > 0.8) {
-				for (let i = type.length - 1; i >= 0; i--) {
-					typeWeight[i].push(currentIndex[i]);
+				failCount++;
+				if (failCount > 99) {
+					typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
+					failCount = 0;
+				}
+				else {
+					for (let i = type.length - 1; i >= 0; i--) {
+						typeWeight[i].push(currentIndex[i]);
+					}
 				}
 			}
 		}
 		if (setSuccess.length > 0) {
-			setSuccess.sort((a, b) => b.score - a.score).splice(30);
+			setSuccess.sort((a, b) => b.score - a.score).splice(10);
 			return setSuccess;
 		}
 		else
@@ -693,7 +695,7 @@ $(document).ready(function() {
 						text += '<td align="center">' + d[i].mastery + '</td>'
 							+ '<td align="center">' + d[i].score + '</td>'
 							+ '<td align="center">' + d[i].total + '</td>';
-						for (let j = 17; j < 34; j++) {
+						for (let j = 17; j < 32; j++) {
 							text += '<td align="center">' + d[i][j] + '</td>';
 						}
 						text += '</tr>';
