@@ -24,6 +24,6 @@
 "setRange":"計算更多裝備",
 "setFailed":"無符合結果，注意裝備是否有缺，或修改設定和條件",
 "setSelectNone":"取消裝備選取",
-"copyTable":"複製篩選表格到剪貼簿",
+"copyTable":"複製篩選表格到 Excel",
 "selectAllSearch":"當前全選"
 }
