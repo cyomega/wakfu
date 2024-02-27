@@ -238,13 +238,13 @@ $(document).ready(function() {
 				}
 			}
 			table.buttons(['5', '6', '7', '8']).enable();
+			setResultAlter = 0;
 			table.button(8).text(setResultAlter + 1);
 			table.button(5).trigger();
 		}
 		else {
 			table.buttons(['5', '6', '7', '8']).disable();
 			table.button(4).text(uits.setFailed);
-			table.button(8).text();
 			table.search('').draw();
 		}
 	}
@@ -291,6 +291,7 @@ $(document).ready(function() {
 			]);
 		}
 		for (let i in equip) {
+			equip[i].sort((a, b) => a[1] - b[1]);
 			equip[i].sort((a, b) => b[8] - a[8]);
 		}
 		let type = [];
