@@ -24,6 +24,6 @@
 "setRange":"More Gears into Calculation",
 "setFailed":"No result. Check if there are gears missing, or modify settings or filter.",
 "setSelectNone":"Unselect All Gears",
-"copyTable":"Copy Filtered Table to Clipboard",
+"copyTable":"Copy Filtered Table to Excel",
 "selectAllSearch":"Choose All"
 }
