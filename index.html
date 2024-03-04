@@ -345,10 +345,10 @@ $(document).ready(function() {
 		if (typeWeightZero[9].length < 2)
 			return false;
 		if (twoHandWeapon == false)
-			type[10].some((stat, index) => {
+			type[10].every((stat, index) => {
 				if (stat[0] == 26593 && typeWeightZero[10].some(e => e == index) == false) {
 					typeWeightZero[10].push(index);
-					return true;
+					return;
 				}
 			});
 		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
@@ -445,7 +445,7 @@ $(document).ready(function() {
 				}
 				if (currentID[7] == currentID[9] || setSuccess.some(x => currentID.every(y => x.id.some(z => y == z))))
 					continue;
-				setSuccess.push({id:currentID, score:currentScore.toFixed(1), index:currentIndex, stat:currentStat});
+				setSuccess.push({id:currentID, score:currentScore.toFixed(1), index:currentIndex});
 				if (setSuccess.length > 99)
 					setSuccess.sort((a, b) => b.score - a.score).splice(50);
 			}
@@ -470,38 +470,41 @@ $(document).ready(function() {
 					continue;
 				setAlter.push([setSuccess[n]]);
 				for (let m = 0; m < 10; m++) {
-					let i = -1;
-					for (let j of setSuccess[n].index) {
-						i++;
+					let q = setAlter.length - 1;
+					setSuccess[n].index.every((j, i) => {
 						if (type[i][j][1] < 2)
-							continue;
+							return true;
 						for (let p = j + 1; p < type[i].length; p++) {
 							if (type[i][p][1] < 2)
 								continue;
-							let tempStat = setAlter[n][m].stat.concat();
-							for (let k = statMin.length + 1; k > 1; k--) {
-								tempStat[k - 2] += type[i][p][k] - type[i][j][k];
+							let tempStat = [0, 0, 0, 0, 0, 0];
+							let tempIndex = setAlter[q][m].index.concat();
+							tempIndex[i] = p;
+							for (let a = typeWeight.length - 1; a >= 0; a--) {
+								for (let b = statMin.length - 1; b >= 0; b--) {
+									tempStat[b] += type[a][tempIndex[a]][b + 2];
+								}
 							}
 							if (achieveCheck(tempStat, statMin) != 1)
 								continue;
-							let setTemp = JSON.parse(JSON.stringify(setAlter[n][m]));
+							let setTemp = JSON.parse(JSON.stringify(setAlter[q][m]));
 							setTemp.index[i] = p;
 							if ((i == 7 || i == 9) && type[7][setTemp.index[7]][9] == type[9][setTemp.index[9]][9])
 								continue;
 							setTemp.id[i] = type[i][p][0];
-							if (setAlter[n].some(x => setTemp.id.every(y => x.id.some(z => y == z))))
+							if (setAlter[q].some(x => setTemp.id.every(y => x.id.some(z => y == z))))
 								continue;
-							setTemp.stat = tempStat.concat();
 							setTemp.score = 0;
 							for (let x = 0; x < typeWeight.length; x++) {
 								setTemp.score += type[x][setTemp.index[x]][8];
 							}
 							setTemp.score = setTemp.score.toFixed(1);
-							setAlter[n].push(setTemp);
+							setAlter[q].push(setTemp);
 							break;
 						}
-					}
-					setAlter[n].sort((a, b) => b.score - a.score).splice(10);
+						return true;
+					});
+					setAlter[q].sort((a, b) => b.score - a.score).splice(10);
 				}
 			}
 			return setAlter;
