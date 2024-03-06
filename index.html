@@ -262,6 +262,13 @@ $(document).ready(function() {
 			else
 				return achieve / goal;
 		}
+		function cloneArr(arr) {
+			let clone = [];
+			for (let i = arr.length - 1; i >= 0; i--) {
+				clone[i] = arr[i].concat();
+			}
+			return clone;
+		}
 		let equip = [[], [], [], [], [], [], [], [], [], [], [], []];
 		let statMin = [];
 		let statName = ['ap', 'mp', 'wp', 'range', 'cri', 'block'];
@@ -364,7 +371,7 @@ $(document).ready(function() {
 			let currentIndex = [];
 			let currentID = [];
 			let currentScore = 0;
-			for (let i = typeOrder.length - 1; i > 0; i--) {
+			for (let i = type.length - 1; i >= 0; i--) {
 				let j = Math.floor(Math.random() * (i + 1));
 				[typeOrder[i], typeOrder[j]] = [typeOrder[j], typeOrder[i]];
 			}
@@ -416,10 +423,10 @@ $(document).ready(function() {
 							|| (i == 9 && j == currentIndex[7])
 						)
 							continue;
-						let tempStat = [0, 0, 0, 0, 0, 0];
+						let tempStat = currentStat.concat();
 						for (let m = 0; m < statMin.length; m++) {
 							let n = m + 2;
-							tempStat[m] = currentStat[m] + type[i][j][n] - type[i][currentIndex[i]][n];
+							tempStat[m] += type[i][j][n] - type[i][currentIndex[i]][n];
 						}
 						if (achieveCheck(tempStat, statMin) == 1) {
 							currentID[i] = type[i][j][0];
@@ -434,9 +441,9 @@ $(document).ready(function() {
 					currentScore -= type[9][currentIndex[9]][8];
 					currentID[9] = currentID[10] + 81;
 				}
-				typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
+				typeWeight = cloneArr(typeWeightZero);
 				if (setSuccess.length > 0) {
-					for (let i = typeWeight.length - 1; i >= 0; i--) {
+					for (let i = type.length - 1; i >= 0; i--) {
 						for (let j = Math.ceil(setSuccess.length / 10); j >= 0; j--) {
 							let k = Math.floor(Math.random() * setSuccess.length);
 							typeWeight[i].push(setSuccess[k].index[i]);
@@ -445,14 +452,14 @@ $(document).ready(function() {
 				}
 				if (currentID[7] == currentID[9] || setSuccess.some(x => currentID.every(y => x.id.some(z => y == z))))
 					continue;
-				setSuccess.push({id:currentID, score:currentScore.toFixed(1), index:currentIndex});
+				setSuccess.push({id:currentID, score:currentScore.toFixed(1), index:currentIndex, stat:currentStat});
 				if (setSuccess.length > 99)
 					setSuccess.sort((a, b) => b.score - a.score).splice(50);
 			}
 			else if (achieveRate > 0.8) {
 				failCount++;
 				if (failCount > 99) {
-					typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
+				typeWeight = cloneArr(typeWeightZero);
 					failCount = 0;
 				}
 				else {
@@ -463,48 +470,54 @@ $(document).ready(function() {
 			}
 		}
 		if (setSuccess.length > 0) {
-			setSuccess.sort((a, b) => b.score - a.score).splice(5);
-			let setAlter = [];
-			for (let n = 0; n < setSuccess.length; n++) {
-				if (n > 0 && setAlter.some(w => w.some(x => setSuccess[n].id.every(y => x.id.some(z => y == z)))))
-					continue;
-				setAlter.push([setSuccess[n]]);
+			setSuccess.sort((a, b) => b.score - a.score).splice(50);
+			let setAlter = [[setSuccess[0]]];
+			for (let n = 1; n < setSuccess.length; n++) {
+				let unique = [];
+				for (let i = type.length - 1; i >= 0; i--) {
+					let j = setSuccess[n].index[i];
+					if (type[i][j][1] < 2)
+						unique.push(type[i][j][0]);
+				}
+				if (!setAlter.some((s, i) => {
+					if (unique.every(u => s[0].id.some(id => u == id))) {
+						setAlter[i].push(setSuccess[n]);
+						return true;
+					}
+				}))
+					setAlter.push([setSuccess[n]]);
+			}
+			setAlter.splice(5);
+			for (let n = 0; n < setAlter.length; n++) {
 				for (let m = 0; m < 10; m++) {
-					let q = setAlter.length - 1;
-					setSuccess[n].index.every((j, i) => {
+					let sAnm = setAlter[n][m];
+					sAnm.index.every((j, i) => {
 						if (type[i][j][1] < 2)
 							return true;
 						for (let p = j + 1; p < type[i].length; p++) {
 							if (type[i][p][1] < 2)
 								continue;
-							let tempStat = [0, 0, 0, 0, 0, 0];
-							let tempIndex = setAlter[q][m].index.concat();
-							tempIndex[i] = p;
-							for (let a = typeWeight.length - 1; a >= 0; a--) {
-								for (let b = statMin.length - 1; b >= 0; b--) {
-									tempStat[b] += type[a][tempIndex[a]][b + 2];
-								}
+							let tempStat = sAnm.stat.concat();
+							for (let a = statMin.length - 1; a >= 0; a--) {
+								let b = a + 2;
+								tempStat[a] += type[i][p][b] - type[i][j][b];
 							}
 							if (achieveCheck(tempStat, statMin) != 1)
 								continue;
-							let setTemp = JSON.parse(JSON.stringify(setAlter[q][m]));
+							let setTemp = {id:sAnm.id.concat(), score:sAnm.score, index:sAnm.index.concat(), stat:tempStat.concat()};
 							setTemp.index[i] = p;
 							if ((i == 7 || i == 9) && type[7][setTemp.index[7]][9] == type[9][setTemp.index[9]][9])
 								continue;
 							setTemp.id[i] = type[i][p][0];
-							if (setAlter[q].some(x => setTemp.id.every(y => x.id.some(z => y == z))))
+							if (setAlter[n].some(x => setTemp.id.every(y => x.id.some(z => y == z))))
 								continue;
-							setTemp.score = 0;
-							for (let x = 0; x < typeWeight.length; x++) {
-								setTemp.score += type[x][setTemp.index[x]][8];
-							}
-							setTemp.score = setTemp.score.toFixed(1);
-							setAlter[q].push(setTemp);
+							setTemp.score = (Number(sAnm.score) + type[i][p][8] - type[i][j][8]).toFixed(1);
+							setAlter[n].push(setTemp);
 							break;
 						}
 						return true;
 					});
-					setAlter[q].sort((a, b) => b.score - a.score).splice(10);
+					setAlter[n].sort((a, b) => b.score - a.score).splice(10);
 				}
 			}
 			return setAlter;
