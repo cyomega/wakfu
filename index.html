@@ -351,18 +351,18 @@ $(document).ready(function() {
 		}
 		if (typeWeightZero[9].length < 2)
 			return false;
-		if (twoHandWeapon == false)
-			type[10].every((stat, index) => {
-				if (stat[0] == 26593 && typeWeightZero[10].some(e => e == index) == false) {
-					typeWeightZero[10].push(index);
-					return;
-				}
-			});
 		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
 		let setSuccess = [];
 		let typeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-		if (twoHandWeapon == false)
+		if (twoHandWeapon == false) {
 			typeOrder.push(11);
+			type[10].some((stat, index) => {
+				if (stat[0] == 26593 && typeWeightZero[10].some(e => e == index) == false) {
+					typeWeightZero[10].push(index);
+					return true;
+				}
+			});
+		}
 		let failCount = 0;
 		sampling: for (; randomCount >= 0; randomCount--) {
 			let relic = 0;
@@ -438,6 +438,9 @@ $(document).ready(function() {
 					}
 				}
 				if (currentID[10] > 26493 && currentID[10] < 26498) {
+					currentStat.every((e, i) => currentStat[i] -= type[9][currentIndex[9]][i + 2]);
+					if (achieveCheck(currentStat, statMin) < 1)
+						continue sampling;
 					currentScore -= type[9][currentIndex[9]][8];
 					currentID[9] = currentID[10] + 81;
 				}
@@ -473,6 +476,13 @@ $(document).ready(function() {
 			setSuccess.sort((a, b) => b.score - a.score).splice(50);
 			let setAlter = [[setSuccess[0]]];
 			for (let n = 1; n < setSuccess.length; n++) {
+				if(setSuccess[n].id[10] > 26493 && setSuccess[n].id[10] < 26498)
+					type[9].some((s, i) => {
+						if (s[0] == setSuccess[n].id[9]) {
+							setSuccess[n].index[9] = i;
+							return true;
+						}
+					});
 				let unique = [];
 				for (let i = type.length - 1; i >= 0; i--) {
 					let j = setSuccess[n].index[i];
