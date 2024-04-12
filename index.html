@@ -1,4 +1,4 @@
-<html>
+﻿<html>
 <head>
 <title>Wakfu 1.83</title>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
@@ -217,36 +217,13 @@ $(document).ready(function() {
 			let j = statName[i];
 			statWeight[j] = Number(statWeight[j]) * Number(statImportant[i]);
 		}
-		let randomCount = 500000;
+		let randomCount = 100000;
 		if (setOption[1] == true)
-			randomCount += 500000;
+			randomCount += 100000;
 		let equipQuantity = 10;
 		if (setOption[2] == true)
 			equipQuantity += 10;
-		let setSuccess = autoSets(data, statRequireObj, statWeight, setOption[0], randomCount, equipQuantity);
-		if (setSuccess.length > 0) {
-			setResult = [];
-			for (i = 0; i < setSuccess.length; i++) {
-				setResult.push([]);
-				for (j = 0; j < setSuccess[i].length; j++) {
-					let set = '';
-					for (x of setSuccess[i][j].id) {
-						set += x + '|';
-					}
-					set = set.replace(/.$/, '');
-					setResult[i].push({"id":set, "score":setSuccess[i][j].score});
-				}
-			}
-			table.buttons(['5', '6', '7', '8']).enable();
-			setResultAlter = 0;
-			table.button(8).text(setResultAlter + 1);
-			table.button(5).trigger();
-		}
-		else {
-			table.buttons(['5', '6', '7', '8']).disable();
-			table.button(4).text(uits.setFailed);
-			table.search('').draw();
-		}
+		autoSets(data, statRequireObj, statWeight, setOption[0], randomCount, equipQuantity);
 	}
 	function autoSets(data, statRequire, statWeight, twoHandWeapon, randomCount, equipQuantity) {
 		function achieveCheck(stat, statMin) {
@@ -262,13 +239,6 @@ $(document).ready(function() {
 			else
 				return achieve / goal;
 		}
-		function cloneArr(arr) {
-			let clone = [];
-			for (let i = arr.length - 1; i >= 0; i--) {
-				clone[i] = arr[i].concat();
-			}
-			return clone;
-		}
 		let equip = [[], [], [], [], [], [], [], [], [], [], [], []];
 		let statMin = [];
 		let statName = ['ap', 'mp', 'wp', 'range', 'cri', 'block'];
@@ -281,9 +251,8 @@ $(document).ready(function() {
 		statName = ['hp', 'lock', 'dodge', 'ini', 'dmg', 'res'];
 		for (let i = data.length - 1; i >= 0; i--) {
 			let score = 0;
-			for (let j of statName) {
+			for (let j of statName)
 				score += Number(data[i][j] * statWeight[j]);
-			}
 			equip[data[i].type].push([
 				Number(data[i].id),
 				Number(data[i].rarity),
@@ -302,9 +271,8 @@ $(document).ready(function() {
 			equip[i].sort((a, b) => b[8] - a[8]);
 		}
 		let type = [];
-		for (let i = 0; i < 9; i++) {
+		for (let i = 0; i < 9; i++)
 			type[i] = equip[i];
-		}
 		type[9] = equip[7];
 		if (twoHandWeapon == false) {
 			type[10] = equip[9];
@@ -317,7 +285,7 @@ $(document).ready(function() {
 			typeWeightZero.push([]);
 		for (let i = type.length - 1; i >= 0; i--) {
 			if (type[i].length == 0)
-				return false;
+				return builderEnd(false);
 			let weight = Math.min(type[i].length, 573);
 			let count = 0;
 			for (let j = 0; j < weight; j++) {
@@ -350,7 +318,7 @@ $(document).ready(function() {
 			}
 		}
 		if (typeWeightZero[9].length < 2)
-			return false;
+			return builderEnd(false);
 		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
 		let setSuccess = [];
 		let typeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -363,116 +331,46 @@ $(document).ready(function() {
 				}
 			});
 		}
-		let failCount = 0;
-		sampling: for (; randomCount >= 0; randomCount--) {
-			let relic = 0;
-			let epic = 0;
-			let currentStat = [0, 0, 0, 0, 0, 0];
-			let currentIndex = [];
-			let currentID = [];
-			let currentScore = 0;
-			for (let i = type.length - 1; i >= 0; i--) {
-				let j = Math.floor(Math.random() * (i + 1));
-				[typeOrder[i], typeOrder[j]] = [typeOrder[j], typeOrder[i]];
-			}
-			for (let m = type.length - 1; m >= 0; m--) {
-				let i = typeOrder[m];
-				let j;
-				let typeWeightTemp = [];
-				for (let n = 999; n >= 0; n--) {
-					let k = Math.floor(Math.random() * typeWeight[i].length);
-					j = typeWeight[i][k];
-					if (typeWeightTemp.includes(j) == false)
-						typeWeightTemp.push(j);
-					else if (typeWeightTemp.length == typeWeightZero[i].length)
-						break;
-					if (
-						(type[i][j][1] == 0 && relic > 0)
-						|| (type[i][j][1] == 1 && epic > 0)
-						|| (i == 7 && j == currentIndex[9])
-						|| (i == 9 && j == currentIndex[7])
-					)
-						continue;
-					break;
+		let worker = [];
+		let workerCount = 4;
+		for (let i = workerCount - 1; i >= 0; i--) {
+			worker[i] = new Worker('solver.js');
+			worker[i].postMessage([type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, statMin, randomCount]);
+			worker[i].onmessage = e => {
+				let d = e.data;
+				for (let i = d.length - 1; i >= 0; i--) {
+					if (!setSuccess.some(x => d[i].id.every(y => x.id.some(z => y == z))))
+						setSuccess.push(d[i]);
 				}
-				currentIndex[i] = j;
-				currentID[i] = type[i][j][0];
-				if (type[i][j][1] == 0)
-					relic++;
-				if (type[i][j][1] == 1 || (currentID[i] > 26493 && currentID[i] < 26498))
-					epic++;
-				if (relic > 1 || epic > 1)
-					continue sampling;
-				currentScore += type[i][j][8];
-				for (let m = statMin.length - 1; m >= 0; m--) {
-					let n = m + 2;
-					currentStat[m] += type[i][j][n];
-				}
-			}
-			let achieveRate = achieveCheck(currentStat, statMin);
-			if (achieveRate == 1) {
-				for (let i = 0; i < type.length; i++) {
-					if (type[i][currentIndex[i]][1] < 2)
-						continue;
-					for (let j of typeWeightZero[i]) {
-						if (j == currentIndex[i])
-							break;
-						if (
-							type[i][j][1] < 2
-							|| (i == 7 && j == currentIndex[9])
-							|| (i == 9 && j == currentIndex[7])
-						)
-							continue;
-						let tempStat = currentStat.concat();
-						for (let m = 0; m < statMin.length; m++) {
-							let n = m + 2;
-							tempStat[m] += type[i][j][n] - type[i][currentIndex[i]][n];
-						}
-						if (achieveCheck(tempStat, statMin) == 1) {
-							currentID[i] = type[i][j][0];
-							currentScore += type[i][j][8] - type[i][currentIndex[i]][8];
-							currentStat = tempStat.concat();
-							currentIndex[i] = j;
-							break;
-						}
-					}
-				}
-				if (currentID[10] > 26493 && currentID[10] < 26498) {
-					currentStat.every((e, i) => currentStat[i] -= type[9][currentIndex[9]][i + 2]);
-					if (achieveCheck(currentStat, statMin) < 1)
-						continue sampling;
-					currentScore -= type[9][currentIndex[9]][8];
-					currentID[9] = currentID[10] + 81;
-				}
-				typeWeight = cloneArr(typeWeightZero);
-				if (setSuccess.length > 0) {
-					for (let i = type.length - 1; i >= 0; i--) {
-						for (let j = Math.ceil(setSuccess.length / 10); j >= 0; j--) {
-							let k = Math.floor(Math.random() * setSuccess.length);
-							typeWeight[i].push(setSuccess[k].index[i]);
-						}
-					}
-				}
-				if (currentID[7] == currentID[9] || setSuccess.some(x => currentID.every(y => x.id.some(z => y == z))))
-					continue;
-				setSuccess.push({id:currentID, score:currentScore.toFixed(1), index:currentIndex, stat:currentStat});
-				if (setSuccess.length > 99)
+				workerCount--;
+				if (workerCount == 0) {
 					setSuccess.sort((a, b) => b.score - a.score).splice(50);
+					alterSets();
+				}
+				worker[i].terminate();
+			};
+		}
+		function builderEnd(result) {
+			table.button(4).processing(false);
+			if (setRandomClick == 0) {
+				table.button(4).trigger();
+				setRandomClick = 1;
 			}
-			else if (achieveRate > 0.8) {
-				failCount++;
-				if (failCount > 99) {
-					typeWeight = cloneArr(typeWeightZero);
-					failCount = 0;
-				}
-				else {
-					for (let i = type.length - 1; i >= 0; i--) {
-						typeWeight[i].push(currentIndex[i]);
-					}
-				}
+			if (result) {
+				table.buttons(['5', '6', '7', '8']).enable();
+				setResultAlter = 0;
+				table.button(8).text(setResultAlter + 1);
+				table.button(5).trigger();
+			}
+			else {
+				table.buttons(['5', '6', '7', '8']).disable();
+				table.button(4).text(uits.setFailed);
+				table.search('').draw();
 			}
 		}
-		if (setSuccess.length > 0) {
+		function alterSets() {
+			if (setSuccess.length == 0)
+				return builderEnd(false);
 			setSuccess.sort((a, b) => b.score - a.score).splice(50);
 			let setAlter = [[setSuccess[0]]];
 			for (let n = 1; n < setSuccess.length; n++) {
@@ -530,10 +428,19 @@ $(document).ready(function() {
 					setAlter[n].sort((a, b) => b.score - a.score).splice(10);
 				}
 			}
-			return setAlter;
+			setResult = [];
+			for (i = 0; i < setAlter.length; i++) {
+				setResult.push([]);
+				for (j = 0; j < setAlter[i].length; j++) {
+					let set = '';
+					for (x of setAlter[i][j].id)
+						set += x + '|';
+					set = set.replace(/.$/, '');
+					setResult[i].push({"id":set, "score":setAlter[i][j].score});
+				}
+			}
+			builderEnd(true);
 		}
-		else
-			return false;
 	}
 	function setResultShow(i, j) {
 		table.search('(' + setResult[i][j].id + ')').draw();
@@ -662,13 +569,7 @@ $(document).ready(function() {
 				collectionLayout: 'fixed columns',
 				action: function() {
 					table.button(4).processing(true);
-					setTimeout(function() {
-						equipReference();
-						table.button(4).processing(false);
-						if (setRandomClick == 0)
-							table.button(4).trigger();
-						setRandomClick = 1;
-					}, 50);
+					setTimeout(equipReference(), 50);
 				},
 				split: setRandomButton()
 			},
