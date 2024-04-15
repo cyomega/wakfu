@@ -170,10 +170,12 @@ $(document).ready(function() {
 		data.rarity = uits.rarity[data[5]];
 	}
 	function equipReference() {
-//		$('.dtsp-searchPane:eq(0) .clearButton').click();
+		$('.dtsp-searchPane:eq(0) .clearButton').click();
 		let set = '';
 		let equipExclude = table.rows({selected: true}).data();
-		if (equipExclude.length > 0) {
+		if (equipExclude.length == 0)
+			table.search('');
+		else {
 			let i = equipExclude.length;
 			while (i--) {
 				set += equipExclude[i][2] + '|';
@@ -183,8 +185,6 @@ $(document).ready(function() {
 			set = set.replace(/.$/, '');
 			table.search('^((?!' + set + ').)*$');
 		}
-		else
-			table.search('');
 		const d = table.rows({search: 'applied'}).data();
 		let data = [];
 		for (let i = d.length - 1; i >= 0; i--) {
@@ -340,10 +340,9 @@ $(document).ready(function() {
 			worker[i].postMessage([type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, statMin, randomCount]);
 			worker[i].onmessage = e => {
 				let d = e.data;
-				for (let i = d.length - 1; i >= 0; i--) {
+				for (let i = d.length - 1; i >= 0; i--)
 					if (!setSuccess.some(x => d[i].id.every(y => x.id.some(z => y == z))))
 						setSuccess.push(d[i]);
-				}
 				workerCount--;
 				if (workerCount == 0) {
 					setSuccess.sort((a, b) => b.score - a.score).splice(50);
