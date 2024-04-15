@@ -1,4 +1,4 @@
-﻿<html>
+<html>
 <head>
 <title>Wakfu 1.83</title>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
@@ -49,7 +49,7 @@ $(document).ready(function() {
 	function levelPane() {
 		let options = [];
 		level.forEach(function (max) {
-			var min = (max != 20) ? (max - 15) : 0;
+			let min = (max != 20) ? (max - 15) : 0;
 			options.push({
 				label: max,
 				value: function (rowData) {
@@ -90,10 +90,11 @@ $(document).ready(function() {
 		];
 		let buttonText = [uits.title[4], uits.title[5], uits.title[6], uits.title[7], uits.masteryLong[2], uits.title[13]];
 		buttonText.forEach(function (title, i) {
+			let j;
 			if (i < 4)
-				var j = 1;
+				j = 1;
 			else
-				var j = 10;
+				j = 10;
 			options.push({
 				text: title + ': ' + statRequire[i],
 				action: function () {
@@ -169,8 +170,7 @@ $(document).ready(function() {
 		data.rarity = uits.rarity[data[5]];
 	}
 	function equipReference() {
-		$('.dtsp-searchPane:eq(0) .clearButton').click();
-		table.search('');
+//		$('.dtsp-searchPane:eq(0) .clearButton').click();
 		let set = '';
 		let equipExclude = table.rows({selected: true}).data();
 		if (equipExclude.length > 0) {
@@ -183,6 +183,8 @@ $(document).ready(function() {
 			set = set.replace(/.$/, '');
 			table.search('^((?!' + set + ').)*$');
 		}
+		else
+			table.search('');
 		const d = table.rows({search: 'applied'}).data();
 		let data = [];
 		for (let i = d.length - 1; i >= 0; i--) {
@@ -285,7 +287,7 @@ $(document).ready(function() {
 			typeWeightZero.push([]);
 		for (let i = type.length - 1; i >= 0; i--) {
 			if (type[i].length == 0)
-				return builderEnd(false);
+				type[i].push([99999, 7, 0, 0, 0, 0, 0, 0, 0, 'cyz']);
 			let weight = Math.min(type[i].length, 573);
 			let count = 0;
 			for (let j = 0; j < weight; j++) {
@@ -569,7 +571,7 @@ $(document).ready(function() {
 				collectionLayout: 'fixed columns',
 				action: function() {
 					table.button(4).processing(true);
-					setTimeout(equipReference(), 50);
+					setTimeout(() => equipReference(), 0);
 				},
 				split: setRandomButton()
 			},
