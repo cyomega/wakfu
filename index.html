@@ -590,7 +590,7 @@ $(document).ready(function() {
 				}
 			},
 			{
-				text: '◼️',
+				text: '|◀',
 				action: function () {
 					setResultIndex = 0;
 					setResultShow(setResultAlter, setResultIndex);
@@ -800,14 +800,18 @@ $(document).ready(function() {
 					}
 				});
 			}
-			$('.dt-button-background').trigger('click');
 			table.button(0).disable();
 			for (let i = 0; i < 16; i++)
 				table.button('0-' + i).disable();
-			table.rows.add(result).every(function() {
-				newData(this.data());
-			})
-			.searchPanes.rebuildPane().draw();
+			table.button('0-15').processing(true);
+			setTimeout(() => {
+				table.rows.add(result).every(function() {
+					newData(this.data());
+				})
+				.searchPanes.rebuildPane().draw();
+				table.button('0-15').processing(false);
+				$('.dt-button-background').trigger('click');
+			}, 0);
 		}
 	});
 	table.buttons(['3-3', '3-4', '3-5', '3-6', '3-13', '3-14']).trigger();
