@@ -543,6 +543,7 @@ $(document).ready(function() {
 			},
 			{
 				text: '|◀',
+				className: 'result-alter',
 				action: function () {
 					setResultIndex = 0;
 					setResultShow(setResultAlter, setResultIndex);
@@ -550,6 +551,7 @@ $(document).ready(function() {
 			},
 			{
 				text: '◀',
+				className: 'result-alter',
 				action: function () {
 					setResultIndex--;
 					if (setResultIndex < 0)
@@ -559,6 +561,7 @@ $(document).ready(function() {
 			},
 			{
 				text: '▶',
+				className: 'result-alter',
 				action: function () {
 					setResultIndex++;
 					if (setResultIndex >= setResult[setResultAlter].length)
@@ -567,6 +570,7 @@ $(document).ready(function() {
 				}
 			},
 			{
+				className: 'result-alter',
 				action: function () {
 					setResultAlter++;
 					setResultIndex = 0;
