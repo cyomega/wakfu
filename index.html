@@ -20,12 +20,29 @@
 </head>
 <body>
 🌐
-<select id="langSelect" onchange="langChange()">
+<select id="langSelect" onchange="langChange()" style ="border-radius: 8px">
 	<option value="tw">繁體中文</option>
 	<option value="cn">简体中文</option>
 	<option value="en">English</option>
 </select>
 <table id="tableArray" class="display" width="100%" style="white-space: nowrap; font-size: 14px"></table>
+<style>
+button.dt-button,
+div.dt-button-collection,
+div.dt-button-collection.fixed.columns {
+	border-radius: 12px;
+}
+div.dt-button-collection button.dt-button,
+div.dt-button-collection button.dt-button:first-child,
+div.dt-button-collection button.dt-button:last-child,
+div.dt-button-collection.fixed button.dt-button:first-child,
+div.dt-button-collection.fixed button.dt-button:last-child {
+	border-radius: 16px;
+}
+button.result-alter {
+	margin: -1px;
+}
+</style>
 <script>
 function langChange() {
 	localStorage.setItem('lang', document.getElementById('langSelect').value);
