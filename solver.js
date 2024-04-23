@@ -3,7 +3,7 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 		let achieve = 0;
 		let i = stat.length;
 		while (i--) {
-			if (statMin[i] == 0)
+			if (statMin[i] == -1)
 				continue;
 			achieve += Math.min(stat[i], statMin[i]);
 		}
