@@ -51,13 +51,18 @@ $(document).ready(function() {
 			options.push({
 				text: title + ': ' + statRequire[i],
 				action: function () {
-					if (j == 10 && setOption[3] == true)
-						statRequire[i]++;
+					let k = 1;
+					if (setOption[4])
+						k = -1;
+					if (setOption[3] || statRequire[i] == -1 || (k == -1 && statRequire[i] == 0))
+						statRequire[i] += k;
 					else
-						statRequire[i] += j;
+						statRequire[i] += j * k;
 					if (statRequire[i] > (8 * j))
-						statRequire[i] = 0;
-					if (statRequire[i] == 0)
+						statRequire[i] = -1;
+					else if (statRequire[i] < -1)
+						statRequire[i] = 8 * j;
+					if (statRequire[i] == -1)
 						this.text(title + ': ' + uits.no);
 					else
 						this.text(title + ': ' + statRequire[i]);
@@ -66,9 +71,16 @@ $(document).ready(function() {
 		});
 		options.push(
 			{
-				text: '+10 -> +1',
+				text: '+10 ➜ +1',
 				action: function () {
 					setOption[3] = !setOption[3];
+					this.active(!this.active());
+				}
+			},
+			{
+				text: '➕ ➜ ➖',
+				action: function () {
+					setOption[4] = !setOption[4];
 					this.active(!this.active());
 				}
 			},
@@ -185,7 +197,7 @@ $(document).ready(function() {
 			let achieve = 0;
 			let i = stat.length;
 			while (i--) {
-				if (statMin[i] == 0)
+				if (statMin[i] == -1)
 					continue;
 				achieve += Math.min(stat[i], statMin[i]);
 			}
@@ -200,9 +212,16 @@ $(document).ready(function() {
 		const statModifier = [10, 5, 4, 3, 1, 1];
 		for (let i in statName) {
 			let j = statName[i];
-			statMin[i] = Number(statRequire[j] * statModifier[i]);
+			if (statRequire[j] == -1)
+				statMin[i] = -1;
+			else
+				statMin[i] = Number(statRequire[j] * statModifier[i]);
 		}
-		const goal = Number(statMin.reduce((a, c) => a + c));
+		const goal = Number(statMin.reduce((a, c) => {
+			if (c == -1) 
+				c = 0;
+			return a + c;
+		}));
 		statName = ['hp', 'lock', 'dodge', 'ini', 'dmg', 'res'];
 		for (let i = data.length - 1; i >= 0; i--) {
 			let score = 0;
@@ -252,7 +271,7 @@ $(document).ready(function() {
 						if (type[i][k][1] < 2)
 							continue;
 						if (i != 9) {
-							if (statMin.every((e, n) => e == 0 || type[i][k][n + 2] >= type[i][j][n + 2])) {
+							if (statMin.every((e, n) => e == -1 || type[i][k][n + 2] >= type[i][j][n + 2])) {
 								enlist = false;
 								break;
 							}
@@ -410,8 +429,8 @@ $(document).ready(function() {
 	}
 	let statImportant = [0, 0, 0, 0, 0, 0];
 	let statRequire = [5, 2, 8, 8, 80, 80];
-	let setOption = [false, false, false, false];
-	//twohand depth range tweak
+	let setOption = [false, false, false, false, false];
+	//twohand depth range tweak decrease
 	let setRandomClick = 0;
 	let setResult = [];
 	let setResultIndex = 0;
@@ -774,6 +793,6 @@ $(document).ready(function() {
 			}, 0);
 		}
 	});
-	table.buttons(['3-3', '3-4', '3-5', '3-6', '3-13', '3-14']).trigger();
+	table.buttons(['1-0', '3-3', '3-4', '3-5', '3-6', '3-14', '3-15']).trigger();
 	table.buttons(['5', '6', '7', '8']).disable();
 });
