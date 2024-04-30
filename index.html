@@ -1,4 +1,4 @@
-<html>
+﻿<html>
 <head>
 <title>Wakfu 1.83</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%221em%22 font-size=%2280%22>🔵</text></svg>">
@@ -20,10 +20,23 @@
 </head>
 <body>
 🌐
-<select id="langSelect" onchange="langChange()" style ="border-radius: 8px">
+<select id="langSelect1" onchange="langChange()" style ="border-radius: 8px">
 	<option value="tw">繁體中文</option>
 	<option value="cn">简体中文</option>
 	<option value="en">English</option>
+	<option value="es">Español</option>
+	<option value="pt">Português</option>
+	<option value="fr">Français</option>
+</select>
+&
+<select id="langSelect2" onchange="langChange()" style ="border-radius: 8px">
+	<option value="none">--</option>
+	<option value="tw">繁體中文</option>
+	<option value="cn">简体中文</option>
+	<option value="en">English</option>
+	<option value="es">Español</option>
+	<option value="pt">Português</option>
+	<option value="fr">Français</option>
 </select>
 <table id="tableArray" class="display" width="100%" style="white-space: nowrap; font-size: 14px"></table>
 <style>
@@ -45,22 +58,30 @@ button.result-alter {
 </style>
 <script>
 function langChange() {
-	localStorage.setItem('lang', document.getElementById('langSelect').value);
+	localStorage.setItem('lang', document.getElementById('langSelect1').value);
+	localStorage.setItem('lang2', document.getElementById('langSelect2').value);
 	location.reload();
 }
-const langList = ['tw', 'cn', 'en'];
+const langList = ['tw', 'cn', 'en', 'es', 'pt', 'fr'];
 let lang = localStorage.getItem('lang');
-if (langList.some(e => e == lang) == false)
+let lang2 = localStorage.getItem('lang2');
+let params = new URL(window.location.href).searchParams;
+if (params.has('ln'))
+	lang = params.get('ln');
+if (!langList.includes(lang))
 	lang = 'tw';
-document.getElementById('langSelect').value = lang;
+if (!langList.includes(lang2) || lang2 == lang)
+	lang2 = 'none';
+document.getElementById('langSelect1').value = lang;
+document.getElementById('langSelect2').value = lang2;
 let uits = {};
 $.ajax({
-	url: lang + '/texts.txt',
+	url: 'data/texts.txt',
 	type: 'get',
 	dataType: 'json',
 	async: false,
 	success: function(data) {
-		uits = data;
+		uits = data[lang];
 	}
 });
 function equipList()

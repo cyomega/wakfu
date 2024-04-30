@@ -14,7 +14,7 @@ $(document).ready(function() {
 	}
 	function masteryPane() {
 		let options = [{
-			label: uits.no + uits.secMastery,
+			label: '🛇 ' + uits.secMastery,
 			value: function (rowData) {
 				let total = 0;
 				let i = uits.masteryLong.length;
@@ -26,7 +26,7 @@ $(document).ready(function() {
 		}];
 		uits.masteryLong.forEach(function (name, index) {
 			options.push({
-				label: uits.no + name,
+				label: '🛇 ' + name,
 				value: function (rowData) {
 					return rowData[(index + 22)] > 0 ? false : true;
 				}
@@ -63,7 +63,7 @@ $(document).ready(function() {
 					else if (statRequire[i] < -1)
 						statRequire[i] = 8 * j;
 					if (statRequire[i] == -1)
-						this.text(title + ': ' + uits.no);
+						this.text(title + ': ' + '--');
 					else
 						this.text(title + ': ' + statRequire[i]);
 				}
@@ -78,7 +78,7 @@ $(document).ready(function() {
 				}
 			},
 			{
-				text: '➕ ➜ ➖',
+				text: '<small>➕</small> ➜ <small>➖</small>',
 				action: function () {
 					setOption[4] = !setOption[4];
 					this.active(!this.active());
@@ -128,6 +128,9 @@ $(document).ready(function() {
 				totalMastery += Number(data[(i + 22)]);
 			}
 		}
+		data.name = data[0][lang];
+		if (lang2 != 'none')
+			data[1] = data[0][lang2];
 		data.mastery = _2ndMastery;
 		data.score = (totalMastery/30 + Number(data[17]) / 6.25).toFixed(1);
 		data.total = totalMastery;
@@ -154,7 +157,7 @@ $(document).ready(function() {
 		let data = [];
 		for (let i = d.length - 1; i >= 0; i--) {
 			data[i] = {
-				name: d[i][1],
+				name: d[i][0].en,
 				id: d[i][2],
 				type: d[i][3],
 				rarity: d[i][5],
@@ -299,7 +302,7 @@ $(document).ready(function() {
 		if (twoHandWeapon == false) {
 			typeOrder.push(11);
 			type[10].some((stat, index) => {
-				if (stat[0] == 26593 && typeWeightZero[10].some(e => e == index) == false) {
+				if (stat[0] == 26593 && !typeWeightZero[10].includes(index)) {
 					typeWeightZero[10].push(index);
 					return true;
 				}
@@ -422,11 +425,13 @@ $(document).ready(function() {
 	}
 	const rarityColor = ['#D7BDE2', '#F2D7D5', '#AED6F1', '#F9E79F', '#E59866', '#ABEBC6'];
 	const level = [230, 215, 200, 185, 170, 155, 140, 125, 110, 95, 80, 65, 50, 35, 20];
-	const linkType = ['armors', 'armors', 'armors', 'armors', 'armors', 'armors', 'armors', 'armors', 'accessories', 'weapons', 'weapons', 'weapons'];
-	const noMastery = [uits.no + uits.secMastery];
-	for (m of uits.masteryLong) {
-		noMastery.push(uits.no + m);
-	}
+	const langReverse = ['es', 'pt', 'fr'];
+	let linkType = [];	
+	for (let i = 0; i < 8; i++)
+		linkType.push(uits.linkParm[2]);
+	linkType.push(uits.linkParm[3]);
+	for (let i = 0; i < 3; i++)
+		linkType.push(uits.linkParm[4]);
 	let statImportant = [0, 0, 0, 0, 0, 0];
 	let statRequire = [5, 2, 8, 8, 80, 80];
 	let setOption = [false, false, false, false, false];
@@ -435,14 +440,26 @@ $(document).ready(function() {
 	let setResult = [];
 	let setResultIndex = 0;
 	let setResultAlter = 0;
+	let titleMastery = [];
+	let titleRes = [];
+	for (let i = 0; i < 6; i++) {
+		if (langReverse.includes(lang))
+			titleMastery.push(uits.mastery + '<br>' + uits.masteryLong[i]);
+		else
+			titleMastery.push(uits.masteryLong[i] + '<br>' + uits.mastery);
+	}
+	for (let i = 2; i < 4; i++) {
+		if (langReverse.includes(lang))
+			titleRes.push(uits.mastery + '<br>' + uits.masteryLong[i]);
+		else
+			titleRes.push(uits.masteryLong[i] + '<br>' + uits.mastery);
+	}
 	$.fn.dataTable.enum(uits.rarity);
 	$.fn.dataTable.enum(uits.type);
-	$.fn.dataTable.enum(uits.masteryShort);
-	$.fn.dataTable.enum(noMastery);
 	const table = $('#tableArray').DataTable({
 		columns: [
-			{title: uits.title[0]},
-			null,	//en
+			{title: uits.title[0], data: 'name'},
+			null,	//lang2
 			null,	//id
 			{title: uits.title[1], data: 'type'},
 			{title: uits.title[2]},
@@ -466,14 +483,14 @@ $(document).ready(function() {
 			{title: uits.title[19], data: 19},
 			{title: uits.title[20], data: 20},
 			{title: uits.title[21], data: 21},
-			{title: uits.masteryLong[0] + '<br>' + uits.mastery, data: 22},	//25 -10
-			{title: uits.masteryLong[1] + '<br>' + uits.mastery, data: 23},
-			{title: uits.masteryLong[2] + '<br>' + uits.mastery, data: 24},
-			{title: uits.masteryLong[3] + '<br>' + uits.mastery, data: 25},
-			{title: uits.masteryLong[4] + '<br>' + uits.mastery, data: 26},
-			{title: uits.masteryLong[5] + '<br>' + uits.mastery, data: 27},	//-5
-			{title: uits.masteryLong[2] + '<br>' + uits.res, data: 28},
-			{title: uits.masteryLong[3] + '<br>' + uits.res, data: 29},
+			{title: titleMastery[0], data: 22},	//25 -10
+			{title: titleMastery[1], data: 23},
+			{title: titleMastery[2], data: 24},
+			{title: titleMastery[3], data: 25},
+			{title: titleMastery[4], data: 26},
+			{title: titleMastery[5], data: 27},	//-5
+			{title: titleRes[0], data: 28},
+			{title: titleRes[1], data: 29},
 			{title: uits.title[22], data: 30},
 			{title: uits.title[23], data: 31}
 		],
@@ -629,7 +646,7 @@ $(document).ready(function() {
 						+ '<th>' + uits.title[23] + '</th>'
 						+ '</tr>';
 					for (let i = 0; i < d.length; i++) {
-						text += '<tr><td style="background-color:' + rarityColor[d[i][5]] + '"><a href="https://www.wakfu.com/en/mmorpg/encyclopedia/' + linkType[d[i][3]] + '/' + d[i][2] + '">' + d[i][0] + '</a></td>'
+						text += '<tr><td style="background-color:' + rarityColor[d[i][5]] + '"><a href="https://www.wakfu.com/' + uits.linkParm[0] + '/mmorpg/' + uits.linkParm[1] + '/' + linkType[d[i][3]] + '/' + d[i][2] + '">' + d[i][0] + '</a></td>'
 							+ '<td align="center">' + d[i].type + '</td>'
 							+ '<td align="center">' + d[i][4] + '</td>'
 							+ '<td align="center">' + d[i].rarity + '</td>';
@@ -681,7 +698,7 @@ $(document).ready(function() {
 			{
 				targets: 17,
 				searchPanes: {
-					header: uits.positive + uits.secMastery,
+					header: uits.positive,
 					combiner: 'and',
 					options: masteryPane()
 				}
@@ -708,10 +725,10 @@ $(document).ready(function() {
 				return rarityColor[data[5]];
 			});
 			$('td:eq(0)', row).html(function() {
-				if (lang == 'en')
-					return '<a href="https://www.wakfu.com/en/mmorpg/encyclopedia/' + linkType[data[3]] + '/' + data[2] + '" target="_blank">' + data[1] + '</a>';
+				if (lang2 == 'none')
+					return '<a href="https://www.wakfu.com/' + uits.linkParm[0] + '/mmorpg/' + uits.linkParm[1] + '/' + linkType[data[3]] + '/' + data[2] + '" target="_blank">' + data.name + '</a>';
 				else
-					return '<a href="https://www.wakfu.com/en/mmorpg/encyclopedia/' + linkType[data[3]] + '/' + data[2] + '" target="_blank">' + data[0] + '</a><br>' + data[1];
+					return '<a href="https://www.wakfu.com/' + uits.linkParm[0] + '/mmorpg/' + uits.linkParm[1] + '/' + linkType[data[3]] + '/' + data[2] + '" target="_blank">' + data.name + '</a><br>' + data[1];
 			});
 		},
 		headerCallback: function (thead, data, start, end, display) {
@@ -738,18 +755,15 @@ $(document).ready(function() {
 			}
 		},
 	});
-	$('div.toolbar').html('<a style="font-size: 12px">' + uits.scoreDes + '</a>');
+	$('div.toolbar').html('<a style="font-size: 14px">' + uits.scoreDes + '</a>');
 	for (let i in level) {
 		table.button(0).add('0-' + i, {
 			text: level[i],
 			action: function() {
-				let langTemp = lang;
-				if (langTemp == 'en')
-					langTemp = 'tw';
 				this.disable();
 				this.processing(true);
 				setTimeout(() => {
-					$.get(langTemp + '/' + level[i] + '.txt', function(data) {
+					$.get('data/' + level[i] + '.txt', function(data) {
 						table.rows.add(JSON.parse(data)).every(function() {
 							newData(this.data());
 						})
@@ -771,11 +785,8 @@ $(document).ready(function() {
 				table.clear();
 				let result = [];
 				for (let lv of level) {
-					let langTemp = lang;
-					if (langTemp == 'en')
-						langTemp = 'tw';
 					$.ajax({
-						url: langTemp + '/' + lv + '.txt',
+						url: 'data/' + lv + '.txt',
 						type: 'get',
 						dataType: 'json',
 						async: false,
