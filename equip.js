@@ -646,7 +646,7 @@ $(document).ready(function() {
 						+ '<th>' + uits.title[23] + '</th>'
 						+ '</tr>';
 					for (let i = 0; i < d.length; i++) {
-						text += '<tr><td style="background-color:' + rarityColor[d[i][5]] + '"><a href="https://www.wakfu.com/' + uits.linkParm[0] + '/mmorpg/' + uits.linkParm[1] + '/' + linkType[d[i][3]] + '/' + d[i][2] + '">' + d[i][0] + '</a></td>'
+						text += '<tr><td style="background-color:' + rarityColor[d[i][5]] + '"><a href="https://www.wakfu.com/' + uits.linkParm[0] + '/mmorpg/' + uits.linkParm[1] + '/' + linkType[d[i][3]] + '/' + d[i][2] + '">' + d[i].name + '</a></td>'
 							+ '<td align="center">' + d[i].type + '</td>'
 							+ '<td align="center">' + d[i][4] + '</td>'
 							+ '<td align="center">' + d[i].rarity + '</td>';
