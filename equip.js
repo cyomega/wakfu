@@ -775,7 +775,7 @@ $(document).ready(function() {
 		});
 	};
 	table.button(0).add('0-15', {
-		text: 'All',
+		text: '1~230',
 		action: function() {
 			table.button(0).disable();
 			for (let i = 0; i < 16; i++)
