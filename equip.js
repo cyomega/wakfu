@@ -638,7 +638,10 @@ $(document).ready(function() {
 						text += '<th>' + uits.title[i] + '</th>';
 					}
 					for (let i = 0; i < uits.masteryLong.length; i++) {
-						text += '<th>' + uits.masteryLong[i] + '<br>' + uits.mastery + '</th>';
+						if (langReverse.includes(lang))
+							text += '<th>' + uits.mastery + '<br>' + uits.masteryLong[i] + '</th>';
+						else
+							text += '<th>' + uits.masteryLong[i] + '<br>' + uits.mastery + '</th>';
 					}
 					text += '<th>' + uits.masteryLong[2] + '<br>' + uits.res + '</th>'
 						+ '<th>' + uits.masteryLong[3] + '<br>' + uits.res + '</th>'
