@@ -419,7 +419,7 @@ $(document).ready(function() {
 		}
 	}
 	function setResultShow(i, j) {
-		table.search('(' + setResult[i][j].id + ')').draw();
+		table.search('\D(' + setResult[i][j].id + ')\D').draw();
 		table.button(4).text('(' + (setResultIndex + 1) + '/' + setResult[i].length + ') ' + uits.setScore + setResult[i][j].score);
 		table.button(8).text(Number(setResultAlter + 1) + '/' + setResult.length);
 	}
