@@ -199,15 +199,10 @@ $(document).ready(function() {
 		function achieveCheck(stat, statMin) {
 			let achieve = 0;
 			let i = stat.length;
-			while (i--) {
-				if (statMin[i] == -1)
-					continue;
-				achieve += Math.min(stat[i], statMin[i]);
-			}
-			if (achieve == goal)
-				return 1;
-			else
-				return achieve / goal;
+			while (i--)
+				if (statMin[i] != -1)
+					achieve += Math.min(stat[i], statMin[i]);
+			return achieve == goal ? 1 : achieve / goal;
 		}
 		let equip = [[], [], [], [], [], [], [], [], [], [], [], []];
 		let statMin = [];
@@ -270,7 +265,7 @@ $(document).ready(function() {
 				let noCount = true;
 				if (type[i][j][1] > 1) {
 					noCount = false;
-					for (let k = 0; k < j; k++) {
+					if (j != 0) for (let k = 0; k < j; k++) {
 						if (type[i][k][1] < 2)
 							continue;
 						if (i != 9) {
