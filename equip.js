@@ -255,7 +255,6 @@ $(document).ready(function() {
 		let typeWeightZero = [];
 		for (let i = type.length - 1; i >= 0; i--)
 			typeWeightZero.push([]);
-		const statMinEvery = statMin.every(e => e == -1);
 		for (let i = type.length - 1; i >= 0; i--) {
 			if (type[i].length == 0)
 				type[i].push([99999, 7, 0, 0, 0, 0, 0, 0, 0, 'cyz']);
@@ -266,7 +265,7 @@ $(document).ready(function() {
 				let noCount = true;
 				if (type[i][j][1] > 1) {
 					noCount = false;
-					if (!statMinEvery) for (let k = 0; k < j; k++) {
+					for (let k = 0; k < j; k++) {
 						if (type[i][k][1] < 2)
 							continue;
 						if (i != 9) {
