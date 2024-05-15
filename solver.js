@@ -2,15 +2,10 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 	function achieveCheck(stat, statMin) {
 		let achieve = 0;
 		let i = stat.length;
-		while (i--) {
-			if (statMin[i] == -1)
-				continue;
-			achieve += Math.min(stat[i], statMin[i]);
-		}
-		if (achieve == goal)
-			return 1;
-		else
-			return achieve / goal;
+		while (i--)
+			if (statMin[i] != -1)
+				achieve += Math.min(stat[i], statMin[i]);
+		return achieve == goal ? 1 : achieve / goal;
 	}
 	function cloneArr(arr) {
 		let clone = [];
@@ -20,7 +15,7 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 		return clone;
 	}
 	let failCount = 0;
-	sampling: for (; randomCount >= 0; randomCount--) {
+	sampling: while (randomCount--) {
 		let relic = 0;
 		let epic = 0;
 		let currentStat = [0, 0, 0, 0, 0, 0];
