@@ -216,9 +216,9 @@ $(document).ready(function() {
 				statMin[i] = Number(statRequire[j] * statModifier[i]);
 		}
 		const goal = Number(statMin.reduce((a, c) => {
-			if (c == -1) 
-				c = 0;
-			return a + c;
+			let x = a == -1 ? 0 : a;
+			let y = c == -1 ? 0 : c;
+			return x + y;
 		}));
 		statName = ['hp', 'lock', 'dodge', 'ini', 'dmg', 'res'];
 		for (let i = data.length - 1; i >= 0; i--) {
