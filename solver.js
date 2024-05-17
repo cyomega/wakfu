@@ -30,10 +30,10 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 			let i = typeOrder[m];
 			let j;
 			let typeWeightTemp = [];
-			for (let n = 999; n >= 0; n--) {
+			for (let n = 0; n < 999; n++) {
 				let k = Math.floor(Math.random() * typeWeight[i].length);
 				j = typeWeight[i][k];
-				if (typeWeightTemp.includes(j) == false)
+				if (!typeWeightTemp.includes(j))
 					typeWeightTemp.push(j);
 				else if (typeWeightTemp.length == typeWeightZero[i].length)
 					break;
