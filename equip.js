@@ -204,7 +204,7 @@ $(document).ready(function() {
 					achieve += Math.min(stat[i], statMin[i]);
 			return achieve == goal ? 1 : achieve / goal;
 		}
-		let equip = [[], [], [], [], [], [], [], [], [], [], [], []];
+		let equip = [[], [], [], [], [], [], [], [], [], [], [], [], []];
 		let statMin = [];
 		let statName = ['ap', 'mp', 'wp', 'range', 'cri', 'block'];
 		const statModifier = [10, 5, 4, 3, 1, 1];
@@ -252,6 +252,7 @@ $(document).ready(function() {
 		}
 		else
 			type[10] = equip[11];
+		type.push(equip[12]);
 		let typeWeightZero = [];
 		for (let i = type.length - 1; i >= 0; i--)
 			typeWeightZero.push([]);
@@ -303,6 +304,7 @@ $(document).ready(function() {
 				}
 			});
 		}
+		typeOrder.push(typeOrder.length);
 		let worker = [];
 		let workerCount = 4;
 		for (let i = workerCount - 1; i >= 0; i--) {
@@ -421,12 +423,13 @@ $(document).ready(function() {
 	const rarityColor = ['#D7BDE2', '#F2D7D5', '#AED6F1', '#F9E79F', '#E59866', '#ABEBC6'];
 	const level = [230, 215, 200, 185, 170, 155, 140, 125, 110, 95, 80, 65, 50, 35, 20];
 	const langReverse = ['es', 'pt', 'fr'];
-	let linkType = [];	
+	let linkType = [];
 	for (let i = 0; i < 8; i++)
 		linkType.push(uits.linkParm[2]);
 	linkType.push(uits.linkParm[3]);
 	for (let i = 0; i < 3; i++)
 		linkType.push(uits.linkParm[4]);
+	linkType.push(uits.linkParm[5]);
 	let statImportant = [0, 0, 0, 0, 0, 0];
 	let statRequire = [5, 2, 8, 8, 80, 80];
 	let setOption = [false, false, false, false, false];
@@ -463,31 +466,32 @@ $(document).ready(function() {
 			{title: uits.title[5]},
 			{title: uits.title[6]},
 			{title: uits.title[7]},
-			{title: uits.title[8]},	//10
+			{title: uits.title[8]},			//10
 			{title: uits.title[9]},
 			{title: uits.title[10]},
 			{title: uits.title[11]},
 			{title: uits.title[12]},
-			{title: uits.masteryLong[2]},	//15
+			{title: uits.masteryLong[2]},		//15
 			{title: uits.title[13]},
 			{title: uits.title[14], data: 'mastery'},
 			{title: uits.title[15], data: 'score'},
 			{title: uits.title[16], data: 'total'},
-			{title: uits.title[17], data: 17},	//20 -15
-			{title: uits.title[18], data: 18},
+			{title: uits.title[17], data: 17},	//20
+			{title: uits.title[18], data: 18},	//-15
 			{title: uits.title[19], data: 19},
 			{title: uits.title[20], data: 20},
 			{title: uits.title[21], data: 21},
-			{title: titleMastery[0], data: 22},	//25 -10
-			{title: titleMastery[1], data: 23},
+			{title: titleMastery[0], data: 22},	//25
+			{title: titleMastery[1], data: 23},	//-10
 			{title: titleMastery[2], data: 24},
 			{title: titleMastery[3], data: 25},
 			{title: titleMastery[4], data: 26},
-			{title: titleMastery[5], data: 27},	//-5
-			{title: titleRes[0], data: 28},
+			{title: titleMastery[5], data: 27},	//30
+			{title: titleRes[0], data: 28},		//-5
 			{title: titleRes[1], data: 29},
 			{title: uits.title[22], data: 30},
-			{title: uits.title[23], data: 31}
+			{title: uits.title[23], data: 31},
+			{title: uits.title[24], data: 32}
 		],
 		pageLength: 15,
 		lengthMenu: [15, 25, 50, 100],
@@ -506,7 +510,7 @@ $(document).ready(function() {
 			selector: 'td:not(:first-child)'
 		},
 		searchPanes: {
-			columns: [3, 4, 5, 17, -12],
+			columns: [3, 4, 5, 17, 23],
 			orderable: false,
 			layout: 'columns-6',
 			dtOpts: {select: {style: 'multi'}},
@@ -525,21 +529,21 @@ $(document).ready(function() {
 					{
 						text: uits.secMastery,
 						action: function (e, dt) {
-							dt.columns([-5, -6, -7, -8, -9, -10]).visible(!dt.column(-5).visible());
+							dt.columns([-6, -7, -8, -9, -10, -11]).visible(!dt.column(-6).visible());
 							this.active(!this.active());
 						}
 					},
 					{
 						text: uits.visable[1],
 						action: function (e, dt) {
-							dt.columns([-3, -4]).visible(!dt.column(-3).visible());
+							dt.columns([-4, -5]).visible(!dt.column(-4).visible());
 							this.active(!this.active());
 						}
 					},
 					{
 						text: uits.visable[2],
 						action: function (e, dt) {
-							dt.columns([-1, -2]).visible(!dt.column(-1).visible());
+							dt.columns([-1, -2, -3]).visible(!dt.column(-1).visible());
 							this.active(!this.active());
 						}
 					}
@@ -642,6 +646,7 @@ $(document).ready(function() {
 						+ '<th>' + uits.masteryLong[3] + '<br>' + uits.res + '</th>'
 						+ '<th>' + uits.title[22] + '</th>'
 						+ '<th>' + uits.title[23] + '</th>'
+						+ '<th>' + uits.title[24] + '</th>'
 						+ '</tr>';
 					for (let i = 0; i < d.length; i++) {
 						text += '<tr><td style="background-color:' + rarityColor[d[i][5]] + '"><a href="https://www.wakfu.com/' + uits.linkParm[0] + '/mmorpg/' + uits.linkParm[1] + '/' + linkType[d[i][3]] + '/' + d[i][2] + '">' + d[i].name + '</a></td>'
@@ -654,7 +659,7 @@ $(document).ready(function() {
 						text += '<td align="center">' + d[i].mastery + '</td>'
 							+ '<td align="center">' + d[i].score + '</td>'
 							+ '<td align="center">' + d[i].total + '</td>';
-						for (let j = 17; j < 32; j++) {
+						for (let j = 17; j < 33; j++) {
 							text += '<td align="center">' + d[i][j] + '</td>';
 						}
 						text += '</tr>';
@@ -678,12 +683,12 @@ $(document).ready(function() {
 				render: $.fn.dataTable.render.number('', '.', 1, '')
 			},
 			{
-				targets: [4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 22, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34],
+				targets: [4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 22, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35],
 				render: $.fn.dataTable.render.number('', '.', 0, ''),
 				type: $.fn.dataTable.absoluteOrderNumber([{value: '', position: 'bottom'}])
 			},
 			{
-				targets: [1, 2, 5, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10],
+				targets: [1, 2, 5, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11],
 				visible: false
 			},
 			{
@@ -702,7 +707,7 @@ $(document).ready(function() {
 				}
 			},
 			{
-				targets: -12,
+				targets: 23,
 				searchPanes: {
 					header: uits.eleNum,
 					emptyMessage: '0'
