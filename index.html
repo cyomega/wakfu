@@ -38,6 +38,10 @@
 	<option value="pt">Português</option>
 	<option value="fr">Français</option>
 </select>
+<span id="btnList">
+<button onclick="pageList('equip.js')">⚔️🛡️🏹</button>
+<button onclick="pageList('items.js')">📋📝📕</button>
+</span>
 <table id="tableArray" class="display" width="100%" style="white-space: nowrap; font-size: 14px"></table>
 <style>
 button.dt-button,
@@ -74,22 +78,17 @@ if (!langList.includes(lang2) || lang2 == lang)
 	lang2 = 'none';
 document.getElementById('langSelect1').value = lang;
 document.getElementById('langSelect2').value = lang2;
-let uits = {};
-$.ajax({
-	url: 'data/texts.txt',
-	type: 'get',
-	dataType: 'json',
-	async: false,
-	success: function(data) {
-		uits = data[lang];
-	}
-});
-function equipList() {
-	let s = document.createElement("script");
-	s.src = "equip.js";
-	document.getElementById("tableArray").appendChild(s);
+if (lang != 'tw')
+	document.getElementById('btnList').style.display = 'none';
+function pageList(list) {
+	localStorage.setItem('list', list);
+	location.reload();
 }
-equipList();
+if (localStorage.getItem('list') == null)
+	localStorage.setItem('list', 'equip.js');
+let s = document.createElement("script");
+s.src = localStorage.getItem('list');
+document.getElementById("tableArray").appendChild(s);
 </script>
 </body>
 </html>
