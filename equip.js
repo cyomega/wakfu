@@ -1,3 +1,13 @@
+let uits = {};
+$.ajax({
+	url: 'data/texts.txt',
+	type: 'get',
+	dataType: 'json',
+	async: false,
+	success: function(data) {
+		uits = data[lang];
+	}
+});
 $(document).ready(function() {
 	function levelPane() {
 		let options = [];
