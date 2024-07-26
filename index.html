@@ -84,7 +84,7 @@ function pageList(list) {
 	localStorage.setItem('list', list);
 	location.reload();
 }
-if (localStorage.getItem('list') == null)
+if (localStorage.getItem('list') == null || lang != 'tw')
 	localStorage.setItem('list', 'equip.js');
 let s = document.createElement("script");
 s.src = localStorage.getItem('list');
