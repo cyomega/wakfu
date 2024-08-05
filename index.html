@@ -39,11 +39,15 @@
 	<option value="fr">Français</option>
 </select>
 <span id="btnList" style="margin-left: 20px">
-<button style ="border-radius: 16px" onclick="pageList('equip.js')">⚔️🛡️🏹</button>
-<button style ="border-radius: 16px" onclick="pageList('items.js')">📋📝📕</button>
+<button class="btnTop" onclick="pageList('equip.js')">⚔️🛡️🏹</button>
+<button class="btnTop" onclick="pageList('items.js')">📋📝📕</button>
 </span>
 <table id="tableArray" class="display" width="100%" style="white-space: nowrap; font-size: 14px"></table>
 <style>
+.btnTop {
+	border-radius: 16px;
+	border: 1px solid;
+}
 button.dt-button,
 div.dt-button-collection,
 div.dt-button-collection.fixed.columns {
