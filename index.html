@@ -38,15 +38,20 @@
 	<option value="pt">Português</option>
 	<option value="fr">Français</option>
 </select>
-<span id="btnList" style="margin-left: 20px">
-<button class="btnTop" onclick="pageList('equip.js')">⚔️🛡️🏹</button>
-<button class="btnTop" onclick="pageList('items.js')">📋📝📕</button>
+<span id="btnArray" style="margin-left: 20px">
+<button class="btnTop" onclick="tableChange('equip.js')">⚔️🛡️🏹</button>
+<button class="btnTop" onclick="tableChange('items.js')">📋📝📕</button>
 </span>
 <table id="tableArray" class="display" width="100%" style="white-space: nowrap; font-size: 14px"></table>
 <style>
 .btnTop {
 	border-radius: 16px;
 	border: 1px solid;
+	cursor: pointer;
+	margin-left: 5px;
+}
+.btnTop:hover {
+	background-color: grey;
 }
 button.dt-button,
 div.dt-button-collection,
@@ -74,7 +79,7 @@ const langList = ['tw', 'cn', 'en', 'es', 'pt', 'fr'];
 let lang = localStorage.getItem('lang');
 let lang2 = localStorage.getItem('lang2');
 let params = new URL(window.location.href).searchParams;
-if (params.has('ln'))
+if (params.has('ln') && !langList.includes(lang))
 	lang = params.get('ln');
 if (!langList.includes(lang))
 	lang = 'tw';
@@ -83,16 +88,17 @@ if (!langList.includes(lang2) || lang2 == lang)
 document.getElementById('langSelect1').value = lang;
 document.getElementById('langSelect2').value = lang2;
 if (lang != 'tw')
-	document.getElementById('btnList').style.display = 'none';
-function pageList(list) {
-	localStorage.setItem('list', list);
+	document.getElementById('btnArray').style.display = 'none';
+function tableChange(t) {
+	localStorage.setItem('table', t);
 	location.reload();
 }
-if (localStorage.getItem('list') == null || lang != 'tw')
-	localStorage.setItem('list', 'equip.js');
-let s = document.createElement("script");
-s.src = localStorage.getItem('list');
+if (localStorage.getItem('table') == null || lang != 'tw')
+	localStorage.setItem('table', 'equip.js');
+let s = document.createElement('script');
+s.src = localStorage.getItem('table');
 document.getElementById("tableArray").appendChild(s);
+localStorage.removeItem('list');
 </script>
 </body>
 </html>
