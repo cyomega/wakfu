@@ -13,13 +13,15 @@ $(document).ready(function() {
 				text: '第' + socketsOrder[i] + '孔'
 			});
 			for (let j = 0; j < 4; j++) {
+				let k;
+				if (j == 0)
+					k = '\\d';
+				else
+					k = j.toString();
 				options.push({
 					text: sockets[j],
 					action: function (e, dt) {
-						if (j == 0)
-							socketsCombo[i] = '\\d';
-						else
-							socketsCombo[i] = j.toString();
+						socketsCombo[i] = k;
 						socketsComboName[i] = sockets[j];
 						needle1 = socketsCombo[0] + socketsCombo[1] + socketsCombo[2];
 						needle2 = socketsCombo[1] + socketsCombo[2] + socketsCombo[3];
