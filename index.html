@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/2.0.1/css/searchPanes.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/select/1.4.0/css/select.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.0/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/fixedcolumns/4.1.0/js/dataTables.fixedColumns.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
@@ -88,13 +88,13 @@ if (!langList.includes(lang2) || lang2 == lang)
 	lang2 = 'none';
 document.getElementById('langSelect1').value = lang;
 document.getElementById('langSelect2').value = lang2;
-if (lang != 'tw')
+if (lang != 'tw' && lang != 'cn')
 	document.getElementById('btnArray').style.display = 'none';
 function tableChange(t) {
 	localStorage.setItem('table', t);
 	location.reload();
 }
-if (localStorage.getItem('table') == null || lang != 'tw')
+if (localStorage.getItem('table') == null || (lang != 'tw' && lang != 'cn'))
 	localStorage.setItem('table', 'equip.js');
 let s = document.createElement('script');
 s.src = localStorage.getItem('table');

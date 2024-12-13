@@ -1,6 +1,20 @@
 $(document).ready(function() {
 	$.get('data/subli.txt', function(data) {
-		table.rows.add(JSON.parse(data)).draw();
+		if (lang == 'tw')
+			table.rows.add(JSON.parse(data)).draw();
+		else if (lang == 'cn') {
+			$.getScript('https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/t2cn.js', function() {
+				let converter = OpenCC.CustomConverter([
+					['熱帶植物', '椰人'],
+					['食人藤', '汉尼草'],
+					['食人族', '汉尼芭']
+				]);
+				data = converter(data);
+				converter = OpenCC.Converter({ from: 'tw', to: 'cn' });
+				data = converter(data);
+				table.rows.add(JSON.parse(data)).draw();
+			});
+		}
 	});
 	function socketsComboBtn () {
 		let options = [];
@@ -57,9 +71,10 @@ $(document).ready(function() {
 	];
 	const socketsCombo = ['\\d', '\\d', '\\d', '\\d'];
 	const socketsComboName = [sockets[0], sockets[0], sockets[0], sockets[0]];
+	const title = {tw:'名稱', cn:'名称'};
 	const table = $('#tableArray').DataTable({
 		columns: [
-			{title: '名稱', data: null, width: 10},
+			{title: title[lang], data: null, width: 10},
 			{title: '附魔', data: null, width: 10},
 			{title: '效果', data: 5},
 			{title: '掉落', data: 6},

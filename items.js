@@ -1,11 +1,17 @@
 $(document).ready(function() {
-	$.get('data/items.txt', function(data) {
-		table.rows.add(JSON.parse(data)).draw();
-	});
+	if (lang == 'tw')
+		$.get('data/items_tw.txt', function(data) {
+			table.rows.add(JSON.parse(data)).draw();
+		});
+	else if (lang == 'cn')
+		$.get('data/items_cn.txt', function(data) {
+			table.rows.add(JSON.parse(data)).draw();
+		});
+	const title = {tw:'英文（雙擊複製）', cn:'英文（双击复制）'};
 	const table = $('#tableArray').DataTable({
 		columns: [
 			{title: '中文'},
-			{title: '英文（雙擊複製）'}
+			{title: title[lang]}
 		],
 		fixedColumns: true,
 		search: {regex: true},
