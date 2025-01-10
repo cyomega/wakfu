@@ -2,16 +2,16 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 	function achieveCheck(stat, statMin) {
 		let achieve = 0;
 		let i = stat.length;
-		while (i--)
+		while (i--) {
 			if (statMin[i] != -1)
 				achieve += Math.min(stat[i], statMin[i]);
+		}
 		return achieve == goal ? 1 : achieve / goal;
 	}
 	function cloneArr(arr) {
 		let clone = [];
-		for (let i = arr.length - 1; i >= 0; i--) {
+		for (let i = arr.length - 1; i >= 0; i--)
 			clone[i] = arr[i].concat();
-		}
 		return clone;
 	}
 	let failCount = 0;
@@ -55,10 +55,8 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 			if (relic > 1 || epic > 1)
 				continue sampling;
 			currentScore += type[i][j][8];
-			for (let m = statMin.length - 1; m >= 0; m--) {
-				let n = m + 2;
-				currentStat[m] += type[i][j][n];
-			}
+			for (let m = statMin.length - 1; m >= 0; m--)
+				currentStat[m] += type[i][j][m + 2];
 		}
 		let achieveRate = achieveCheck(currentStat, statMin);
 		if (achieveRate == 1) {
@@ -75,10 +73,8 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 					)
 						continue;
 					let tempStat = currentStat.concat();
-					for (let m = 0; m < statMin.length; m++) {
-						let n = m + 2;
-						tempStat[m] += type[i][j][n] - type[i][currentIndex[i]][n];
-					}
+					for (let m = 0; m < statMin.length; m++)
+						tempStat[m] += type[i][j][m + 2] - type[i][currentIndex[i]][m + 2];
 					if (achieveCheck(tempStat, statMin) == 1) {
 						currentID[i] = type[i][j][0];
 						currentScore += type[i][j][8] - type[i][currentIndex[i]][8];
@@ -97,17 +93,17 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 			}
 			typeWeight = cloneArr(typeWeightZero);
 			if (setSuccess.length > 0) {
+				let sampleCount = Math.ceil(setSuccess.length / 10);
+				let sampleIndex = Math.floor(Math.random() * setSuccess.length);
 				for (let i = type.length - 1; i >= 0; i--) {
-					for (let j = Math.ceil(setSuccess.length / 10); j >= 0; j--) {
-						let k = Math.floor(Math.random() * setSuccess.length);
-						typeWeight[i].push(setSuccess[k].index[i]);
-					}
+					for (let j = sampleCount; j >= 0; j--)
+						typeWeight[i].push(setSuccess[sampleIndex].index[i]);
 				}
 			}
 			if (currentID[7] == currentID[9] || setSuccess.some(x => currentID.every(y => x.id.some(z => y == z))))
 				continue;
 			setSuccess.push({id:currentID, score:currentScore.toFixed(1), index:currentIndex, stat:currentStat});
-			if (setSuccess.length > 99)
+			if (setSuccess.length > 69)
 				setSuccess.sort((a, b) => b.score - a.score).splice(50);
 		}
 		else if (achieveRate > 0.8) {
@@ -117,9 +113,8 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 				failCount = 0;
 			}
 			else {
-				for (let i = type.length - 1; i >= 0; i--) {
+				for (let i = type.length - 1; i >= 0; i--)
 					typeWeight[i].push(currentIndex[i]);
-				}
 			}
 		}
 	}
