@@ -15,6 +15,7 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 		return clone;
 	}
 	let failCount = 0;
+	let leastScore = 0;
 	sampling: while (randomCount--) {
 		let relic = 0;
 		let epic = 0;
@@ -87,24 +88,28 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 			if (currentID[10] > 26493 && currentID[10] < 26498) {
 				currentStat.every((e, i) => currentStat[i] -= type[9][currentIndex[9]][i + 2]);
 				if (achieveCheck(currentStat, statMin) < 1)
-					continue sampling;
+					continue;
 				currentScore -= type[9][currentIndex[9]][8];
 				currentID[9] = currentID[10] + 81;
 			}
 			typeWeight = cloneArr(typeWeightZero);
-			if (setSuccess.length > 0) {
-				let sampleCount = Math.ceil(setSuccess.length / 10);
-				let sampleIndex = Math.floor(Math.random() * setSuccess.length);
-				for (let i = type.length - 1; i >= 0; i--) {
-					for (let j = sampleCount; j >= 0; j--)
-						typeWeight[i].push(setSuccess[sampleIndex].index[i]);
-				}
+			for (let n = setSuccess.length >> 2; n > 0; n--) {
+				let r = Math.floor(Math.random() * setSuccess.length);
+				for (let i = type.length - 1; i >= 0; i--)
+					typeWeight[i].push(setSuccess[r].index[i]);
 			}
-			if (currentID[7] == currentID[9] || setSuccess.some(x => currentID.every(y => x.id.some(z => y == z))))
+			if (
+				currentScore < leastScore
+				|| currentID[7] == currentID[9]
+				|| setSuccess.some(x => currentID.every(y => x.id.some(z => y == z)))
+			)
 				continue;
 			setSuccess.push({id:currentID, score:currentScore.toFixed(1), index:currentIndex, stat:currentStat});
-			if (setSuccess.length > 69)
+			failCount = 0;
+			if (setSuccess.length > 69) {
 				setSuccess.sort((a, b) => b.score - a.score).splice(50);
+				leastScore = setSuccess[49].score - 0.1;
+			}
 		}
 		else if (achieveRate > 0.8) {
 			failCount++;
