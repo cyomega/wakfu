@@ -11,15 +11,15 @@ $.ajax({
 $(document).ready(function() {
 	function levelPane() {
 		let options = [];
-		level.forEach(function (max) {
-			let min = (max != 20) ? (max - 15) : 0;
+		for (let i = 0; i < level.length; ++i) {
+			let min = level[i] != 20 ? level[i] - 15 : 0;
 			options.push({
-				label: max,
+				label: level[i],
 				value: function (rowData) {
-					return (rowData[4] <= max && rowData[4] > min);
+					return rowData[4] <= level[i] && rowData[4] > min;
 				}
 			});
-		});
+		}
 		return options;
 	}
 	function masteryPane() {
@@ -34,14 +34,14 @@ $(document).ready(function() {
 				return total == 0;
 			}
 		}];
-		uits.masteryLong.forEach(function (name, index) {
+		for (let i = 0; i < uits.masteryLong.length; ++i) {
 			options.push({
-				label: '🛇 ' + name,
+				label: '🛇 ' + uits.masteryLong[i],
 				value: function (rowData) {
-					return rowData[(index + 22)] > 0 ? false : true;
+					return rowData[(i + 22)] > 0 ? false : true;
 				}
 			});
-		});
+		}
 		return options;
 	}
 	function setRandomButton() {
@@ -51,19 +51,13 @@ $(document).ready(function() {
 				text: uits.setStatAchieve
 			},
 		];
-		let buttonText = [uits.title[4], uits.title[5], uits.title[6], uits.title[7], uits.masteryLong[2], uits.title[13]];
-		buttonText.forEach(function (title, i) {
-			let j;
-			if (i < 4)
-				j = 1;
-			else
-				j = 10;
+		let buttonText1 = [uits.title[4], uits.title[5], uits.title[6], uits.title[7], uits.masteryLong[2], uits.title[13]];
+		for (let i = 0; i < buttonText1.length; ++i) {
+			let j = i < 4 ? 1 : 10;
 			options.push({
-				text: title + ': ' + statRequire[i],
+				text: buttonText1[i] + ': ' + statRequire[i],
 				action: function () {
-					let k = 1;
-					if (setOption[4])
-						k = -1;
+					let k = setOption[4] ? -1 : 1;
 					if (setOption[3] || statRequire[i] == -1 || (k == -1 && statRequire[i] == 0))
 						statRequire[i] += k;
 					else
@@ -73,12 +67,12 @@ $(document).ready(function() {
 					else if (statRequire[i] < -1)
 						statRequire[i] = 8 * j;
 					if (statRequire[i] == -1)
-						this.text(title + ': ' + '--');
+						this.text(buttonText1[i] + ': ' + '--');
 					else
-						this.text(title + ': ' + statRequire[i]);
+						this.text(buttonText1[i] + ': ' + statRequire[i]);
 				}
 			});
-		});
+		}
 		options.push(
 			{
 				text: '+10 ➜ +1',
@@ -99,32 +93,32 @@ $(document).ready(function() {
 				text: uits.setStatScore
 			}
 		);
-		buttonText = [uits.title[9], uits.title[10], uits.title[11], uits.title[12], uits.title[16], uits.title[17]];
-		buttonText.forEach(function (title, i) {
+		let buttonText2 = [uits.title[9], uits.title[10], uits.title[11], uits.title[12], uits.title[16], uits.title[17]];
+		for (let i = 0; i < buttonText2.length; ++i) {
 			options.push({
-				text: title,
+				text: buttonText2[i],
 				action: function () {
 					statImportant[i] = !statImportant[i];
 					this.active(!this.active());
 				}
 			});
-		});
+		}
 		options.push(
 			{
 				extend: 'spacer',
 				text: uits.setRandomOption
 			},
 		);
-		buttonText = [uits.type[11], uits.setDepth, uits.setRange];
-		buttonText.forEach(function (title, i) {
+		let buttonText3 = [uits.type[11], uits.setDepth, uits.setRange];
+		for (let i = 0; i < buttonText3.length; ++i) {
 			options.push({
-				text: title,
+				text: buttonText3[i],
 				action: function () {
 					setOption[i] = !setOption[i];
 					this.active(!this.active());
 				}
 			});
-		});
+		}
 		options.push('selectNone');
 		return options;
 	}
@@ -197,21 +191,18 @@ $(document).ready(function() {
 			let j = statName[i];
 			statWeight[j] = Number(statWeight[j]) * Number(statImportant[i]);
 		}
-		let randomCount = 100000;
-		if (setOption[1] == true)
-			randomCount = 300000;
-		let equipQuantity = 10;
-		if (setOption[2] == true)
-			equipQuantity = 20;
+		let randomCount = setOption[1] ? 300000 : 100000;
+		let equipQuantity = setOption[2] ? 20 : 10;
 		autoSets(data, statRequireObj, statWeight, setOption[0], randomCount, equipQuantity);
 	}
 	function autoSets(data, statRequire, statWeight, twoHandWeapon, randomCount, equipQuantity) {
 		function achieveCheck(stat, statMin) {
 			let achieve = 0;
 			let i = stat.length;
-			while (i--)
+			while (i--) {
 				if (statMin[i] != -1)
 					achieve += Math.min(stat[i], statMin[i]);
+			}
 			return achieve == goal ? 1 : achieve / goal;
 		}
 		let equip = [[], [], [], [], [], [], [], [], [], [], [], [], []];
@@ -220,10 +211,7 @@ $(document).ready(function() {
 		const statModifier = [10, 5, 4, 3, 1, 1];
 		for (let i in statName) {
 			let j = statName[i];
-			if (statRequire[j] == -1)
-				statMin[i] = -1;
-			else
-				statMin[i] = Number(statRequire[j] * statModifier[i]);
+			statMin[i] = statRequire[j] == -1 ? -1 : Number(statRequire[j] * statModifier[i]);
 		}
 		const goal = Number(statMin.reduce((a, c) => {
 			let x = a == -1 ? 0 : a;
