@@ -199,10 +199,10 @@ $(document).ready(function() {
 		}
 		let randomCount = 100000;
 		if (setOption[1] == true)
-			randomCount += 100000;
+			randomCount = 300000;
 		let equipQuantity = 10;
 		if (setOption[2] == true)
-			equipQuantity += 10;
+			equipQuantity = 20;
 		autoSets(data, statRequireObj, statWeight, setOption[0], randomCount, equipQuantity);
 	}
 	function autoSets(data, statRequire, statWeight, twoHandWeapon, randomCount, equipQuantity) {
