@@ -44,6 +44,88 @@ $(document).ready(function() {
 		}
 		return options;
 	}
+	function levelButton() {
+		let options = [];
+		let spacerCount = 3;
+		for (let i = 0; i < level.length; ++i) {
+			options.push({
+				text: level[i],
+				action: function() {
+					this.disable();
+					this.processing(true);
+					setTimeout(() => {
+						$.get('data/' + level[i] + '.txt', function(data) {
+							table.rows.add(JSON.parse(data)).every(function() {
+								newData(this.data());
+							})
+							.searchPanes.rebuildPane().draw();
+						});
+						this.processing(false);
+					}, 0);
+				}
+			});
+			if (i == spacerCount || level[i] == 20) {
+				spacerCount += 4;
+				options.push({extend: 'spacer'});
+			}
+		}
+		options.push({
+			text: 'ALL',
+			action: function() {
+				table.button(0).disable();
+				for (let i = 0; i < 16; i++)
+					table.button('0-' + i).disable();
+				this.processing(true);
+				setTimeout(() => {
+					table.clear();
+					let result = [];
+					for (let lv of level) {
+						$.ajax({
+							url: 'data/' + lv + '.txt',
+							type: 'get',
+							dataType: 'json',
+							async: false,
+							success: function(data) {
+								result.push(...data);
+							}
+						});
+					}
+					table.rows.add(result).every(function() {
+						newData(this.data());
+					})
+					.searchPanes.rebuildPane().draw();
+					this.processing(false);
+					$('.dt-button-background').trigger('click');
+				}, 0);
+			}
+		});
+		return options;
+	}
+	function visableButton() {
+		return [
+			{
+				text: uits.secMastery,
+				action: function (e, dt) {
+					dt.columns([-6, -7, -8, -9, -10, -11]).visible(!dt.column(-6).visible());
+					this.active(!this.active());
+				}
+			},
+			{
+				text: uits.visable[1],
+				action: function (e, dt) {
+					dt.columns([-4, -5]).visible(!dt.column(-4).visible());
+					this.active(!this.active());
+				}
+			},
+			{
+				text: uits.visable[2],
+				action: function (e, dt) {
+					dt.columns([-1, -2, -3]).visible(!dt.column(-1).visible());
+					this.active(!this.active());
+				}
+			}
+		];
+	}
 	function setRandomButton() {
 		let options = [
 			{
@@ -56,6 +138,7 @@ $(document).ready(function() {
 			let j = i < 4 ? 1 : 10;
 			options.push({
 				text: buttonText1[i] + ': ' + statRequire[i],
+				className: 'buildBtn',
 				action: function () {
 					let k = setOption[4] ? -1 : 1;
 					if (setOption[3] || statRequire[i] == -1 || (k == -1 && statRequire[i] == 0))
@@ -75,6 +158,10 @@ $(document).ready(function() {
 		}
 		options.push(
 			{
+				extend: 'spacer',
+				style: 'buildSpacer'
+			},
+			{
 				text: '+10 ➜ +1',
 				action: function () {
 					setOption[3] = !setOption[3];
@@ -93,10 +180,11 @@ $(document).ready(function() {
 				text: uits.setStatScore
 			}
 		);
-		let buttonText2 = [uits.title[9], uits.title[10], uits.title[11], uits.title[12], uits.title[16], uits.title[17]];
+		let buttonText2 = [uits.title[9], uits.title[10], uits.title[11], uits.title[12], uits.mastery, uits.res];
 		for (let i = 0; i < buttonText2.length; ++i) {
 			options.push({
 				text: buttonText2[i],
+				className: 'buildBtn',
 				action: function () {
 					statImportant[i] = !statImportant[i];
 					this.active(!this.active());
@@ -516,36 +604,14 @@ $(document).ready(function() {
 		buttons: [
 			{
 				extend: 'collection',
-				collectionLayout: 'fixed columns',
+				collectionLayout: 'columns levelCollection',
 				text: uits.title[2],
-				buttons: []
+				buttons: levelButton()
 			},
 			{
 				extend: 'collection',
 				text: uits.visable[0],
-				buttons: [
-					{
-						text: uits.secMastery,
-						action: function (e, dt) {
-							dt.columns([-6, -7, -8, -9, -10, -11]).visible(!dt.column(-6).visible());
-							this.active(!this.active());
-						}
-					},
-					{
-						text: uits.visable[1],
-						action: function (e, dt) {
-							dt.columns([-4, -5]).visible(!dt.column(-4).visible());
-							this.active(!this.active());
-						}
-					},
-					{
-						text: uits.visable[2],
-						action: function (e, dt) {
-							dt.columns([-1, -2, -3]).visible(!dt.column(-1).visible());
-							this.active(!this.active());
-						}
-					}
-				]
+				buttons: visableButton()
 			},
 			{
 				extend: 'spacer',
@@ -553,7 +619,7 @@ $(document).ready(function() {
 			},
 			{
 				text: uits.setRandom,
-				collectionLayout: 'fixed columns',
+				collectionLayout: 'columns buildCollection',
 				action: function() {
 					table.button(4).processing(true);
 					setTimeout(() => equipReference(), 0);
@@ -757,54 +823,6 @@ $(document).ready(function() {
 		},
 	});
 	$('div.toolbar').html('<a style="font-size: 14px">' + uits.scoreDes + '</a>');
-	for (let i in level) {
-		table.button(0).add('0-' + i, {
-			text: level[i],
-			action: function() {
-				this.disable();
-				this.processing(true);
-				setTimeout(() => {
-					$.get('data/' + level[i] + '.txt', function(data) {
-						table.rows.add(JSON.parse(data)).every(function() {
-							newData(this.data());
-						})
-						.searchPanes.rebuildPane().draw();
-					});
-					this.processing(false);
-				}, 0);
-			}
-		});
-	};
-	table.button(0).add('0-15', {
-		text: '1~230',
-		action: function() {
-			table.button(0).disable();
-			for (let i = 0; i < 16; i++)
-				table.button('0-' + i).disable();
-			this.processing(true);
-			setTimeout(() => {
-				table.clear();
-				let result = [];
-				for (let lv of level) {
-					$.ajax({
-						url: 'data/' + lv + '.txt',
-						type: 'get',
-						dataType: 'json',
-						async: false,
-						success: function(data) {
-							result.push(...data);
-						}
-					});
-				}
-				table.rows.add(result).every(function() {
-					newData(this.data());
-				})
-				.searchPanes.rebuildPane().draw();
-				this.processing(false);
-				$('.dt-button-background').trigger('click');
-			}, 0);
-		}
-	});
-	table.buttons(['1-0', '3-3', '3-4', '3-5', '3-6', '3-14', '3-15']).trigger();
+	table.buttons(['1-0', '3-3', '3-4', '3-5', '3-6', '3-15', '3-16']).trigger();
 	table.buttons(['5', '6', '7', '8']).disable();
 });

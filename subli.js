@@ -27,11 +27,7 @@ $(document).ready(function() {
 				text: '第' + socketsOrder[i] + '孔'
 			});
 			for (let j = 0; j < 4; j++) {
-				let k;
-				if (j == 0)
-					k = '\\d';
-				else
-					k = j.toString();
+				let k = j == 0 ? '\\d' : j.toString();
 				options.push({
 					text: sockets[j],
 					action: function (e, dt) {
@@ -67,7 +63,8 @@ $(document).ready(function() {
 		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><polygon points="7 1,21 1,26 9,14 25,2 9" style="fill:DarkOrchid; stroke:Black" /></svg>',
 		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><polygon points="7 1,21 1,26 9,14 25,2 9" style="fill:HotPink; stroke:Black" /></svg>',
 		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><text y="21" font-size="20">❌</text></svg>',
-		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><text y="19" font-size="20">📜</text></svg>'
+		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><text y="19" font-size="20">📜</text></svg>',
+		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><text y="19" font-size="20">📚</text></svg>'
 	];
 	const socketsCombo = ['\\d', '\\d', '\\d', '\\d'];
 	const socketsComboName = [sockets[0], sockets[0], sockets[0], sockets[0]];
@@ -107,12 +104,17 @@ $(document).ready(function() {
 			{
 				extend: 'collection',
 				text: socketsComboName,
-				collectionLayout: 'columns',
+				collectionLayout: 'columns socketsCollection',
 				buttons: socketsComboBtn()
 			},
 			{
+				text: sockets[8],
+				action: function (e, dt) {
+					dt.column(4).search('').draw();
+				}
+			},
+			{
 				extend: 'spacer',
-				style: 'empty'
 			}
 		],
 		rowCallback: function(row, data) {
