@@ -71,17 +71,16 @@ $(document).ready(function() {
 	const title = {tw:'名稱', cn:'名称'};
 	const table = $('#tableArray').DataTable({
 		columns: [
-			{title: title[lang], data: null, width: 10},
-			{title: '附魔', data: null, width: 10},
-			{title: '效果', data: 5},
+			{title: title[lang], data: null, width: '140px'},
+			{title: '附魔', data: null, width: '10px'},
+			{title: '效果', data: 5, width: '700px'},
 			{title: '掉落', data: 6},
 			{visible: false, data: 3}
 		],
-		fixedColumns: true,
 		autoWidth: false,
+		deferRender: true,
 		search: {regex: true},
-		pageLength: 10,
-		dom: 'Blfrtip',
+		dom: 'Blfrtp',
 		buttons: [
 			{
 				text: sockets[4],
@@ -114,12 +113,12 @@ $(document).ready(function() {
 				}
 			},
 			{
-				extend: 'spacer',
+				extend: 'spacer'
 			}
 		],
 		rowCallback: function(row, data) {
 			$('td:eq(0)', row).html(function() {
-				return '<div style="position: relative; top: 5px; min-height: 45px">' + data[0] + ' ' + data[2] + '<br>' + data[1] + '</div>';
+				return '<div style="position: relative; top: 5px; height: 45px">' + data[0] + ' ' + data[2] + '<br>' + data[1] + '</div>';
 			});
 			$('td:eq(1)', row).html(function() {
 				if (data[3].charAt(0) < 4)
@@ -127,9 +126,6 @@ $(document).ready(function() {
 				else
 					return sockets[data[3].charAt(0)];
 			});
-		},
-		headerCallback: function (thead, data, start, end, display) {
-			$(this.api().column(0).header()).css('background-color', 'transparent');
 		}
 	});
 	table.buttons(['3-20']).trigger();

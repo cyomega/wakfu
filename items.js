@@ -10,12 +10,14 @@ $(document).ready(function() {
 	const title = {tw:'英文（雙擊複製）', cn:'英文（双击复制）'};
 	const table = $('#tableArray').DataTable({
 		columns: [
-			{title: '中文'},
+			{title: '中文', width: '400px'},
 			{title: title[lang]}
 		],
-		fixedColumns: true,
+		autoWidth: false,
+		deferRender: true,
 		search: {regex: true},
-		pageLength: 25
+		pageLength: 25,
+		dom: 'lfrtp'
 	});
 	$('#tableArray').on('dblclick', 'tr', function () {
 		let data = table.row(this).data();

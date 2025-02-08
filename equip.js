@@ -50,6 +50,7 @@ $(document).ready(function() {
 		for (let i = 0; i < level.length; ++i) {
 			options.push({
 				text: level[i],
+				className: 'levelBtn',
 				action: function() {
 					this.disable();
 					this.processing(true);
@@ -71,10 +72,9 @@ $(document).ready(function() {
 		}
 		options.push({
 			text: 'ALL',
+			className: 'levelBtn',
 			action: function() {
-				table.button(0).disable();
-				for (let i = 0; i < 16; i++)
-					table.button('0-' + i).disable();
+				table.buttons('.levelBtn').disable();
 				this.processing(true);
 				setTimeout(() => {
 					table.clear();
@@ -85,15 +85,12 @@ $(document).ready(function() {
 							type: 'get',
 							dataType: 'json',
 							async: false,
-							success: function(data) {
-								result.push(...data);
-							}
+							success: data => result.push(...data)
 						});
 					}
 					table.rows.add(result).every(function() {
 						newData(this.data());
-					})
-					.searchPanes.rebuildPane().draw();
+					}).searchPanes.rebuildPane().draw();
 					this.processing(false);
 					$('.dt-button-background').trigger('click');
 				}, 0);
@@ -586,19 +583,19 @@ $(document).ready(function() {
 		scrollY: '85%',
 		scrollCollapse: true,
 		deferRender: true,
-		scroller: true,
 		search: {regex: true},
 		select: true,
 		order: [[3, 'asc'], [18, 'desc'], [19, 'desc']],
-		dom: 'P<"toolbar">Blfrtip',
+		dom: 'P<"toolbar">Blfrtp',
 		select: {
 			style: 'multi',
 			selector: 'td:not(:first-child)'
 		},
 		searchPanes: {
 			columns: [3, 4, 5, 17, 23],
+			controls: false,
 			orderable: false,
-			layout: 'columns-6',
+			layout: 'columns-5',
 			dtOpts: {select: {style: 'multi'}},
 		},
 		buttons: [
@@ -606,6 +603,7 @@ $(document).ready(function() {
 				extend: 'collection',
 				collectionLayout: 'columns levelCollection',
 				text: uits.title[2],
+				className: 'levelBtn',
 				buttons: levelButton()
 			},
 			{
@@ -693,13 +691,11 @@ $(document).ready(function() {
 				action: function() {
 					const d = table.rows({search: 'applied'}).data();
 					let text = '<table><tr>';
-					for (let i = 0; i < 13; i++) {
+					for (let i = 0; i < 13; i++)
 						text += '<th>' + uits.title[i] + '</th>';
-					}
 					text += '<th>' + uits.masteryLong[2] + '</th>';
-					for (let i = 13; i < 22; i++) {
+					for (let i = 13; i < 22; i++)
 						text += '<th>' + uits.title[i] + '</th>';
-					}
 					for (let i = 0; i < uits.masteryLong.length; i++) {
 						if (langReverse.includes(lang))
 							text += '<th>' + uits.mastery + '<br>' + uits.masteryLong[i] + '</th>';
@@ -717,15 +713,13 @@ $(document).ready(function() {
 							+ '<td align="center">' + d[i].type + '</td>'
 							+ '<td align="center">' + d[i][4] + '</td>'
 							+ '<td align="center">' + d[i].rarity + '</td>';
-						for (let j = 6; j < 17; j++) {
+						for (let j = 6; j < 17; j++)
 							text += '<td align="center">' + d[i][j] + '</td>';
-						}
 						text += '<td align="center">' + d[i].mastery + '</td>'
 							+ '<td align="center">' + d[i].score + '</td>'
 							+ '<td align="center">' + d[i].total + '</td>';
-						for (let j = 17; j < 33; j++) {
+						for (let j = 17; j < 33; j++)
 							text += '<td align="center">' + d[i][j] + '</td>';
-						}
 						text += '</tr>';
 					}
 					text += '</table>';
@@ -734,6 +728,9 @@ $(document).ready(function() {
 					const data = [new ClipboardItem({ [type]: blob })];
 					navigator.clipboard.write(data);
 				}
+			},
+			{
+				extend: 'spacer'
 			}
 		],
 		columnDefs: [
@@ -792,10 +789,8 @@ $(document).ready(function() {
 				return rarityColor[data[5]];
 			});
 			$('td:eq(0)', row).html(function() {
-				if (lang2 == 'none')
-					return '<a href="https://www.wakfu.com/' + uits.linkParm[0] + '/mmorpg/' + uits.linkParm[1] + '/' + linkType[data[3]] + '/' + data[2] + '" target="_blank">' + data.name + '</a>';
-				else
-					return '<a href="https://www.wakfu.com/' + uits.linkParm[0] + '/mmorpg/' + uits.linkParm[1] + '/' + linkType[data[3]] + '/' + data[2] + '" target="_blank">' + data.name + '</a><br>' + data[1];
+				let name = '<a href="https://www.wakfu.com/' + uits.linkParm[0] + '/mmorpg/' + uits.linkParm[1] + '/' + linkType[data[3]] + '/' + data[2] + '" target="_blank">' + data.name + '</a>';
+				return lang2 == 'none' ? name : name + '<br>' + data[1];
 			});
 		},
 		headerCallback: function (thead, data, start, end, display) {
@@ -823,6 +818,7 @@ $(document).ready(function() {
 		},
 	});
 	$('div.toolbar').html('<a style="font-size: 14px">' + uits.scoreDes + '</a>');
+	$('#tableSize').css({'margin-left': 'max(-640px, calc(50% - 50vw + 15px))', 'margin-right': 'max(-640px, calc(50% - 50vw + 15px))'});
 	table.buttons(['1-0', '3-3', '3-4', '3-5', '3-6', '3-15', '3-16']).trigger();
 	table.buttons(['5', '6', '7', '8']).disable();
 });
