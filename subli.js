@@ -56,15 +56,15 @@ $(document).ready(function() {
 	}
 	let needle;
 	const sockets = [
-		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><circle r="12" cx="14" cy="13" style="fill:PaleGoldenRod; stroke:Black" />/svg>',
-		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><rect width="22" height="23" x="3" y="3" style="fill:FireBrick; stroke:Black" /></svg>',
-		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><polygon points="14 1,26 12,21 25,7 25,2 12" style="fill:ForestGreen; stroke:Black" /></svg>',
-		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><polygon points="14 1,26 25,2 25" style="fill:DodgerBlue; stroke:Black" /></svg>',
-		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><polygon points="7 1,21 1,26 9,14 25,2 9" style="fill:DarkOrchid; stroke:Black" /></svg>',
-		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><polygon points="7 1,21 1,26 9,14 25,2 9" style="fill:HotPink; stroke:Black" /></svg>',
-		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><text y="21" font-size="20">❌</text></svg>',
-		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><text y="19" font-size="20">📜</text></svg>',
-		'<svg height="26" width="28" xmlns="http://www.w3.org/2000/svg"><text y="19" font-size="20">📚</text></svg>'
+		'<svg height="26" width="28"><circle r="12" cx="14" cy="13" style="fill:PaleGoldenRod; stroke:Black" />/svg>',
+		'<svg height="26" width="28"><rect width="22" height="23" x="3" y="3" style="fill:FireBrick; stroke:Black" /></svg>',
+		'<svg height="26" width="28"><polygon points="14 1,26 12,21 25,7 25,2 12" style="fill:ForestGreen; stroke:Black" /></svg>',
+		'<svg height="26" width="28"><polygon points="14 1,26 25,2 25" style="fill:DodgerBlue; stroke:Black" /></svg>',
+		'<svg height="26" width="28"><polygon points="7 1,21 1,26 9,14 25,2 9" style="fill:DarkOrchid; stroke:Black" /></svg>',
+		'<svg height="26" width="28"><polygon points="7 1,21 1,26 9,14 25,2 9" style="fill:HotPink; stroke:Black" /></svg>',
+		'<svg height="26" width="28"><text y="21" font-size="20">❌</text></svg>',
+		'<svg height="26" width="28"><text y="19" font-size="20">📜</text></svg>',
+		'<svg height="26" width="28"><text y="19" font-size="20">📚</text></svg>'
 	];
 	const socketsCombo = ['\\d', '\\d', '\\d', '\\d'];
 	const socketsComboName = [sockets[0], sockets[0], sockets[0], sockets[0]];
@@ -116,6 +116,7 @@ $(document).ready(function() {
 				extend: 'spacer'
 			}
 		],
+		language: tableText,
 		rowCallback: function(row, data) {
 			$('td:eq(0)', row).html(function() {
 				return '<div style="position: relative; top: 5px; height: 45px">' + data[0] + ' ' + data[2] + '<br>' + data[1] + '</div>';

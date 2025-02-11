@@ -506,6 +506,7 @@ $(document).ready(function() {
 	const rarityColor = ['#D7BDE2', '#F2D7D5', '#AED6F1', '#F9E79F', '#E59866', '#ABEBC6'];
 	const level = [230, 215, 200, 185, 170, 155, 140, 125, 110, 95, 80, 65, 50, 35, 20];
 	const langReverse = ['es', 'pt', 'fr'];
+	tableText.buttons.selectNone = uits.setSelectNone;
 	let linkType = [];
 	for (let i = 0; i < 8; i++)
 		linkType.push(uits.linkParm[2]);
@@ -779,11 +780,7 @@ $(document).ready(function() {
 				orderSequence: ['desc', 'asc']
 			},
 		],
-		language: {
-        		buttons: {
-				selectNone: uits.setSelectNone
-			}
-		},
+		language: tableText,
 		rowCallback: function(row, data) {
 			$('td:eq(0)', row).css('background-color', function() {
 				return rarityColor[data[5]];

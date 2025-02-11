@@ -38,7 +38,7 @@
 </select>
 <span id="btnArray" style="margin-left: 20px">
 <button class="btnTop" onclick="tableChange('equip.js')">⚔️🛡️🏹</button>
-<button class="btnTop" onclick="tableChange('items.js')">📋📝📕</button>
+<button class="btnTop" onclick="tableChange('items.js')">📋📄📕</button>
 <button class="btnTop" onclick="tableChange('subli.js')">🔮💎📜</button>
 </span>
 <p id="tableSize"><table id="tableArray" class="display" style="width: 100%; white-space: nowrap; font-size: 14px"></table></p>
@@ -48,6 +48,7 @@
 	border: 1px solid;
 	cursor: pointer;
 	margin-left: 5px;
+	width: 70px;
 }
 .btnTop:hover {
 	background-color: grey;
@@ -105,7 +106,7 @@ div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane {
 }
 .dataTables_wrapper .dataTables_length,
 .dataTables_wrapper .dataTables_filter {
-	margin-top: 5px;
+	margin-top: 6px;
 }
 div.dtsp-panesContainer {
 	max-width: 1280px;
@@ -113,10 +114,10 @@ div.dtsp-panesContainer {
 }
 div.dt-buttons,
 div.toolbar {
-	margin-left: max(0px, calc(50% - 750px));
+	margin-left: max(0px, calc(50% - 700px));
 }
 .dataTables_wrapper .dataTables_filter {
-	margin-right: max(0px, calc(50% - 750px));
+	margin-right: max(0px, calc(50% - 700px));
 }
 </style>
 <script>
@@ -139,6 +140,18 @@ document.getElementById('langSelect1').value = lang;
 document.getElementById('langSelect2').value = lang2;
 if (lang != 'tw' && lang != 'cn')
 	document.getElementById('btnArray').style.display = 'none';
+let tableText = {
+	emptyTable: '',
+	lengthMenu: '<svg style="height: 26; width: 28; vertical-align: middle"><text y="20" font-size="20">📝</text></svg>_MENU_',
+	search: '<svg style="height: 26; width: 28; vertical-align: middle"><text y="20" font-size="20">🔎</text></svg>',
+	zeroRecords: '',
+	paginate: {
+		next: '<text style="font-size: large">▶</text>',
+		previous: '<text style="font-size: large">◀</text>'
+	},
+	buttons: {selectNone: ''},
+	searchPanes: {emptyPanes: ''}
+};
 function tableChange(t) {
 	localStorage.setItem('table', t);
 	location.reload();
