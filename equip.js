@@ -504,7 +504,7 @@ $(document).ready(function() {
 		table.button(8).text(Number(setResultAlter + 1) + '/' + setResult.length);
 	}
 	const rarityColor = ['#D7BDE2', '#F2D7D5', '#AED6F1', '#F9E79F', '#E59866', '#ABEBC6'];
-	const level = [230, 215, 200, 185, 170, 155, 140, 125, 110, 95, 80, 65, 50, 35, 20];
+	const level = [245, 230, 215, 200, 185, 170, 155, 140, 125, 110, 95, 80, 65, 50, 35, 20];
 	const langReverse = ['es', 'pt', 'fr'];
 	tableText.buttons.selectNone = uits.setSelectNone;
 	let linkType = [];
