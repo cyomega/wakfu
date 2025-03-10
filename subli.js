@@ -74,7 +74,7 @@ $(document).ready(function() {
 			{title: title[lang], data: null, width: '140px'},
 			{title: '附魔', data: null, width: '10px'},
 			{title: '效果', data: 5, width: '700px'},
-			{title: '掉落', data: 6},
+			{title: '來源', data: 6},
 			{visible: false, data: 3}
 		],
 		autoWidth: false,
