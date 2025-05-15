@@ -1,24 +1,25 @@
-﻿<html>
+﻿<!DOCTYPE html>
+<html>
 <head>
-<title>Wakfu 1.86</title>
+<title>Wakfu 1.87</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%221em%22 font-size=%2280%22>🔵</text></svg>">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.1.0/css/fixedColumns.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/2.0.1/css/searchPanes.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/select/1.4.0/css/select.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/fixedcolumns/4.1.0/js/dataTables.fixedColumns.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/searchpanes/2.0.1/js/dataTables.searchPanes.min.js"></script>
-<script src="https://cdn.datatables.net/select/1.4.0/js/dataTables.select.min.js"></script>
-<script src="https://cdn.datatables.net/plug-ins/1.12.1/sorting/enum.js"></script>
-<script src="https://cdn.datatables.net/plug-ins/1.12.1/sorting/absolute.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.1.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/5.0.4/css/fixedColumns.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/2.3.3/css/searchPanes.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/select/3.0.0/css/select.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.0/js/dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/fixedcolumns/5.0.4/js/dataTables.fixedColumns.min.js"></script>
+<script src="https://cdn.datatables.net/searchpanes/2.3.3/js/dataTables.searchPanes.min.js"></script>
+<script src="https://cdn.datatables.net/select/3.0.0/js/dataTables.select.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/2.2.2/sorting/enum.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/2.2.2/sorting/absolute.js"></script>
 </head>
-<body style="max-width: 1280px; margin-left: max(10px, calc(50% - 640px))">
+<body>
 🌐
-<select id="langSelect1" onchange="langChange()" style ="border-radius: 8px">
+<select id="langSelect1" onchange="langChange()">
 	<option value="tw">繁體中文</option>
 	<option value="cn">简体中文</option>
 	<option value="en">English</option>
@@ -27,7 +28,7 @@
 	<option value="fr">Français</option>
 </select>
 &
-<select id="langSelect2" onchange="langChange()" style ="border-radius: 8px">
+<select id="langSelect2" onchange="langChange()">
 	<option value="none">--</option>
 	<option value="tw">繁體中文</option>
 	<option value="cn">简体中文</option>
@@ -41,41 +42,124 @@
 <button class="btnTop" onclick="tableChange('items.js')">📋📄📕</button>
 <button class="btnTop" onclick="tableChange('subli.js')">🔮💎📜</button>
 </span>
-<p id="tableSize"><table id="tableArray" class="display" style="width: 100%; white-space: nowrap; font-size: 14px"></table></p>
+<div id="tableSize"><table id="tableArray" class="display"></table></div>
 <style>
-.btnTop {
-	border-radius: 16px;
-	border: 1px solid;
-	cursor: pointer;
-	margin-left: 5px;
-	width: 70px;
+body {
+	background: color-mix(in srgb, slategrey 3%, white);
+	max-width: 1280px;
+	margin-left: max(10px, calc(50% - 640px));
 }
-.btnTop:hover {
-	background-color: grey;
+table.dataTable,
+div.dt-container div.dt-layout-row:nth-child(4) {
+	width: 100%;
+	white-space: nowrap;
+	box-shadow: 0 2px 8px slategrey;
+	border-radius: 10px;
+	font-size: 15px;
 }
-button.dt-button,
-div.dt-button-collection {
+table.dataTable thead,
+table.dataTable thead tr > .dtfc-fixed-start {
+	background: color-mix(in srgb, slategrey 70%, darkslategrey);
+	color: white;
+}
+table.dataTable thead th:first-child {
+	border-top-left-radius: 10px;
+}
+table.dataTable thead th:last-child {
+	border-top-right-radius: 10px;
+}
+:root {
+	--dt-row-selected: 30, 169, 169;
+}
+.dt-container .dt-search input,
+.dt-container .dt-length select {
+	background: white !important;
+}
+.dtsp-searchPane {
+	zoom: 115%;
+}
+.dtsp-searchPane table {
+	font-size: 13px;
+}
+div.dtsp-searchPane div.dt-container {
+	border-radius: 10px;
+	box-shadow: 0 2px 5px slategrey;
+	transition: box-shadow 0.2s;
+}
+div.dtsp-searchPane div.dt-container:hover {
+	box-shadow: 0 2px 5px 1px slategrey, 0 2px 7px cyan
+}
+div.dtsp-searchPane div.dt-container div.dt-scroll-body {
+	background: whitesmoke !important;
+}
+div.dtsp-searchPane div.dt-container div.dt-scroll-body table {
+	box-shadow: none;
+	border: none;
+}
+div.dtsp-searchPane div.dt-container div.dt-scroll-body table tr:hover {
+	background: color-mix(in srgb, slategrey 3%, white);
+}
+div.dtsp-panesContainer div.dtsp-title,
+div.dtsp-panesContainer button.dtsp-collapseAll,
+div.dtsp-panesContainer button.dtsp-showAll {
+	display: none;
+}
+.btnTop,
+div.dt-buttons .dt-button,
+div.dt-buttons > div.dt-button-split .dt-button,
+div.dt-button-collection .dt-button {
+	font-size:15px;
+	background: whitesmoke;
+	border: none;
 	border-radius: 12px;
+	box-shadow: 0 1px 2px 1px slategrey;
+	transition: background-color 0.2s, box-shadow 0.2s;
 }
-div.dt-button-collection button.dt-button,
-div.dt-button-collection button.dt-button:first-child,
-div.dt-button-collection button.dt-button:last-child {
+.btnTop:hover,
+div.dt-buttons .dt-button:hover:not(.disabled),
+div.dt-buttons > div.dt-button-split .dt-button:hover:not(.disabled),
+div.dt-button-collection .dt-button:hover:not(.disabled) {
+	background: lightgrey;
+	border: none;
+	box-shadow: 0 1px 2px 2px slategrey, 0 1px 8px 1px cyan;
+}
+#langSelect1,
+#langSelect2 {
+	border-radius: 8px;
+	min-height: 25px;
+}
+.btnTop {
+	border-radius: 8px;
+	min-height: 25px;
+	min-width: 70px;
+	margin-left: 5px;
+	cursor: pointer;
+}
+div.dt-buttons > div.dt-button-split .dt-button:first-child,
+div.dt-buttons > div.dt-button-split .dt-button:last-child {
+	border: none;
+}
+div.dt-buttons .dt-button svg,
+div.dt-button-collection .dt-button svg{
+	vertical-align: bottom;
+}
+div.dt-button-collection .dt-button {
 	border-radius: 16px;
 	min-width: max-content !important;
+	min-height: 35px;
+	margin-left: 5px !important;
+	text-align: center;
 }
-div.dt-button-collection.columns.levelCollection button.dt-button {
-	min-width: 70px !important;
+div.dt-button-collection .dt-button-active {
+	background: slategrey !important;
+	color: white;
+	box-shadow: 0 1px 2px 1px darkslategrey, 0 1px 5px 1px cyan !important;
 }
-div.dt-button-collection.columns.buildCollection button.dt-button.buildBtn {
-	min-width: 100px !important;
+div.dt-button-collection .dt-button-active:hover {
+	box-shadow: 0 1px 2px 2px darkslategrey, 0 1px 8px 1px cyan !important;
 }
-button.result-alter {
-	margin: -1px;
-}
-div.dt-button-collection.columns.levelCollection span.dt-button-spacer,
-div.dt-button-collection.columns.buildCollection span.dt-button-spacer.buildSpacer,
-div.dt-button-collection.columns.socketsCollection span.dt-button-spacer {
-	margin: 0px;
+div.dt-button-collection .dt-button-active:after {
+	content: none;
 }
 div.dt-button-collection.columns span.dt-button-spacer {
 	text-align: left;
@@ -83,41 +167,36 @@ div.dt-button-collection.columns span.dt-button-spacer {
 	font-weight: bold;
 	font-size: large;
 }
+div.dt-button-collection.columns.levelCollection button.dt-button {
+	min-width: 70px !important;
+}
+div.dt-button-collection.columns.buildCollection button.dt-button.buildBtn {
+	min-width: 100px !important;
+}
+div.dt-button-collection.visableCollection button.dt-button {
+	max-width: 95%;
+	margin: 5px;
+}
+div.dt-button-collection.columns.levelCollection span.dt-button-spacer,
+div.dt-button-collection.columns.buildCollection span.dt-button-spacer.buildSpacer,
+div.dt-button-collection.columns.socketsCollection span.dt-button-spacer {
+	margin: 0px;
+}
+div.dt-button-collection,
+div.dt-button-collection.columns {
+	border-radius: 20px
+}
+div.dt-button-collection {
+	background-color: color-mix(in srgb, slategrey 10%, white);
+}
 div.dt-button-collection.columns.levelCollection {
-	max-width: 310px;
-}
-div.dt-button-collection.columns.buildCollection {
-	max-width: 660px;
-}
-div.dt-button-collection.columns.socketsCollection {
 	max-width: 325px;
 }
-button.dt-btn-split-drop span.dt-btn-split-drop-arrow {
-	font-size: 12px;
+div.dt-button-collection.columns.buildCollection {
+	max-width: 670px;
 }
-div.dtsp-panesContainer div.dtsp-title,
-div.dtsp-panesContainer button.dtsp-clearAll,
-div.dtsp-panesContainer button.dtsp-collapseAll,
-div.dtsp-panesContainer button.dtsp-showAll {
-	display: none;
-}
-div.dtsp-panesContainer div.dtsp-searchPanes div.dtsp-searchPane {
-	margin-top: -10px !important;
-}
-.dataTables_wrapper .dataTables_length,
-.dataTables_wrapper .dataTables_filter {
-	margin-top: 6px;
-}
-div.dtsp-panesContainer {
-	max-width: 1280px;
-	margin-left: max(0px, calc(50% - 640px))
-}
-div.dt-buttons,
-div.toolbar {
-	margin-left: max(0px, calc(50% - 700px));
-}
-.dataTables_wrapper .dataTables_filter {
-	margin-right: max(0px, calc(50% - 700px));
+div.dt-button-collection.columns.socketsCollection {
+	max-width: 350px;
 }
 </style>
 <script>
@@ -145,10 +224,6 @@ let tableText = {
 	lengthMenu: '<svg style="height: 26; width: 28; vertical-align: middle"><text y="20" font-size="20">📝</text></svg>_MENU_',
 	search: '<svg style="height: 26; width: 28; vertical-align: middle"><text y="20" font-size="20">🔎</text></svg>',
 	zeroRecords: '',
-	paginate: {
-		next: '<text style="font-size: large">▶</text>',
-		previous: '<text style="font-size: large">◀</text>'
-	},
 	buttons: {selectNone: ''},
 	searchPanes: {emptyPanes: ''}
 };

@@ -11,8 +11,13 @@ $(document).ready(function() {
 		autoWidth: false,
 		deferRender: true,
 		search: {regex: true},
+		ordering: false,
 		pageLength: 25,
-		dom: 'lfrtp',
+		layout: {
+			bottom: 'paging',
+			bottomStart: null,
+			bottomEnd: null
+		},
 		language: tableText
 	});
 	$('#tableArray').on('dblclick', 'tr', function () {

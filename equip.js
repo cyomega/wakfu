@@ -503,7 +503,7 @@ $(document).ready(function() {
 		table.button(4).text('(' + (setResultIndex + 1) + '/' + setResult[i].length + ') ' + uits.setScore + setResult[i][j].score);
 		table.button(8).text(Number(setResultAlter + 1) + '/' + setResult.length);
 	}
-	const rarityColor = ['#D7BDE2', '#F2D7D5', '#AED6F1', '#F9E79F', '#E59866', '#ABEBC6'];
+	const rarityColor = ['#D7BDE2', '#F2D7D5', '#AED6F1', '#F9E79F', '#E59866', '#ABEBC6', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0)'];
 	const level = [245, 230, 215, 200, 185, 170, 155, 140, 125, 110, 95, 80, 65, 50, 35, 20];
 	const langReverse = ['es', 'pt', 'fr'];
 	tableText.buttons.selectNone = uits.setSelectNone;
@@ -586,8 +586,17 @@ $(document).ready(function() {
 		deferRender: true,
 		search: {regex: true},
 		select: true,
+		ordering: {indicators: false},
 		order: [[3, 'asc'], [18, 'desc'], [19, 'desc']],
-		dom: 'P<"toolbar">Blfrtp',
+		layout: {
+			top3Start: [{div: {html: '<a style="margin-left: max(0px, min(460px, calc(50vw - 650px)))"></a>'}}, 'searchPanes'],
+			top2Start: [{div: {html: '<a style="margin-left: max(0px, min(460px, calc(50vw - 650px)))"></a>'}}, 'buttons'],
+			topStart: {div: {html: '<a style="font-size: 14px; margin-left: max(10px, min(480px, calc(50vw - 640px)))">' + uits.scoreDes + '</a>'}},
+			topEnd: ['pageLength', 'search', {div: {html: '<a style="margin-right: max(10px, min(480px, calc(50vw - 640px)))"></a>'}}],
+			bottom: 'paging',
+			bottomStart: null,
+			bottomEnd: null
+		},
 		select: {
 			style: 'multi',
 			selector: 'td:not(:first-child)'
@@ -609,6 +618,7 @@ $(document).ready(function() {
 			},
 			{
 				extend: 'collection',
+				collectionLayout: 'visableCollection',
 				text: uits.visable[0],
 				buttons: visableButton()
 			},
@@ -777,7 +787,8 @@ $(document).ready(function() {
 			},
 			{
 				targets: '_all',
-				orderSequence: ['desc', 'asc']
+				orderSequence: ['desc', 'asc'],
+				className: 'dt-left'
 			},
 		],
 		language: tableText,
@@ -814,8 +825,7 @@ $(document).ready(function() {
 			}
 		},
 	});
-	$('div.toolbar').html('<a style="font-size: 14px">' + uits.scoreDes + '</a>');
-	$('#tableSize').css({'margin-left': 'max(-640px, calc(50% - 50vw + 15px))', 'margin-right': 'max(-640px, calc(50% - 50vw + 15px))'});
+	$('#tableSize').css({'margin-left': 'max(-480px, calc(50% - 50vw + 15px))', 'margin-right': 'max(-480px, calc(50% - 50vw + 15px))'});
 	table.buttons(['1-0', '3-3', '3-4', '3-5', '3-6', '3-15', '3-16']).trigger();
 	table.buttons(['5', '6', '7', '8']).disable();
 });
