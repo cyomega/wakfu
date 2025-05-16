@@ -581,7 +581,7 @@ $(document).ready(function() {
 		lengthMenu: [15, 25, 50, 100],
 		fixedColumns: true,
 		scrollX: true,
-		scrollY: '85%',
+		scrollY: '80vh',
 		scrollCollapse: true,
 		deferRender: true,
 		search: {regex: true},
