@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <title>Wakfu 1.87</title>
@@ -45,7 +45,7 @@
 <div id="tableSize"><table id="tableArray" class="display"></table></div>
 <style>
 body {
-	background: color-mix(in srgb, slategrey 3%, white);
+	background: color-mix(in srgb, slategrey 10%, white);
 	max-width: 1280px;
 	margin-left: max(10px, calc(50% - 640px));
 }
@@ -71,6 +71,9 @@ table.dataTable thead th:last-child {
 :root {
 	--dt-row-selected: 30, 169, 169;
 }
+table.dataTable tbody tr:hover {
+	background: #e0f1f1;
+}
 .dt-container .dt-search input,
 .dt-container .dt-length select {
 	background: white !important;
@@ -87,17 +90,17 @@ div.dtsp-searchPane div.dt-container {
 	transition: box-shadow 0.2s;
 }
 div.dtsp-searchPane div.dt-container:hover {
-	box-shadow: 0 2px 5px 1px slategrey, 0 2px 7px cyan
+	box-shadow: 0 2px 5px 1px slategrey, 0 1.5px 7px 1px cyan
 }
 div.dtsp-searchPane div.dt-container div.dt-scroll-body {
-	background: whitesmoke !important;
+	background: color-mix(in srgb, slategrey 20%, white) !important;
 }
 div.dtsp-searchPane div.dt-container div.dt-scroll-body table {
 	box-shadow: none;
 	border: none;
 }
 div.dtsp-searchPane div.dt-container div.dt-scroll-body table tr:hover {
-	background: color-mix(in srgb, slategrey 3%, white);
+	background: #e0f1f1;
 }
 div.dtsp-panesContainer div.dtsp-title,
 div.dtsp-panesContainer button.dtsp-collapseAll,
@@ -109,7 +112,7 @@ div.dt-buttons .dt-button,
 div.dt-buttons > div.dt-button-split .dt-button,
 div.dt-button-collection .dt-button {
 	font-size:14.5px;
-	background: whitesmoke;
+	background: color-mix(in srgb, slategrey 20%, white);
 	border: none;
 	border-radius: 12px;
 	box-shadow: 0 1px 2px 1px slategrey;
@@ -119,7 +122,7 @@ div.dt-button-collection .dt-button {
 div.dt-buttons .dt-button:hover:not(.disabled),
 div.dt-buttons > div.dt-button-split .dt-button:hover:not(.disabled),
 div.dt-button-collection .dt-button:hover:not(.disabled) {
-	background: lightgrey;
+	background: #e0f1f1;
 	border: none;
 	box-shadow: 0 1px 2px 2px slategrey, 0 1px 8px 1px cyan;
 }
