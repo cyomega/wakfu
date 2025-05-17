@@ -78,7 +78,7 @@
 "setManual":"Please note:",
 "setCondition":"Mind the requirements for the gears.",
 "setExclude":"Click to choose gears to be excluded from calculation.",
-"setScore":"Important Characteristics Score:",
+"setScore":"Score:",
 "setDepth":"Calculate More Times",
 "setRange":"Calculate More Gears",
 "setFailed":"No result. Check if there are gears missing, or modify settings or filter.",
