@@ -1,4 +1,4 @@
-let uits = {};
+﻿let uits = {};
 $.ajax({
 	url: 'data/texts.txt',
 	type: 'get',
@@ -503,7 +503,7 @@ $(document).ready(function() {
 		table.button(4).text('(' + (setResultIndex + 1) + '/' + setResult[i].length + ') ' + uits.setScore + setResult[i][j].score);
 		table.button(8).text(Number(setResultAlter + 1) + '/' + setResult.length);
 	}
-	const rarityColor = ['#D7BDE2', '#F2D7D5', '#AED6F1', '#F9E79F', '#E59866', '#ABEBC6', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0)'];
+	const rarityColor = ['#D7BDE2', '#F2D7D5', '#AED6F1', '#F9E79F', '#E59866', '#ABEBC6', '#FFFFFF', '#D3D3D3'];
 	const level = [245, 230, 215, 200, 185, 170, 155, 140, 125, 110, 95, 80, 65, 50, 35, 20];
 	const langReverse = ['es', 'pt', 'fr'];
 	tableText.buttons.selectNone = uits.setSelectNone;
@@ -581,7 +581,6 @@ $(document).ready(function() {
 		lengthMenu: [15, 25, 50, 100],
 		fixedColumns: true,
 		scrollX: true,
-		scrollY: '80vh',
 		scrollCollapse: true,
 		deferRender: true,
 		search: {regex: true},
@@ -640,7 +639,7 @@ $(document).ready(function() {
 				action: function (e) {
 					e.stopPropagation();
 					this.popover(
-						'<div>' + uits.setCondition + '<br>' + uits.setExclude + '</div>',
+						'<div><br>' + uits.setCondition + '<br><br>' + uits.setExclude + '</div>',
 						{
 							background: false,
 							closeButton: false,
@@ -794,7 +793,7 @@ $(document).ready(function() {
 		language: tableText,
 		rowCallback: function(row, data) {
 			$('td:eq(0)', row).css('background-color', function() {
-				return rarityColor[data[5]];
+				return rarityColor[data[5]] + 'CC';
 			});
 			$('td:eq(0)', row).html(function() {
 				let name = '<a href="https://www.wakfu.com/' + uits.linkParm[0] + '/mmorpg/' + uits.linkParm[1] + '/' + linkType[data[3]] + '/' + data[2] + '" target="_blank">' + data.name + '</a>';

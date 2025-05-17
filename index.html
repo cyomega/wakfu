@@ -1,3 +1,4 @@
+﻿
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,7 +46,8 @@
 <div id="tableSize"><table id="tableArray" class="display"></table></div>
 <style>
 body {
-	background: color-mix(in srgb, slategrey 10%, white);
+	font-family: sans-serif;
+	background: lightblue;
 	max-width: 1280px;
 	margin-left: max(10px, calc(50% - 640px));
 }
@@ -53,14 +55,14 @@ table.dataTable,
 div.dt-container div.dt-layout-row:nth-child(4) {
 	width: 100%;
 	white-space: nowrap;
-	box-shadow: 0 2px 8px slategrey;
+	background: whitesmoke;
 	border-radius: 10px;
 	font-size: 14.5px;
 }
 table.dataTable thead,
 table.dataTable thead tr > .dtfc-fixed-start {
-	background: color-mix(in srgb, slategrey 70%, darkslategrey);
-	color: white;
+	background: color-mix(in srgb, slategrey 70%, black);
+	color: whitesmoke;
 }
 table.dataTable thead th:first-child {
 	border-top-left-radius: 10px;
@@ -71,12 +73,12 @@ table.dataTable thead th:last-child {
 :root {
 	--dt-row-selected: 30, 169, 169;
 }
-table.dataTable tbody tr:hover {
-	background: #e0f1f1;
-}
 .dt-container .dt-search input,
 .dt-container .dt-length select {
-	background: white !important;
+	background: whitesmoke !important;
+	border: none !important;
+	border-radius: 8px !important;
+	outline: none;
 }
 .dtsp-searchPane {
 	zoom: 112%;
@@ -86,23 +88,19 @@ table.dataTable tbody tr:hover {
 }
 div.dtsp-searchPane div.dt-container {
 	border-radius: 10px;
-	box-shadow: 0 2px 5px slategrey;
-	transition: box-shadow 0.2s;
-}
-div.dtsp-searchPane div.dt-container:hover {
-	box-shadow: 0 2px 5px 1px slategrey, 0 1.5px 7px 1px cyan
 }
 div.dtsp-searchPane div.dt-container div.dt-scroll-body {
-	background: color-mix(in srgb, slategrey 20%, white) !important;
+	background: whitesmoke !important;
 }
 div.dtsp-searchPane div.dt-container div.dt-scroll-body table {
 	box-shadow: none;
 	border: none;
 }
 div.dtsp-searchPane div.dt-container div.dt-scroll-body table tr:hover {
-	background: #e0f1f1;
+	background: powderblue;
 }
 div.dtsp-panesContainer div.dtsp-title,
+div.dtsp-panesContainer button.dtsp-clearAll,
 div.dtsp-panesContainer button.dtsp-collapseAll,
 div.dtsp-panesContainer button.dtsp-showAll {
 	display: none;
@@ -112,24 +110,26 @@ div.dt-buttons .dt-button,
 div.dt-buttons > div.dt-button-split .dt-button,
 div.dt-button-collection .dt-button {
 	font-size:14.5px;
-	background: color-mix(in srgb, slategrey 20%, white);
+	background: whitesmoke;
 	border: none;
 	border-radius: 12px;
-	box-shadow: 0 1px 2px 1px slategrey;
+	box-shadow: 0 0 3px 1px lightblue;
 	transition: background-color 0.2s, box-shadow 0.2s;
 }
 .btnTop:hover,
 div.dt-buttons .dt-button:hover:not(.disabled),
 div.dt-buttons > div.dt-button-split .dt-button:hover:not(.disabled),
 div.dt-button-collection .dt-button:hover:not(.disabled) {
-	background: #e0f1f1;
+	background: lightcyan;
 	border: none;
-	box-shadow: 0 1px 2px 2px slategrey, 0 1px 8px 1px cyan;
+	box-shadow: 0 0 3px 2px lightcyan, 0 0 5px 1px slategrey;
 }
 #langSelect1,
 #langSelect2 {
+	border: none;
 	border-radius: 8px;
 	min-height: 25px;
+	background: whitesmoke;
 }
 .btnTop {
 	border-radius: 8px;
@@ -157,10 +157,11 @@ div.dt-button-collection .dt-button {
 div.dt-button-collection .dt-button-active {
 	background: slategrey !important;
 	color: white;
-	box-shadow: 0 1px 2px 1px darkslategrey, 0 1px 5px 1px cyan !important;
+	box-shadow: 0 0 3px cyan, 0 0 5px lightcyan !important;
 }
 div.dt-button-collection .dt-button-active:hover {
-	box-shadow: 0 1px 2px 2px darkslategrey, 0 1px 8px 1px cyan !important;
+	background: lightslategrey !important;
+	box-shadow: 0 0 0 1px lightslategrey, 0 0 5px 1px cyan !important;
 }
 div.dt-button-collection .dt-button-active:after {
 	content: none;
@@ -188,10 +189,8 @@ div.dt-button-collection.columns.socketsCollection span.dt-button-spacer {
 }
 div.dt-button-collection,
 div.dt-button-collection.columns {
-	border-radius: 20px
-}
-div.dt-button-collection {
-	background-color: color-mix(in srgb, slategrey 10%, white);
+	border-radius: 20px;
+	background: color-mix(in srgb, whitesmoke 70%, silver);
 }
 div.dt-button-collection.columns.levelCollection {
 	max-width: 325px;
