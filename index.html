@@ -47,9 +47,12 @@
 <style>
 body {
 	font-family: sans-serif;
-	background: lightblue;
+	background: lightslategrey;
 	max-width: 1280px;
 	margin-left: max(10px, calc(50% - 640px));
+}
+a {
+	color: darkblue;
 }
 table.dataTable,
 div.dt-container div.dt-layout-row:nth-child(4) {
@@ -113,7 +116,7 @@ div.dt-button-collection .dt-button {
 	background: whitesmoke;
 	border: none;
 	border-radius: 12px;
-	box-shadow: 0 0 3px 1px lightblue;
+	box-shadow: 0 0 3px 1px lightslategrey;
 	transition: background-color 0.2s, box-shadow 0.2s;
 }
 .btnTop:hover,
@@ -165,6 +168,14 @@ div.dt-button-collection .dt-button-active:hover {
 }
 div.dt-button-collection .dt-button-active:after {
 	content: none;
+}
+div.dt-container .dt-paging .dt-paging-button {
+	border-radius: 12px;
+}
+div.dt-container .dt-paging {
+	background: color-mix(in srgb, slategrey 70%, black);
+	border-radius: 16px;
+	color: white;
 }
 div.dt-button-collection.columns span.dt-button-spacer {
 	text-align: left;
