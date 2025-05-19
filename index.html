@@ -215,6 +215,10 @@ div.dt-button-collection.columns.buildCollection {
 div.dt-button-collection.columns.socketsCollection {
 	max-width: 350px;
 }
+#barIcon {
+	font-size: 20px;
+	vertical-align: bottom;
+}
 </style>
 <script>
 function langChange() {
@@ -238,8 +242,8 @@ if (lang != 'tw' && lang != 'cn')
 	document.getElementById('btnArray').style.display = 'none';
 let tableText = {
 	emptyTable: '',
-	lengthMenu: '<svg style="height: 26; width: 28; vertical-align: middle"><text y="20" font-size="20">📝</text></svg>_MENU_',
-	search: '<svg style="height: 26; width: 28; vertical-align: middle"><text y="20" font-size="20">🔎</text></svg>',
+	lengthMenu: '<text id="barIcon">📝</text>_MENU_',
+	search: '<text id="barIcon">🔎</text>',
 	zeroRecords: '',
 	buttons: {selectNone: ''},
 	searchPanes: {emptyPanes: ''}
