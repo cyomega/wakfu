@@ -16,6 +16,7 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 	}
 	let failCount = 0;
 	let leastScore = 0;
+	let gradient = randomCount * 5;
 	sampling: while (randomCount--) {
 		let relic = 0;
 		let epic = 0;
@@ -93,7 +94,7 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 				currentID[9] = currentID[10] + 81;
 			}
 			typeWeight = cloneArr(typeWeightZero);
-			for (let n = setSuccess.length >> 2; n > 0; n--) {
+			for (let n = setSuccess.length >> 1; n > 0; n--) {
 				let r = Math.floor(Math.random() * setSuccess.length);
 				for (let i = type.length - 1; i >= 0; i--)
 					typeWeight[i].push(setSuccess[r].index[i]);
@@ -111,7 +112,7 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 				leastScore = setSuccess[49].score - 0.1;
 			}
 		}
-		else if (achieveRate > 0.8) {
+		else if (achieveRate > 0.9 - randomCount / gradient) {
 			failCount++;
 			if (failCount > 99) {
 				typeWeight = cloneArr(typeWeightZero);

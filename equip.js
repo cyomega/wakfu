@@ -276,7 +276,7 @@ $(document).ready(function() {
 			let j = statName[i];
 			statWeight[j] = Number(statWeight[j]) * Number(statImportant[i]);
 		}
-		let randomCount = setOption[1] ? 300000 : 100000;
+		let randomCount = 100000;
 		let equipQuantity = setOption[2] ? 20 : 10;
 		autoSets(data, statRequireObj, statWeight, setOption[0], randomCount, equipQuantity);
 	}
@@ -321,10 +321,8 @@ $(document).ready(function() {
 				data[i].name
 			]);
 		}
-		for (let i in equip) {
-			equip[i].sort((a, b) => a[1] - b[1]);
-			equip[i].sort((a, b) => b[8] - a[8]);
-		}
+		for (let i in equip)
+			equip[i].sort((a, b) => b[8] - a[8] || a[1] - b[1]);
 		let type = [];
 		for (let i = 0; i < 9; i++)
 			type[i] = equip[i];
@@ -388,24 +386,40 @@ $(document).ready(function() {
 			});
 		}
 		typeOrder.push(typeOrder.length);
-		let worker = [];
-		let workerCount = 4;
-		for (let i = workerCount - 1; i >= 0; i--) {
-			worker[i] = new Worker('solver.js');
-			worker[i].postMessage([type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, statMin, randomCount]);
-			worker[i].onmessage = e => {
-				let d = e.data;
-				for (let i = d.length - 1; i >= 0; i--)
-					if (!setSuccess.some(x => d[i].id.every(y => x.id.some(z => y == z))))
-						setSuccess.push(d[i]);
-				workerCount--;
-				if (workerCount == 0) {
-					setSuccess.sort((a, b) => b.score - a.score).splice(50);
-					alterSets();
+		function solverWorker(workerCount, lastScore, lastLength) {
+			for (let i = workerCount - 1; i >= 0; i--) {
+				worker[i].postMessage([type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, statMin, randomCount]);
+				worker[i].onmessage = e => {
+					let d = e.data;
+					for (let i = d.length - 1; i >= 0; i--)
+						if (!setSuccess.some(x => d[i].id.every(y => x.id.some(z => y == z))))
+							setSuccess.push(d[i]);
+					workerCount--;
+					if (workerCount == 0) {
+						setSuccess.sort((a, b) => b.score - a.score).splice(50);
+						let currentScore = setSuccess.length ? setSuccess[0].score + setSuccess[setSuccess.length - 1].score : 0;
+						if ((currentScore == lastScore && setSuccess.length == lastLength) || !repeatCount) {
+							alterSets();
+						}
+						else {
+							repeatCount--;
+							randomCount = setOption[1] ? 100000 : 30000;
+							solverWorker(6, currentScore, setSuccess.length);
+						}
+					}
+				};
+				if (worker.length == 2) {
+					for (let i = 2; i < 6; i++)
+						worker[i] = new Worker('solver.js');
 				}
-				worker[i].terminate();
-			};
+			}
 		}
+		let repeatCount = 5;
+		if (!worker.length) {
+			for (let i = 0; i < 2; i++)
+				worker[i] = new Worker('solver.js');
+		}
+		solverWorker(2);
 		function builderEnd(result) {
 			table.button(4).processing(false);
 			if (setRandomClick == 0) {
@@ -524,6 +538,7 @@ $(document).ready(function() {
 	let setResultAlter = 0;
 	let titleMastery = [];
 	let titleRes = [];
+	let worker = [];
 	for (let i = 0; i < 6; i++) {
 		if (langReverse.includes(lang))
 			titleMastery.push(uits.mastery + '<br>' + uits.masteryLong[i]);
