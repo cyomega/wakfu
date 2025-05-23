@@ -1,4 +1,4 @@
-﻿let uits = {};
+let uits = {};
 $.ajax({
 	url: 'data/texts.txt',
 	type: 'get',
@@ -26,19 +26,14 @@ $(document).ready(function() {
 		let options = [{
 			label: '🛇 ' + uits.secMastery,
 			value: function (rowData) {
-				let total = 0;
-				let i = uits.masteryLong.length;
-				while (i--) {
-					total += rowData[(i + 22)];
-				}
-				return total == 0;
+				return rowData.total == rowData[21];
 			}
 		}];
 		for (let i = 0; i < uits.masteryLong.length; ++i) {
 			options.push({
 				label: '🛇 ' + uits.masteryLong[i],
 				value: function (rowData) {
-					return rowData[(i + 22)] > 0 ? false : true;
+					return rowData[(i + 22)] <= 0;
 				}
 			});
 		}
@@ -227,7 +222,6 @@ $(document).ready(function() {
 		data.rarity = uits.rarity[data[5]];
 	}
 	function equipReference() {
-		$('.dtsp-searchPane:eq(0) .clearButton').click();
 		let set = '';
 		let equipExclude = table.rows({selected: true}).data();
 		if (equipExclude.length == 0)
@@ -242,9 +236,17 @@ $(document).ready(function() {
 			set = set.replace(/.$/, '');
 			table.search('^((?!' + set + ').)*$');
 		}
+		let dmgModifier = [];
+		for (let i = uits.masteryLong.length; i >= 0; i--)
+			dmgModifier[i] = Number(!$('.dtsp-searchPane:eq(3) table tbody tr:eq(' + i + ')').hasClass('selected'));
+		if (dmgModifier[0] == 0)
+			dmgModifier.fill(0);
 		const d = table.rows({search: 'applied'}).data();
 		let data = [];
 		for (let i = d.length - 1; i >= 0; i--) {
+			let modifiedDmg = Number(d[i][21]);
+			for (let j = uits.masteryLong.length; j > 0; j--)
+				modifiedDmg += dmgModifier[j] * Number(d[i][j + 21]);
 			data[i] = {
 				name: d[i][0].en,
 				id: d[i][2],
@@ -260,7 +262,7 @@ $(document).ready(function() {
 				ini: d[i][14],
 				cri: d[i][15],
 				block: d[i][16],
-				dmg: d[i].total,
+				dmg: modifiedDmg,
 				res: d[i][17]
 			};
 		}
@@ -808,7 +810,7 @@ $(document).ready(function() {
 		language: tableText,
 		rowCallback: function(row, data) {
 			$('td:eq(0)', row).css('background-color', function() {
-				return rarityColor[data[5]] + 'CC';
+				return rarityColor[data[5]] + 'EE';
 			});
 			$('td:eq(0)', row).html(function() {
 				let name = '<a href="https://www.wakfu.com/' + uits.linkParm[0] + '/mmorpg/' + uits.linkParm[1] + '/' + linkType[data[3]] + '/' + data[2] + '" target="_blank">' + data.name + '</a>';
