@@ -1,7 +1,11 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
+<script>
+let myURL = new URL(window.location.href);
+if (myURL.hostname == 'cyomega.github.io')
+	window.location.href = "https://wakfublue.pages.dev";
+</script>
 <title>Wakfu 1.87</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%221em%22 font-size=%2280%22>🔵</text></svg>">
 <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.min.css">
@@ -43,13 +47,18 @@
 <button class="btnTop" onclick="tableChange('items.js')">📋📄📕</button>
 <button class="btnTop" onclick="tableChange('subli.js')">🔮💎📜</button>
 </span>
-<div id="tableSize"><table id="tableArray" class="display"></table></div>
+<div id="equip.js" class="hide wide-table"><table id="equipTable" class="display"></table></div>
+<div id="items.js" class="hide"><table id="itemsTable" class="display"></table></div>
+<div id="subli.js" class="hide"><table id="subliTable" class="display"></table></div>
 <style>
 body {
 	font-family: sans-serif;
 	background: lightslategrey;
 	max-width: 1280px;
 	margin-left: max(10px, calc(50% - 640px));
+}
+div.hide {
+	display: none;
 }
 a {
 	color: darkblue;
@@ -90,10 +99,17 @@ table.dataTable thead th:last-child {
 	font-size: 13px;
 }
 input.dtsp-search::placeholder {
-	color: white !important;
+	color: whitesmoke !important;
 }
 div.dtsp-searchPane div.dt-container {
 	border-radius: 10px;
+	border: none;
+	box-shadow: 0 0 2px 2px slategrey;
+	transition: box-shadow 0.2s;
+}
+div.dtsp-searchPane div.dt-container:hover {
+	border: none;
+	box-shadow: 0 0 0 2px slategrey, 0 0 0 2.5px cyan;
 }
 div.dtsp-searchPane div.dt-container div.dt-scroll-body {
 	background: whitesmoke !important;
@@ -108,8 +124,30 @@ div.dtsp-searchPane div.dt-container div.dt-scroll-body table tr:hover {
 div.dtsp-panesContainer div.dtsp-title,
 div.dtsp-panesContainer button.dtsp-clearAll,
 div.dtsp-panesContainer button.dtsp-collapseAll,
-div.dtsp-panesContainer button.dtsp-showAll {
+div.dtsp-panesContainer button.dtsp-showAll,
+div.dtsp-topRow div.dtsp-subRow1 button.dtsp-searchIcon,
+div.dtsp-topRow button.dtsp-collapseButton,
+div.dtsp-narrow div.dtsp-subRow2 .clearButton:disabled {
 	display: none;
+}
+div.dtsp-narrow div.dtsp-subRow2 {
+	height: 0;
+}
+div.dtsp-narrow div.dtsp-subRow2 .clearButton {
+	margin: -55px 0 0 160px !important;
+	width: 25px !important;
+	height: 25px;
+	font-weight: 900;
+	font-size: 20px;
+	line-height: 5px;
+	transition: box-shadow 0.2s;
+}
+div.dtsp-narrow div.dtsp-subRow2 .clearButton:hover {
+	background: lightcyan;
+	box-shadow: 0 0 1px 1px whitesmoke, 0 0 0 2px cyan;
+}
+div.dtsp-searchPane div.dtsp-topRow div.dtsp-subRow1 input {
+	pointer-events: none;
 }
 .btnTop,
 div.dt-buttons .dt-button,
@@ -162,7 +200,7 @@ div.dt-button-collection .dt-button {
 }
 div.dt-button-collection .dt-button-active {
 	background: slategrey !important;
-	color: white;
+	color: whitesmoke;
 	box-shadow: 0 0 3px cyan, 0 0 5px lightcyan !important;
 }
 div.dt-button-collection .dt-button-active:hover {
@@ -178,7 +216,7 @@ div.dt-container .dt-paging .dt-paging-button {
 div.dt-container .dt-paging {
 	background: color-mix(in srgb, slategrey 70%, black);
 	border-radius: 16px;
-	color: white;
+	color: whitesmoke;
 }
 div.dt-button-collection.columns span.dt-button-spacer {
 	text-align: left;
@@ -229,9 +267,8 @@ function langChange() {
 const langList = ['tw', 'cn', 'en', 'es', 'pt', 'fr'];
 let lang = localStorage.getItem('lang');
 let lang2 = localStorage.getItem('lang2');
-let params = new URL(window.location.href).searchParams;
-if (params.has('ln') && !langList.includes(lang))
-	lang = params.get('ln');
+if (myURL.searchParams.has('ln') && !langList.includes(lang))
+	lang = myURL.searchParams.get('ln');
 if (!langList.includes(lang))
 	lang = 'tw';
 if (!langList.includes(lang2) || lang2 == lang)
@@ -248,16 +285,30 @@ let tableText = {
 	buttons: {selectNone: ''},
 	searchPanes: {emptyPanes: ''}
 };
+let loadedTable = [];
 function tableChange(t) {
+	let c = localStorage.getItem('table');
+	if (c == t)
+		return;
 	localStorage.setItem('table', t);
-	location.reload();
+	document.getElementById(c).classList.toggle('hide');
+	tableLoad(t);
 }
-if (localStorage.getItem('table') == null || (lang != 'tw' && lang != 'cn'))
-	localStorage.setItem('table', 'equip.js');
-let s = document.createElement('script');
-s.src = localStorage.getItem('table');
-document.getElementById("tableArray").appendChild(s);
-localStorage.removeItem('list');
+function tableLoad(t) {
+	if (!loadedTable.includes(t)) {
+		let s = document.createElement('script');
+		s.src = t;
+		document.body.appendChild(s);
+		loadedTable.push(t);
+	}
+	document.getElementById(t).classList.toggle('hide');
+}
+let defaultTable = localStorage.getItem('table');
+if (defaultTable == null || (lang != 'tw' && lang != 'cn')) {
+	defaultTable = 'equip.js';
+	localStorage.setItem('table', defaultTable);
+}
+tableLoad(defaultTable);
 </script>
 </body>
 </html>

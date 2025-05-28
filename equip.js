@@ -222,6 +222,7 @@ $(document).ready(function() {
 		data.rarity = uits.rarity[data[5]];
 	}
 	function equipReference() {
+		$('.dtsp-searchPane:eq(0) .clearButton').click();
 		let set = '';
 		let equipExclude = table.rows({selected: true}).data();
 		if (equipExclude.length == 0)
@@ -443,7 +444,6 @@ $(document).ready(function() {
 		function alterSets() {
 			if (setSuccess.length == 0)
 				return builderEnd(false);
-			setSuccess.sort((a, b) => b.score - a.score).splice(50);
 			let setAlter = [[setSuccess[0]]];
 			for (let n = 1; n < setSuccess.length; n++) {
 				if(setSuccess[n].id[10] > 26493 && setSuccess[n].id[10] < 26498)
@@ -475,7 +475,7 @@ $(document).ready(function() {
 						if (type[i][j][1] < 2)
 							return true;
 						for (let p = j + 1; p < type[i].length; p++) {
-							if (type[i][p][1] < 2)
+							if (type[i][p][1] < 2 || (type[i][p][9] == type[i][j][9] && type[i][p][8] == type[i][j][8] && type[i][p][1] == type[i][j][1]))
 								continue;
 							let tempStat = sAnm.stat.concat();
 							for (let a = statMin.length - 1; a >= 0; a--) {
@@ -555,7 +555,7 @@ $(document).ready(function() {
 	}
 	$.fn.dataTable.enum(uits.rarity);
 	$.fn.dataTable.enum(uits.type);
-	const table = $('#tableArray').DataTable({
+	const table = $('#equipTable').DataTable({
 		columns: [
 			{title: uits.title[0], data: 'name'},
 			null,	//lang2
@@ -619,7 +619,6 @@ $(document).ready(function() {
 		},
 		searchPanes: {
 			columns: [3, 4, 5, 17, 23],
-			controls: false,
 			orderable: false,
 			layout: 'columns-5',
 			dtOpts: {select: {style: 'multi'}},
@@ -841,7 +840,7 @@ $(document).ready(function() {
 			}
 		},
 	});
-	$('#tableSize').css({'margin-left': 'max(-480px, calc(50% - 50vw + 15px))', 'margin-right': 'max(-480px, calc(50% - 50vw + 15px))'});
+	$('.wide-table').css({'margin-left': 'max(-480px, calc(50% - 50vw + 15px))', 'margin-right': 'max(-480px, calc(50% - 50vw + 15px))'});
 	table.buttons(['1-0', '3-3', '3-4', '3-5', '3-6', '3-15', '3-16']).trigger();
 	table.buttons(['5', '6', '7', '8']).disable();
 });

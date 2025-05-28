@@ -3,7 +3,7 @@ $(document).ready(function() {
 		table.rows.add(JSON.parse(data)).draw();
 	});
 	const title = {tw:'英文（雙擊複製）', cn:'英文（双击复制）'};
-	const table = $('#tableArray').DataTable({
+	const table = $('#itemsTable').DataTable({
 		columns: [
 			{title: '中文', width: '400px'},
 			{title: title[lang]}
@@ -20,7 +20,7 @@ $(document).ready(function() {
 		},
 		language: tableText
 	});
-	$('#tableArray').on('dblclick', 'tr', function () {
+	$('#itemsTable').on('dblclick', 'tr', function () {
 		let data = table.row(this).data();
 		navigator.clipboard.writeText(data[1]);
 	});
