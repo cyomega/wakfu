@@ -390,6 +390,8 @@ $(document).ready(function() {
 		}
 		typeOrder.push(typeOrder.length);
 		function solverWorker(workerCount, lastScore, lastLength) {
+			if (workerCount > worker.length)
+				workerCount = worker.length;
 			for (let i = workerCount - 1; i >= 0; i--) {
 				worker[i].postMessage([type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, statMin, randomCount]);
 				worker[i].onmessage = e => {
@@ -411,10 +413,10 @@ $(document).ready(function() {
 						}
 					}
 				};
-				if (worker.length == 2) {
-					for (let i = 2; i < 6; i++)
-						worker[i] = new Worker('solver.js');
-				}
+			}
+			if (worker.length == 2) {
+				for (let i = 2; i < 6; i++)
+					worker[i] = new Worker('solver.js');
 			}
 		}
 		let repeatCount = 5;
