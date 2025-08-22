@@ -119,12 +119,10 @@ $(document).ready(function() {
 		];
 	}
 	function setRandomButton() {
-		let options = [
-			{
-				extend: 'spacer',
-				text: uits.setStatAchieve
-			},
-		];
+		let options = [{
+			extend: 'spacer',
+			text: uits.setStatAchieve
+		}];
 		let buttonText1 = [uits.title[4], uits.title[5], uits.title[6], uits.title[7], uits.masteryLong[2], uits.title[13]];
 		for (let i = 0; i < buttonText1.length; ++i) {
 			let j = i < 4 ? 1 : 10;
@@ -157,14 +155,23 @@ $(document).ready(function() {
 				text: '+10 ➜ +1',
 				action: function () {
 					setOption[3] = !setOption[3];
-					this.active(!this.active());
+					this.active(setOption[3]);
 				}
 			},
 			{
 				text: '<small>➕</small> ➜ <small>➖</small>',
 				action: function () {
 					setOption[4] = !setOption[4];
-					this.active(!this.active());
+					this.active(setOption[4]);
+				}
+			},
+			{
+				text: '<b>↺</b>',
+				action: function () {
+					setOption[3] = true;
+					setOption[4] = true;
+					statRequire = [1, 1, 0, 0, 0, 0];
+					table.buttons(['3-1', '3-2', '3-3', '3-4', '3-5', '3-6', '3-8', '3-9']).trigger();
 				}
 			},
 			{
@@ -183,12 +190,10 @@ $(document).ready(function() {
 				}
 			});
 		}
-		options.push(
-			{
-				extend: 'spacer',
-				text: uits.setRandomOption
-			},
-		);
+		options.push({
+			extend: 'spacer',
+			text: uits.setRandomOption
+		});
 		let buttonText3 = [uits.type[11], uits.setDepth, uits.setRange];
 		for (let i = 0; i < buttonText3.length; ++i) {
 			options.push({
@@ -390,8 +395,7 @@ $(document).ready(function() {
 		}
 		typeOrder.push(typeOrder.length);
 		function solverWorker(workerCount, lastScore, lastLength) {
-			if (workerCount > worker.length)
-				workerCount = worker.length;
+			workerCount = Math.min(workerCount, worker.length);
 			for (let i = workerCount - 1; i >= 0; i--) {
 				worker[i].postMessage([type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, statMin, randomCount]);
 				worker[i].onmessage = e => {
@@ -551,9 +555,9 @@ $(document).ready(function() {
 	}
 	for (let i = 2; i < 4; i++) {
 		if (langReverse.includes(lang))
-			titleRes.push(uits.mastery + '<br>' + uits.masteryLong[i]);
+			titleRes.push(uits.res + '<br>' + uits.masteryLong[i]);
 		else
-			titleRes.push(uits.masteryLong[i] + '<br>' + uits.mastery);
+			titleRes.push(uits.masteryLong[i] + '<br>' + uits.res);
 	}
 	$.fn.dataTable.enum(uits.rarity);
 	$.fn.dataTable.enum(uits.type);
@@ -841,8 +845,13 @@ $(document).ready(function() {
 				$(api.column(i).header()).html(title + '<br>' + total);
 			}
 		},
+		initComplete: function() {
+			this.api().columns().header().to$().each(function() {
+				$(this).attr('title', 'SHIFT 👆');
+			});
+		}
 	});
 	$('.wide-table').css({'margin-left': 'max(-480px, calc(50% - 50vw + 15px))', 'margin-right': 'max(-480px, calc(50% - 50vw + 15px))'});
-	table.buttons(['1-0', '3-3', '3-4', '3-5', '3-6', '3-15', '3-16']).trigger();
+	table.buttons(['1-0', '3-3', '3-4', '3-5', '3-6', '3-16', '3-17']).trigger();
 	table.buttons(['5', '6', '7', '8']).disable();
 });
