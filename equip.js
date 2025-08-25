@@ -847,11 +847,15 @@ $(document).ready(function() {
 		},
 		initComplete: function() {
 			this.api().columns().header().to$().each(function() {
-				$(this).attr('title', 'SHIFT 👆');
+				$(this).attr('title', '↓↑Shift');
 			});
 		}
 	});
 	$('.wide-table').css({'margin-left': 'max(-480px, calc(50% - 50vw + 15px))', 'margin-right': 'max(-480px, calc(50% - 50vw + 15px))'});
+	$('#equipTable').on('dblclick', 'tr', function () {
+		let data = table.row(this).data();
+		navigator.clipboard.writeText(data.name);
+	});
 	table.buttons(['1-0', '3-3', '3-4', '3-5', '3-6', '3-16', '3-17']).trigger();
 	table.buttons(['5', '6', '7', '8']).disable();
 });
