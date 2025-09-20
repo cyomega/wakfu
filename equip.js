@@ -385,7 +385,7 @@ $(document).ready(function() {
 		let setSuccess = [];
 		let typeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 		type[8].some((stat, index) => {
-			if ((stat[0] == 31361 || stat[0] = 32351) && !typeWeightZero[10].includes(index))
+			if ((stat[0] == 31361 || stat[0] == 32351) && !typeWeightZero[10].includes(index))
 				typeWeightZero[8].push(index);
 		});
 		if (twoHandWeapon == false) {
@@ -863,4 +863,5 @@ $(document).ready(function() {
 	table.buttons(['1-0', '3-3', '3-4', '3-5', '3-6', '3-16', '3-17']).trigger();
 	table.buttons(['5', '6', '7', '8']).disable();
 });
+
 
