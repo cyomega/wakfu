@@ -860,8 +860,7 @@ $(document).ready(function() {
 		let data = table.row(this).data();
 		navigator.clipboard.writeText(data.name);
 	});
+	$('#copyright').html(uits.copyright);
 	table.buttons(['1-0', '3-3', '3-4', '3-5', '3-6', '3-16', '3-17']).trigger();
 	table.buttons(['5', '6', '7', '8']).disable();
 });
-
-
