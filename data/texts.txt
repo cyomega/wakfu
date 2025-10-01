@@ -26,7 +26,8 @@
 "setFailed":"無符合結果，注意裝備是否有缺，或修改設定和條件",
 "setSelectNone":"取消裝備選取",
 "copyTable":"複製篩選表格到 Excel",
-"selectAllSearch":"當前全選"
+"selectAllSearch":"當前全選",
+"copyright":"<a href=\"https://wakfu.com/en\">WAKFU<\/a> is an MMORPG published by Ankama.<br><strong>WakfuBlue is an unofficial website<\/strong> with no connection to Ankama."
 },
 "cn":{
 "rarity":["紫","粉","蓝","金","橙","绿","白","灰"],
@@ -55,7 +56,8 @@
 "setFailed":"无符合结果，注意装备是否有缺，或修改设定和条件",
 "setSelectNone":"取消装备选取",
 "copyTable":"复制筛选表格到 Excel",
-"selectAllSearch":"当前全选"
+"selectAllSearch":"当前全选",
+"copyright":"<a href=\"https://wakfu.com/en\">WAKFU<\/a> is an MMORPG published by Ankama.<br><strong>WakfuBlue is an unofficial website<\/strong> with no connection to Ankama."
 },
 "en":{
 "rarity":["Relic","Epic","Souvenir","Legnedary","Mythical","Rare","Common","Grey"],
@@ -85,7 +87,8 @@
 "setSelectNone":"Unselect All",
 "copyTable":"Copy Filtered Table to Excel",
 "selectAllSearch":"Select All",
-"dblClickCopy":"Double Click Copy"
+"dblClickCopy":"Double Click Copy",
+"copyright":"<a href=\"https://wakfu.com/en\">WAKFU<\/a> is an MMORPG published by Ankama.<br><strong>WakfuBlue is an unofficial website<\/strong> with no connection to Ankama."
 },
 "es":{
 "rarity":["Reliquia","Épico","Recuerdo","Legendario","Mítico","Raro","Común","Gris"],
@@ -114,7 +117,8 @@
 "setFailed":"Sin resultados. Compruebe si faltan equipos, modifique la configuración o el filtro.",
 "setSelectNone":"Deseleccionar Todos",
 "copyTable":"Copiar Tabla Filtrada a Excel",
-"selectAllSearch":"Seleccionar Todos"
+"selectAllSearch":"Seleccionar Todos",
+"copyright":"<a href=\"https://wakfu.com/es\">WAKFU<\/a> es un MMORPG editado por Ankama.<br><strong>WakfuBlue es un sitio web no oficial<\/strong> sin ninguna relación con Ankama."
 },
 "pt":{
 "rarity":["Relíquias","Épico","Souvenir","Lendário","Lendário","Raro","Comum","Cinza"],
@@ -143,7 +147,8 @@
 "setFailed":"Sem resultados. Verifique se há equipamentos faltantes, modifique configurações ou filtro.",
 "setSelectNone":"Desmarcar Tudo",
 "copyTable":"Copiar tabela filtrada para Excel",
-"selectAllSearch":"Selecionar Tudo"
+"selectAllSearch":"Selecionar Tudo",
+"copyright":"<a href=\"https://wakfu.com/pt\">WAKFU<\/a> é um MMORPG publicado pela Ankama.<br><strong>WakfuBlue é um site não oficial<\/strong> sem vínculo com a Ankama."
 },
 "fr":{
 "rarity":["Relique","Epique","Souvenir","Légendaire","Mythique","Rare","Commun","Gris"],
@@ -172,6 +177,7 @@
 "setFailed":"Pas de résultat. Vérifiez s'il manque des équipements, ou modifiez les paramètres ou le filtre.",
 "setSelectNone":"Tout Désélectionner",
 "copyTable":"Copier le Tableau Filtré vers Excel",
-"selectAllSearch":"Tout Sélectionner"
+"selectAllSearch":"Tout Sélectionner",
+"copyright":"<a href=\"https://wakfu.com/fr\">WAKFU<\/a> est un MMORPG édité par Ankama.<br><strong>WakfuBlue est un site non officiel<\/strong> sans aucun lien avec Ankama."
 }
 }
