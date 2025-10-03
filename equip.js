@@ -96,6 +96,13 @@ $(document).ready(function() {
 	function visableButton() {
 		return [
 			{
+				text: uits.visable[3],
+				action: function (e, dt) {
+					dt.columns([21, 22]).visible(!dt.column(21).visible());
+					this.active(!this.active());
+				}
+			},
+			{
 				text: uits.secMastery,
 				action: function (e, dt) {
 					dt.columns([-6, -7, -8, -9, -10, -11]).visible(!dt.column(-6).visible());
@@ -785,7 +792,7 @@ $(document).ready(function() {
 				type: $.fn.dataTable.absoluteOrderNumber([{value: '', position: 'bottom'}])
 			},
 			{
-				targets: [1, 2, 5, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11],
+				targets: [1, 2, 5, 21, 22, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11],
 				visible: false
 			},
 			{
@@ -861,6 +868,7 @@ $(document).ready(function() {
 		navigator.clipboard.writeText(data.name);
 	});
 	$('#copyright').html(uits.copyright);
-	table.buttons(['1-0', '3-3', '3-4', '3-5', '3-6', '3-16', '3-17']).trigger();
+	table.buttons(['1-1', '3-3', '3-4', '3-5', '3-6', '3-16', '3-17']).trigger();
 	table.buttons(['5', '6', '7', '8']).disable();
 });
+
