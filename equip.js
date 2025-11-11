@@ -101,6 +101,8 @@ $(document).ready(function() {
 			[uits.visable[1], [-4, -5]],
 			[uits.visable[2], [-1, -2, -3]]
 		];
+		if (preSetVis == null || preSetVis.length != visBtn.length)
+			preSetVis = new Array(visBtn.length).fill(0);
 		let options = [];
 		for (let i = 0; i < visBtn.length; ++i) {
 			let title = visBtn[i][0];
@@ -552,8 +554,6 @@ $(document).ready(function() {
 	let titleRes = [];
 	let worker = [];
 	let preSetVis = JSON.parse(localStorage.getItem('preSetVis'));
-	if (preSetVis == null || preSetVis.length != 5)
-		preSetVis = [0, 0, 0, 0, 0];
 	for (let i = 0; i < 6; i++) {
 		if (langReverse.includes(lang))
 			titleMastery.push(uits.mastery + '<br>' + uits.masteryLong[i]);
@@ -872,3 +872,4 @@ $(document).ready(function() {
 	table.buttons(preSetBtn).trigger();
 	table.buttons(['5', '6', '7', '8']).disable();
 });
+
