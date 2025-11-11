@@ -24,14 +24,14 @@ $(document).ready(function() {
 	}
 	function masteryPane() {
 		let options = [{
-			label: '🛇 ' + uits.secMastery,
+			label: '✖ ' + uits.secMastery,
 			value: function (rowData) {
 				return rowData.total == rowData[21];
 			}
 		}];
 		for (let i = 0; i < uits.masteryLong.length; ++i) {
 			options.push({
-				label: '🛇 ' + uits.masteryLong[i],
+				label: '✖ ' + uits.masteryLong[i],
 				value: function (rowData) {
 					return rowData[(i + 22)] <= 0;
 				}
@@ -94,36 +94,29 @@ $(document).ready(function() {
 		return options;
 	}
 	function visableButton() {
-		return [
-			{
-				text: uits.visable[3],
-				action: function (e, dt) {
-					dt.columns([21, 22]).visible(!dt.column(21).visible());
-					this.active(!this.active());
-				}
-			},
-			{
-				text: uits.secMastery,
-				action: function (e, dt) {
-					dt.columns([-6, -7, -8, -9, -10, -11]).visible(!dt.column(-6).visible());
-					this.active(!this.active());
-				}
-			},
-			{
-				text: uits.visable[1],
-				action: function (e, dt) {
-					dt.columns([-4, -5]).visible(!dt.column(-4).visible());
-					this.active(!this.active());
-				}
-			},
-			{
-				text: uits.visable[2],
-				action: function (e, dt) {
-					dt.columns([-1, -2, -3]).visible(!dt.column(-1).visible());
-					this.active(!this.active());
-				}
-			}
+		let visBtn = [
+			[uits.title[3], [5]],
+			[uits.visable[3], [21, 22]],
+			[uits.secMastery, [-6, -7, -8, -9, -10, -11]],
+			[uits.visable[1], [-4, -5]],
+			[uits.visable[2], [-1, -2, -3]]
 		];
+		let options = [];
+		for (let i = 0; i < visBtn.length; ++i) {
+			let title = visBtn[i][0];
+			let col = visBtn[i][1];
+			options.push({
+				text: title,
+				action: function (e, dt) {
+					let vis = !dt.column(col[0]).visible();
+					dt.columns(col).visible(vis);
+					this.active(!this.active());
+					preSetVis[i] = vis;
+					localStorage.setItem('preSetVis', JSON.stringify(preSetVis));
+				}
+			});
+		}
+		return options;
 	}
 	function setRandomButton() {
 		let options = [{
@@ -558,6 +551,9 @@ $(document).ready(function() {
 	let titleMastery = [];
 	let titleRes = [];
 	let worker = [];
+	let preSetVis = JSON.parse(localStorage.getItem('preSetVis'));
+	if (preSetVis == null || preSetVis.length != 5)
+		preSetVis = [0, 0, 0, 0, 0];
 	for (let i = 0; i < 6; i++) {
 		if (langReverse.includes(lang))
 			titleMastery.push(uits.mastery + '<br>' + uits.masteryLong[i]);
@@ -868,7 +864,11 @@ $(document).ready(function() {
 		navigator.clipboard.writeText(data.name);
 	});
 	$('#copyright').html(uits.copyright);
-	table.buttons(['1-1', '3-3', '3-4', '3-5', '3-6', '3-16', '3-17']).trigger();
+	let preSetBtn = ['3-3', '3-4', '3-5', '3-6', '3-16', '3-17'];
+	for (let i = 0; i < preSetVis.length; ++i) {
+		if (preSetVis[i])
+			preSetBtn.push('1-' + i);
+	}
+	table.buttons(preSetBtn).trigger();
 	table.buttons(['5', '6', '7', '8']).disable();
 });
-
