@@ -161,7 +161,7 @@ $(document).ready(function() {
 				}
 			},
 			{
-				text: '<small>➕</small> ➜ <small>➖</small>',
+				text: '<span style="font-variant-emoji:text">➕ ➜ ➖</span>',
 				action: function () {
 					setOption[4] = !setOption[4];
 					this.active(setOption[4]);
@@ -620,7 +620,7 @@ $(document).ready(function() {
 		layout: {
 			top3Start: [{div: {html: '<a style="margin-left: max(0px, min(460px, calc(50vw - 650px)))"></a>'}}, 'searchPanes'],
 			top2Start: [{div: {html: '<a style="margin-left: max(0px, min(460px, calc(50vw - 650px)))"></a>'}}, 'buttons'],
-			topStart: {div: {html: '<span style="color: white; font-size: 15px; font-weight: bold; margin-left: max(10px, min(480px, calc(50vw - 640px)))">' + uits.scoreDes + '</span>'}},
+			topStart: {div: {html: '<span style="color: whitesmoke; text-shadow: 0px 0px 1px lightcyan, 0px 0px 3px darkslategrey; font-size: 15px; font-weight: bold; margin-left: max(10px, min(480px, calc(50vw - 640px)))">' + uits.scoreDes + '</span>'}},
 			topEnd: ['pageLength', 'search', {div: {html: '<a style="margin-right: max(10px, min(480px, calc(50vw - 640px)))"></a>'}}],
 			bottom: 'paging',
 			bottomStart: null,

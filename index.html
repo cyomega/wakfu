@@ -38,7 +38,7 @@ if (myURL.hostname == 'cyomega.github.io')
 //-->
 </head>
 <body>
-🌐
+<span style="filter: brightness(120%) drop-shadow(0px 0px 1px darkslategrey)">🌐</span>
 <select id="langSelect1" onchange="langChange()">
 	<option value="tw">繁體中文</option>
 	<option value="cn">简体中文</option>
@@ -47,7 +47,7 @@ if (myURL.hostname == 'cyomega.github.io')
 	<option value="pt">Português</option>
 	<option value="fr">Français</option>
 </select>
-&
+<b style="text-shadow: 0px 0px 1px whitesmoke">&</b>
 <select id="langSelect2" onchange="langChange()">
 	<option value="none">--</option>
 	<option value="tw">繁體中文</option>
@@ -58,9 +58,9 @@ if (myURL.hostname == 'cyomega.github.io')
 	<option value="fr">Français</option>
 </select>
 <span id="btnArray" style="margin-left: 20px">
-<button class="btnTop" onclick="tableChange('equip.js')">⚔️🛡️🏹</button>
-<button class="btnTop" onclick="tableChange('items.js')">📋📄📕</button>
-<button class="btnTop" onclick="tableChange('subli.js')">🔮💎📜</button>
+<button class="btnTop btnEmoji" onclick="tableChange('equip.js')">⚔️🛡️🏹</button>
+<button class="btnTop btnEmoji" onclick="tableChange('items.js')">📋📄📕</button>
+<button class="btnTop btnEmoji" onclick="tableChange('subli.js')">🔮💎📜</button>
 </span>
 <div id="equip.js" class="hide wide-table"><table id="equipTable" class="display"></table></div>
 <div id="items.js" class="hide"><table id="itemsTable" class="display"></table></div>
@@ -78,6 +78,9 @@ div.hide {
 }
 a {
 	color: darkblue;
+}
+.btnEmoji {
+	text-shadow: -1px 0px slategrey, 1px 0px slategrey, 0px 1px slategrey, 0px -1px slategrey;
 }
 table.dataTable,
 div.dt-container div.dt-layout-row:nth-child(4) {
@@ -116,6 +119,8 @@ table.dataTable thead th:last-child {
 }
 input.dtsp-search::placeholder {
 	color: whitesmoke !important;
+	text-shadow: 0px 0px 1px lightcyan, 0px 0px 3px darkslategrey;
+	font-weight: bold !important;
 }
 div.dtsp-searchPane div.dt-container {
 	border-radius: 10px;
@@ -272,6 +277,7 @@ div.dt-button-collection.columns.socketsCollection {
 #barIcon {
 	font-size: 20px;
 	vertical-align: bottom;
+	text-shadow: 0px 0px 2px darkslategrey;
 }
 </style>
 <script>
@@ -328,4 +334,3 @@ tableLoad(defaultTable);
 </script>
 </body>
 </html>
-

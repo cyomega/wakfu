@@ -48,9 +48,9 @@ $(document).ready(function() {
 		'<svg height="26" width="28"><polygon points="14 1,26 25,2 25" style="fill:DodgerBlue; stroke:Black" /></svg>',
 		'<svg height="26" width="28"><polygon points="7 1,21 1,27 10,15 25,13 25,2 10" style="fill:DarkOrchid; stroke:Black" /></svg>',
 		'<svg height="26" width="28"><polygon points="7 1,21 1,27 10,15 25,13 25,2 10" style="fill:HotPink; stroke:Black" /></svg>',
-		'<svg height="26" width="28"><text y="21" font-size="20">❌</text></svg>',
-		'<svg height="26" width="28"><text y="21" font-size="20">📜</text></svg>',
-		'<svg height="26" width="28"><text y="21" font-size="20">📚</text></svg>'
+		'<svg height="26" width="28"><text class="btnEmoji" y="21" font-size="20">❌</text></svg>',
+		'<svg height="26" width="28"><text class="btnEmoji" y="21" font-size="20">📜</text></svg>',
+		'<svg height="26" width="28"><text class="btnEmoji" y="21" font-size="20">📚</text></svg>'
 	];
 	const socketsCombo = ['\\d', '\\d', '\\d', '\\d'];
 	const socketsComboName = [sockets[0], sockets[0], sockets[0], sockets[0]];
