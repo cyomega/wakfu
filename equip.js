@@ -343,7 +343,7 @@ $(document).ready(function() {
 		}
 		else
 			type[10] = equip[11];
-		type.push(equip[12]);
+		type[type.length] = equip[12];
 		let typeWeightZero = [];
 		for (let i = type.length - 1; i >= 0; i--)
 			typeWeightZero.push([]);
@@ -383,11 +383,9 @@ $(document).ready(function() {
 		}
 		if (typeWeightZero[9].length < 2)
 			return builderEnd(false);
-		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
-		let setSuccess = [];
 		let typeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 		type[8].some((stat, index) => {
-			if ((stat[0] == 31361 || stat[0] == 32351) && !typeWeightZero[10].includes(index))
+			if ((stat[0] == 31361 || stat[0] == 32351) && !typeWeightZero[8].includes(index))
 				typeWeightZero[8].push(index);
 		});
 		if (twoHandWeapon == false) {
@@ -400,6 +398,8 @@ $(document).ready(function() {
 			});
 		}
 		typeOrder.push(typeOrder.length);
+		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
+		let setSuccess = [];
 		function solverWorker(workerCount, lastScore, lastLength) {
 			workerCount = Math.min(workerCount, worker.length);
 			for (let i = workerCount - 1; i >= 0; i--) {
@@ -413,9 +413,8 @@ $(document).ready(function() {
 					if (workerCount == 0) {
 						setSuccess.sort((a, b) => b.score - a.score).splice(50);
 						let currentScore = setSuccess.length ? setSuccess[0].score + setSuccess[setSuccess.length - 1].score : 0;
-						if ((currentScore == lastScore && setSuccess.length == lastLength) || !repeatCount) {
+						if ((currentScore == lastScore && setSuccess.length == lastLength) || !repeatCount)
 							alterSets();
-						}
 						else {
 							repeatCount--;
 							randomCount = setOption[1] ? 100000 : 30000;

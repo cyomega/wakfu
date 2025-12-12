@@ -50,9 +50,12 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 			}
 			currentIndex[i] = j;
 			currentID[i] = type[i][j][0];
-			if (type[i][j][1] == 0)
+			if (type[i][j][1] == 0) {
 				relic++;
-			if (type[i][j][1] == 1 || (currentID[i] > 26493 && currentID[i] < 26498))
+				if (currentID[i] > 26493 && currentID[i] < 26498)
+					epic++;
+			}
+			else if (type[i][j][1] == 1)
 				epic++;
 			if (relic > 1 || epic > 1)
 				continue sampling;
