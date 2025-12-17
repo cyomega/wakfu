@@ -350,12 +350,15 @@ $(document).ready(function() {
 		for (let i = type.length - 1; i >= 0; i--) {
 			if (type[i].length == 0)
 				type[i].push([99999, 7, 0, 0, 0, 0, 0, 0, 0, 'cyz']);
-			let weight = Math.min(type[i].length, 573);
+			let weight = type[i].length;
+			let countMax = i == 9 ? equipQuantity*2 : equipQuantity;
 			let count = 0;
 			for (let j = 0; j < weight; j++) {
 				let enlist = true;
 				let noCount = true;
 				if (type[i][j][1] > 1) {
+					if (count >= countMax)
+						continue;
 					noCount = false;
 					for (let k = 0; k < j; k++) {
 						if (type[i][k][1] < 2)
@@ -376,27 +379,14 @@ $(document).ready(function() {
 					typeWeightZero[i].push(j);
 					if (noCount == false)	
 						count++;
-					if ((i != 9 && count >= equipQuantity) || (i == 9 && count >= equipQuantity * 2))
-						break;
 				}
 			}
 		}
 		if (typeWeightZero[9].length < 2)
 			return builderEnd(false);
 		let typeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-		type[8].some((stat, index) => {
-			if ((stat[0] == 31361 || stat[0] == 32351) && !typeWeightZero[8].includes(index))
-				typeWeightZero[8].push(index);
-		});
-		if (twoHandWeapon == false) {
+		if (twoHandWeapon == false)
 			typeOrder.push(11);
-			type[10].some((stat, index) => {
-				if (stat[0] == 26593 && !typeWeightZero[10].includes(index)) {
-					typeWeightZero[10].push(index);
-					return true;
-				}
-			});
-		}
 		typeOrder.push(typeOrder.length);
 		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
 		let setSuccess = [];
@@ -871,4 +861,3 @@ $(document).ready(function() {
 	table.buttons(preSetBtn).trigger();
 	table.buttons(['5', '6', '7', '8']).disable();
 });
-
