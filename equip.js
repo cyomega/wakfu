@@ -348,7 +348,7 @@ $(document).ready(function() {
 		for (let i = type.length - 1; i >= 0; i--)
 			typeWeightZero.push([]);
 		for (let i = type.length - 1; i >= 0; i--) {
-			if (type[i].length == 0)
+			if (!type[i].some(e => e[1] > 1))
 				type[i].push([99999, 7, 0, 0, 0, 0, 0, 0, 0, 'cyz']);
 			let weight = type[i].length;
 			let countMax = i == 9 ? equipQuantity*2 : equipQuantity;
@@ -382,8 +382,10 @@ $(document).ready(function() {
 				}
 			}
 		}
-		if (typeWeightZero[9].length < 2)
-			return builderEnd(false);
+		if (typeWeightZero[9].length < 2) {
+			type[9].push([99998, 7, 0, 0, 0, 0, 0, 0, 0, 'cyz']);
+			typeWeightZero[9].push(type[9].length - 1);
+		}
 		let typeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 		if (twoHandWeapon == false)
 			typeOrder.push(11);
@@ -861,3 +863,4 @@ $(document).ready(function() {
 	table.buttons(preSetBtn).trigger();
 	table.buttons(['5', '6', '7', '8']).disable();
 });
+
