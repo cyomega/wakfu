@@ -26,14 +26,14 @@ $(document).ready(function() {
 		let options = [{
 			label: '✖ ' + uits.secMastery,
 			value: function (rowData) {
-				return rowData.total == rowData[21];
+				return rowData.total == rowData[20];
 			}
 		}];
 		for (let i = 0; i < uits.masteryLong.length; ++i) {
 			options.push({
 				label: '✖ ' + uits.masteryLong[i],
 				value: function (rowData) {
-					return rowData[(i + 22)] <= 0;
+					return rowData[(i + 21)] <= 0;
 				}
 			});
 		}
@@ -96,7 +96,7 @@ $(document).ready(function() {
 	function visableButton() {
 		let visBtn = [
 			[uits.title[3], [5]],
-			[uits.visable[3], [21, 22]],
+			[uits.visable[3], [20, 21]],
 			[uits.secMastery, [-6, -7, -8, -9, -10, -11]],
 			[uits.visable[1], [-4, -5]],
 			[uits.visable[2], [-1, -2, -3]]
@@ -125,7 +125,7 @@ $(document).ready(function() {
 			extend: 'spacer',
 			text: uits.setStatAchieve
 		}];
-		let buttonText1 = [uits.title[4], uits.title[5], uits.title[6], uits.title[7], uits.masteryLong[2], uits.title[13]];
+		let buttonText1 = [uits.title[4], uits.title[5], uits.title[6], uits.title[7], uits.masteryLong[2], uits.title[12]];
 		for (let i = 0; i < buttonText1.length; ++i) {
 			let j = i < 4 ? 1 : 10;
 			options.push({
@@ -181,7 +181,7 @@ $(document).ready(function() {
 				text: uits.setStatScore
 			}
 		);
-		let buttonText2 = [uits.title[9], uits.title[10], uits.title[11], uits.title[12], uits.mastery, uits.res];
+		let buttonText2 = [uits.title[8], uits.title[9], uits.title[10], uits.title[11], uits.mastery, uits.res];
 		for (let i = 0; i < buttonText2.length; ++i) {
 			options.push({
 				text: buttonText2[i],
@@ -211,19 +211,19 @@ $(document).ready(function() {
 	}
 	function newData(data) {
 		let _2ndMastery = '';
-		let totalMastery = Number(data[21]);
+		let totalMastery = Number(data[20]);
 		let i = uits.masteryShort.length;
 		while (i--) {
-			if (data[(i + 22)] > 0) {
+			if (data[(i + 21)] > 0) {
 				_2ndMastery = uits.masteryShort[i] + _2ndMastery;
-				totalMastery += Number(data[(i + 22)]);
+				totalMastery += Number(data[(i + 21)]);
 			}
 		}
 		data.name = data[0][lang];
 		if (lang2 != 'none')
 			data[1] = data[0][lang2];
 		data.mastery = _2ndMastery;
-		data.score = (totalMastery/30 + Number(data[17]) / 6.25).toFixed(1);
+		data.score = (totalMastery/30 + Number(data[16]) / 6.25).toFixed(1);
 		data.total = totalMastery;
 		data.type = uits.type[data[3]];
 		data.rarity = uits.rarity[data[5]];
@@ -252,9 +252,9 @@ $(document).ready(function() {
 		const d = table.rows({search: 'applied'}).data();
 		let data = [];
 		for (let i = d.length - 1; i >= 0; i--) {
-			let modifiedDmg = Number(d[i][21]);
+			let modifiedDmg = Number(d[i][20]);
 			for (let j = uits.masteryLong.length; j > 0; j--)
-				modifiedDmg += dmgModifier[j] * Number(d[i][j + 21]);
+				modifiedDmg += dmgModifier[j] * Number(d[i][j + 20]);
 			data[i] = {
 				name: d[i][0].en,
 				id: d[i][2],
@@ -264,14 +264,14 @@ $(document).ready(function() {
 				mp: d[i][7],
 				wp: d[i][8],
 				range: d[i][9],
-				hp: d[i][11],
-				lock: d[i][12],
-				dodge: d[i][13],
-				ini: d[i][14],
-				cri: d[i][15],
-				block: d[i][16],
+				hp: d[i][10],
+				lock: d[i][11],
+				dodge: d[i][12],
+				ini: d[i][13],
+				cri: d[i][14],
+				block: d[i][15],
 				dmg: modifiedDmg,
-				res: d[i][17]
+				res: d[i][16]
 			};
 		}
 		let statName = ['ap', 'mp', 'wp', 'range', 'cri', 'block'];
@@ -575,28 +575,27 @@ $(document).ready(function() {
 			{title: uits.title[9]},
 			{title: uits.title[10]},
 			{title: uits.title[11]},
-			{title: uits.title[12]},
-			{title: uits.masteryLong[2]},		//15
-			{title: uits.title[13]},
-			{title: uits.title[14], data: 'mastery'},
-			{title: uits.title[15], data: 'score'},
-			{title: uits.title[16], data: 'total'},
-			{title: uits.title[17], data: 17},	//20
-			{title: uits.title[18], data: 18},	//-15
+			{title: uits.masteryLong[2]},
+			{title: uits.title[12]},		//15
+			{title: uits.title[13], data: 'mastery'},
+			{title: uits.title[14], data: 'score'},
+			{title: uits.title[15], data: 'total'},
+			{title: uits.title[16], data: 16},
+			{title: uits.title[17], data: 17},	//20 -15
+			{title: uits.title[18], data: 18},
 			{title: uits.title[19], data: 19},
 			{title: uits.title[20], data: 20},
-			{title: uits.title[21], data: 21},
-			{title: titleMastery[0], data: 22},	//25
-			{title: titleMastery[1], data: 23},	//-10
-			{title: titleMastery[2], data: 24},
-			{title: titleMastery[3], data: 25},
-			{title: titleMastery[4], data: 26},
-			{title: titleMastery[5], data: 27},	//30
-			{title: titleRes[0], data: 28},		//-5
-			{title: titleRes[1], data: 29},
+			{title: titleMastery[0], data: 21},
+			{title: titleMastery[1], data: 22},	//25 -10
+			{title: titleMastery[2], data: 23},
+			{title: titleMastery[3], data: 24},
+			{title: titleMastery[4], data: 25},
+			{title: titleMastery[5], data: 26},
+			{title: titleRes[0], data: 27},		//30 -5
+			{title: titleRes[1], data: 28},
+			{title: uits.title[21], data: 29},
 			{title: uits.title[22], data: 30},
-			{title: uits.title[23], data: 31},
-			{title: uits.title[24], data: 32}
+			{title: uits.title[23], data: 31}
 		],
 		pageLength: 15,
 		lengthMenu: [15, 25, 50, 100],
@@ -607,7 +606,7 @@ $(document).ready(function() {
 		search: {regex: true},
 		select: true,
 		ordering: {indicators: false},
-		order: [[3, 'asc'], [18, 'desc'], [19, 'desc']],
+		order: [[3, 'asc'], [17, 'desc'], [18, 'desc']],
 		layout: {
 			top3Start: [{div: {html: '<a style="margin-left: max(0px, min(460px, calc(50vw - 650px)))"></a>'}}, 'searchPanes'],
 			top2Start: [{div: {html: '<a style="margin-left: max(0px, min(460px, calc(50vw - 650px)))"></a>'}}, 'buttons'],
@@ -622,7 +621,7 @@ $(document).ready(function() {
 			selector: 'td:not(:first-child)'
 		},
 		searchPanes: {
-			columns: [3, 4, 5, 17, 23],
+			columns: [3, 4, 5, 16, 22],
 			orderable: false,
 			layout: 'columns-5',
 			dtOpts: {select: {style: 'multi'}},
@@ -721,10 +720,10 @@ $(document).ready(function() {
 				action: function() {
 					const d = table.rows({search: 'applied'}).data();
 					let text = '<table><tr>';
-					for (let i = 0; i < 13; i++)
+					for (let i = 0; i < 12; i++)
 						text += '<th>' + uits.title[i] + '</th>';
 					text += '<th>' + uits.masteryLong[2] + '</th>';
-					for (let i = 13; i < 22; i++)
+					for (let i = 12; i < 21; i++)
 						text += '<th>' + uits.title[i] + '</th>';
 					for (let i = 0; i < uits.masteryLong.length; i++) {
 						if (langReverse.includes(lang))
@@ -734,21 +733,21 @@ $(document).ready(function() {
 					}
 					text += '<th>' + uits.masteryLong[2] + '<br>' + uits.res + '</th>'
 						+ '<th>' + uits.masteryLong[3] + '<br>' + uits.res + '</th>'
+						+ '<th>' + uits.title[21] + '</th>'
 						+ '<th>' + uits.title[22] + '</th>'
 						+ '<th>' + uits.title[23] + '</th>'
-						+ '<th>' + uits.title[24] + '</th>'
 						+ '</tr>';
 					for (let i = 0; i < d.length; i++) {
 						text += '<tr><td style="background-color:' + rarityColor[d[i][5]] + '"><a href="https://www.wakfu.com/' + uits.linkParm[0] + '/mmorpg/' + uits.linkParm[1] + '/' + linkType[d[i][3]] + '/' + d[i][2] + '">' + d[i].name + '</a></td>'
 							+ '<td align="center">' + d[i].type + '</td>'
 							+ '<td align="center">' + d[i][4] + '</td>'
 							+ '<td align="center">' + d[i].rarity + '</td>';
-						for (let j = 6; j < 17; j++)
+						for (let j = 6; j < 16; j++)
 							text += '<td align="center">' + d[i][j] + '</td>';
 						text += '<td align="center">' + d[i].mastery + '</td>'
 							+ '<td align="center">' + d[i].score + '</td>'
 							+ '<td align="center">' + d[i].total + '</td>';
-						for (let j = 17; j < 33; j++)
+						for (let j = 16; j < 32; j++)
 							text += '<td align="center">' + d[i][j] + '</td>';
 						text += '</tr>';
 					}
@@ -770,16 +769,16 @@ $(document).ready(function() {
 				searchPanes: {dtOpts: {select: {style: 'os'}}}
 			},
 			{
-				targets: [18, 20],
+				targets: [17, 19],
 				render: $.fn.dataTable.render.number('', '.', 1, '')
 			},
 			{
-				targets: [4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 22, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35],
+				targets: [4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 21, 23, 24, 25, 26, 27, 29, 30, 31, 32, 33, 34],
 				render: $.fn.dataTable.render.number('', '.', 0, ''),
 				type: $.fn.dataTable.absoluteOrderNumber([{value: '', position: 'bottom'}])
 			},
 			{
-				targets: [1, 2, 5, 21, 22, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11],
+				targets: [1, 2, 5, 20, 21, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11],
 				visible: false
 			},
 			{
@@ -790,7 +789,7 @@ $(document).ready(function() {
 				}
 			},
 			{
-				targets: 17,
+				targets: 16,
 				searchPanes: {
 					header: uits.positive,
 					combiner: 'and',
@@ -798,7 +797,7 @@ $(document).ready(function() {
 				}
 			},
 			{
-				targets: 23,
+				targets: 22,
 				searchPanes: {
 					header: uits.eleNum,
 					emptyMessage: '0'
@@ -826,19 +825,19 @@ $(document).ready(function() {
 				return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
 			};
 			let title;
-			for (let i = 6; i < 21; i++) {
-				if (i == 17 || i == 18)
+			for (let i = 6; i < 20; i++) {
+				if (i == 16 || i == 17)
 					continue;
 				let total = api.column(i, { search: 'applied' }).data().reduce(function (a, b) {
 					return intVal(a) + intVal(b);
 				}, 0);
-				if (i == 19 || i == 20)
+				if (i == 18 || i == 19)
 					total = total.toFixed(1);
-				if (i < 15)
+				if (i < 14)
 					title = uits.title[i - 2];
-				else if (i == 15)
+				else if (i == 14)
 					title = uits.masteryLong[2];
-				else if (i > 15)
+				else if (i > 14)
 					title = uits.title[i - 3];
 				$(api.column(i).header()).html(title + '<br>' + total);
 			}
