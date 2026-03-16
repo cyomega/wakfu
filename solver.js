@@ -1,8 +1,17 @@
 function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, statMin, randomCount) {
+	if (type == 0)
+		type = typeWorker;
+	else
+		typeWorker = type;
+	const typeID = type.id;
+	const typeRarity = type.rarity;
+	const typeStats = type.stats;
+	const typeScore = type.score;
+	const typeLen = typeID.length;
+	const statLen = statMin.length;
 	function achieveCheck(stat, statMin) {
 		let achieve = 0;
-		let i = stat.length;
-		while (i--) {
+		for (let i = statLen; i--;) {
 			if (statMin[i] != -1)
 				achieve += Math.min(stat[i], statMin[i]);
 		}
@@ -10,105 +19,148 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 	}
 	function cloneArr(arr) {
 		let clone = [];
-		for (let i = arr.length - 1; i >= 0; i--)
-			clone[i] = arr[i].concat();
+		for (let i = arr.length; i--;)
+			clone[i] = arr[i].slice();
 		return clone;
 	}
+	const gradient = randomCount * 5;
 	let failCount = 0;
 	let leastScore = 0;
-	let gradient = randomCount * 5;
+	let relic = 0;
+	let epic = 0;
+	let currentIndex = new Int32Array(typeLen);
+	let currentID = new Int32Array(typeLen);
+	let currentStat = new Int32Array(statLen);
+	let currentScore = 0;
+	let tempStat = new Int32Array(statLen);
 	sampling: while (randomCount--) {
-		let relic = 0;
-		let epic = 0;
-		let currentStat = [0, 0, 0, 0, 0, 0];
-		let currentIndex = [];
-		let currentID = [];
-		let currentScore = 0;
-		for (let i = type.length - 1; i >= 0; i--) {
-			let j = Math.floor(Math.random() * (i + 1));
-			[typeOrder[i], typeOrder[j]] = [typeOrder[j], typeOrder[i]];
+		relic = 0;
+		epic = 0;
+		currentStat.fill(0);
+		currentScore = 0;
+		for (let i = typeLen; i--;) {
+			const j = (Math.random() * (i + 1)) | 0;
+			const temp = typeOrder[i];
+			typeOrder[i] = typeOrder[j];
+			typeOrder[j] = temp;
 		}
-		for (let m = type.length - 1; m >= 0; m--) {
-			let i = typeOrder[m];
+		for (let m = typeLen; m--;) {
+			const i = typeOrder[m];
+			const weight = typeWeight[i];
+			const weightLen = weight.length;
+			const rarity = typeRarity[i]
 			let j;
-			let typeWeightTemp = [];
-			for (let n = 0; n < 999; n++) {
-				let k = Math.floor(Math.random() * typeWeight[i].length);
-				j = typeWeight[i][k];
-				if (!typeWeightTemp.includes(j))
-					typeWeightTemp.push(j);
-				else if (typeWeightTemp.length == typeWeightZero[i].length)
-					break;
+			let retries = 313;
+			while (retries--) {
+				j = weight[Math.random() * weightLen | 0];
 				if (
-					(type[i][j][1] == 0 && relic > 0)
-					|| (type[i][j][1] == 1 && epic > 0)
+					(rarity[j] == 0 && relic > 0)
+					|| (rarity[j] == 1 && epic > 0)
 					|| (i == 7 && j == currentIndex[9])
 					|| (i == 9 && j == currentIndex[7])
 				)
 					continue;
 				break;
 			}
+			if (retries == 0)
+				continue sampling;
 			currentIndex[i] = j;
-			currentID[i] = type[i][j][0];
-			if (type[i][j][1] == 0) {
-				relic++;
-				if (currentID[i] > 26493 && currentID[i] < 26498)
+			currentID[i] = typeID[i][j];
+			switch (rarity[j]) {
+				case 0:
+					relic++;
+					if (currentID[i] > 26493 && currentID[i] < 26498)
+						epic++;
+					break;
+				case 1:
 					epic++;
 			}
-			else if (type[i][j][1] == 1)
-				epic++;
 			if (relic > 1 || epic > 1)
 				continue sampling;
-			currentScore += type[i][j][8];
-			for (let m = statMin.length - 1; m >= 0; m--)
-				currentStat[m] += type[i][j][m + 2];
+			currentScore += typeScore[i][j];
+			const stats = typeStats[i][j];
+			for (let m = statLen; m--;)
+				currentStat[m] += stats[m];
 		}
-		let achieveRate = achieveCheck(currentStat, statMin);
+		const achieveRate = achieveCheck(currentStat, statMin);
 		if (achieveRate == 1) {
-			for (let i = 0; i < type.length; i++) {
-				if (type[i][currentIndex[i]][1] < 2)
+			for (let i = typeLen; i--;) {
+				const rarity = typeRarity[i];
+				const stats = typeStats[i];
+				const weightZero = typeWeightZero[i];
+				const weightZeroLen = weightZero.length;
+				const k = currentIndex[i];
+				if (rarity[k] < 2)
 					continue;
-				for (let j of typeWeightZero[i]) {
-					if (j == currentIndex[i])
+				for (let m = 0; m < weightZeroLen; m++) {
+					const j = weightZero[m];
+					if (j == k)
 						break;
 					if (
-						type[i][j][1] < 2
+						rarity[j] < 2
 						|| (i == 7 && j == currentIndex[9])
 						|| (i == 9 && j == currentIndex[7])
 					)
 						continue;
-					let tempStat = currentStat.concat();
-					for (let m = 0; m < statMin.length; m++)
-						tempStat[m] += type[i][j][m + 2] - type[i][currentIndex[i]][m + 2];
+					tempStat = currentStat.slice();
+					const statsSub = stats[j];
+					const statsCurrent = stats[k];
+					for (let n = statLen; n--;)
+						tempStat[n] += statsSub[n] - statsCurrent[n];
 					if (achieveCheck(tempStat, statMin) == 1) {
-						currentID[i] = type[i][j][0];
-						currentScore += type[i][j][8] - type[i][currentIndex[i]][8];
-						currentStat = tempStat.concat();
+						const score = typeScore[i];
+						currentID[i] = typeID[i][j];
+						currentScore += score[j] - score[k];
+						currentStat = tempStat.slice();
 						currentIndex[i] = j;
 						break;
 					}
 				}
 			}
 			if (currentID[10] > 26493 && currentID[10] < 26498) {
-				currentStat.every((e, i) => currentStat[i] -= type[9][currentIndex[9]][i + 2]);
+				const i9 = currentIndex[9];
+				const s9 = typeStats[9][i9];
+				for (let i = statLen; i--;)
+					currentStat[i] -= s9[i];
 				if (achieveCheck(currentStat, statMin) < 1)
 					continue;
-				currentScore -= type[9][currentIndex[9]][8];
+				currentScore -= typeScore[9][i9];
 				currentID[9] = currentID[10] + 81;
 			}
 			typeWeight = cloneArr(typeWeightZero);
-			for (let n = setSuccess.length >> 1; n > 0; n--) {
-				let r = Math.floor(Math.random() * setSuccess.length);
-				for (let i = type.length - 1; i >= 0; i--)
+			const successLen = setSuccess.length;
+			for (let n = successLen >> 1; n > 0; n--) {
+				const r = Math.random() * successLen | 0;
+				for (let i = typeLen; i--;)
 					typeWeight[i].push(setSuccess[r].index[i]);
 			}
-			if (
-				currentScore < leastScore
-				|| currentID[7] == currentID[9]
-				|| setSuccess.some(x => currentID.every(y => x.id.some(z => y == z)))
-			)
-				continue;
-			setSuccess.push({id:currentID, score:currentScore.toFixed(1), index:currentIndex, stat:currentStat});
+			if (currentScore < leastScore || currentID[7] === currentID[9])
+				continue;			
+			for (let m = successLen; m--;) {
+				const successID = setSuccess[m].id;
+				let match = true;
+				for (let i = typeLen; i--;) {
+					let found = false;
+					for (let n = successID.length; n--;) {
+						if (currentID[i] == successID[n]) {
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						match = false;
+						break;
+					}
+				}
+				if (match)
+					continue sampling;
+			}
+			setSuccess.push({
+				id: currentID.slice(),
+				score: currentScore.toFixed(1),
+				index: currentIndex.slice(),
+				stat: currentStat.slice()
+			});
 			failCount = 0;
 			if (setSuccess.length > 69) {
 				setSuccess.sort((a, b) => b.score - a.score).splice(50);
@@ -122,11 +174,12 @@ function solver(type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, s
 				failCount = 0;
 			}
 			else {
-				for (let i = type.length - 1; i >= 0; i--)
+				for (let i = typeLen; i--;)
 					typeWeight[i].push(currentIndex[i]);
 			}
 		}
 	}
 	return setSuccess;
 }
+let typeWorker;
 onmessage = e => postMessage(solver(e.data[0], e.data[1], e.data[2], e.data[3], e.data[4], e.data[5], e.data[6], e.data[7]));

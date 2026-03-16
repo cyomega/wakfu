@@ -212,13 +212,16 @@ $(document).ready(function() {
 	function newData(data) {
 		let _2ndMastery = '';
 		let totalMastery = Number(data[20]);
-		let i = uits.masteryShort.length;
-		while (i--) {
+		let negative = ' ';
+		for (let i = uits.masteryShort.length; i--;) {
 			if (data[(i + 21)] > 0) {
 				_2ndMastery = uits.masteryShort[i] + _2ndMastery;
 				totalMastery += Number(data[(i + 21)]);
 			}
+			else if (data[(i + 21)] < 0)
+				negative = '-' + uits.masteryShort[i] + negative;
 		}
+		_2ndMastery += negative;
 		data.name = data[0][lang];
 		if (lang2 != 'none')
 			data[1] = data[0][lang2];
@@ -235,8 +238,7 @@ $(document).ready(function() {
 		if (equipExclude.length == 0)
 			table.search('');
 		else {
-			let i = equipExclude.length;
-			while (i--) {
+			for (let i = equipExclude.length; i--;) {
 				set += equipExclude[i][2] + '|';
 				if (equipExclude[i][2] > 26574 && equipExclude[i][2] < 26579)
 					set += (equipExclude[i][2] - 81) + '|';
@@ -245,13 +247,13 @@ $(document).ready(function() {
 			table.search('^((?!' + set + ').)*$');
 		}
 		let dmgModifier = [];
-		for (let i = uits.masteryLong.length; i >= 0; i--)
+		for (let i = uits.masteryLong.length + 1; i--;)
 			dmgModifier[i] = Number(!$('.dtsp-searchPane:eq(3) table tbody tr:eq(' + i + ')').hasClass('selected'));
 		if (dmgModifier[0] == 0)
 			dmgModifier.fill(0);
 		const d = table.rows({search: 'applied'}).data();
 		let data = [];
-		for (let i = d.length - 1; i >= 0; i--) {
+		for (let i = d.length; i--;) {
 			let modifiedDmg = Number(d[i][20]);
 			for (let j = uits.masteryLong.length; j > 0; j--)
 				modifiedDmg += dmgModifier[j] * Number(d[i][j + 20]);
@@ -293,8 +295,7 @@ $(document).ready(function() {
 	function autoSets(data, statRequire, statWeight, twoHandWeapon, randomCount, equipQuantity) {
 		function achieveCheck(stat, statMin) {
 			let achieve = 0;
-			let i = stat.length;
-			while (i--) {
+			for (let i = stat.length; i--;) {
 				if (statMin[i] != -1)
 					achieve += Math.min(stat[i], statMin[i]);
 			}
@@ -314,7 +315,7 @@ $(document).ready(function() {
 			return x + y;
 		}));
 		statName = ['hp', 'lock', 'dodge', 'ini', 'dmg', 'res'];
-		for (let i = data.length - 1; i >= 0; i--) {
+		for (let i = data.length; i--;) {
 			let score = 0;
 			for (let j of statName)
 				score += Number(data[i][j] * statWeight[j]);
@@ -345,9 +346,9 @@ $(document).ready(function() {
 			type[10] = equip[11];
 		type[type.length] = equip[12];
 		let typeWeightZero = [];
-		for (let i = type.length - 1; i >= 0; i--)
+		for (let i = type.length; i--;)
 			typeWeightZero.push([]);
-		for (let i = type.length - 1; i >= 0; i--) {
+		for (let i = type.length; i--;) {
 			if (!type[i].some(e => e[1] > 1))
 				type[i].push([99999, 7, 0, 0, 0, 0, 0, 0, 0, 'cyz']);
 			let weight = type[i].length;
@@ -392,36 +393,59 @@ $(document).ready(function() {
 		typeOrder.push(typeOrder.length);
 		let typeWeight = JSON.parse(JSON.stringify(typeWeightZero));
 		let setSuccess = [];
+		let typeWorker = {id:[], rarity:[], stats:[], score:[]};
+		for (let i = type.length; i--;) {
+			let typeLen = type[i].length;
+			typeWorker.id[i] = new Int32Array(typeLen);
+			typeWorker.rarity[i] = new Int32Array(typeLen);
+			typeWorker.stats[i] = [];
+			typeWorker.score[i] = new Float32Array(typeLen);
+			for (let j = typeLen; j--;) {
+				let statsLen = type[i][j].length;
+				typeWorker.id[i][j] = type[i][j][0];
+				typeWorker.rarity[i][j] = type[i][j][1];
+				typeWorker.stats[i][j] = new Int32Array(statsLen);
+				typeWorker.score[i][j] = type[i][j][8];
+				for (let k = statsLen; k--;)
+					typeWorker.stats[i][j][k] = type[i][j][k + 2];
+			}
+		}
 		function solverWorker(workerCount, lastScore, lastLength) {
 			workerCount = Math.min(workerCount, worker.length);
-			for (let i = workerCount - 1; i >= 0; i--) {
-				worker[i].postMessage([type, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, statMin, randomCount]);
+			for (let i = workerCount; i--;) {
+				let typeTransfer = 0;
+				if (!repeatWorker[i])
+					typeTransfer = typeWorker;
+				worker[i].postMessage([typeTransfer, typeOrder, typeWeight, typeWeightZero, setSuccess, goal, statMin, randomCount]);
+				repeatWorker[i] = true;
 				worker[i].onmessage = e => {
-					let d = e.data;
-					for (let i = d.length - 1; i >= 0; i--)
+					const d = e.data;
+					for (let i = d.length; i--;)
 						if (!setSuccess.some(x => d[i].id.every(y => x.id.some(z => y == z))))
 							setSuccess.push(d[i]);
 					workerCount--;
 					if (workerCount == 0) {
 						setSuccess.sort((a, b) => b.score - a.score).splice(50);
 						let currentScore = setSuccess.length ? setSuccess[0].score + setSuccess[setSuccess.length - 1].score : 0;
-						if ((currentScore == lastScore && setSuccess.length == lastLength) || !repeatCount)
+						if ((currentScore == lastScore && setSuccess.length == lastLength) || repeatCount == 0)
 							alterSets();
 						else {
 							repeatCount--;
 							randomCount = setOption[1] ? 100000 : 30000;
-							solverWorker(6, currentScore, setSuccess.length);
+							solverWorker(maxWorker, currentScore, setSuccess.length);
 						}
 					}
 				};
 			}
 			if (worker.length == 2) {
-				for (let i = 2; i < 6; i++)
+				for (let i = 2; i < maxWorker; i++)
 					worker[i] = new Worker('solver.js');
 			}
 		}
+		const maxWorker = 4;
 		let repeatCount = 5;
-		if (!worker.length) {
+		let repeatWorker = new Array(maxWorker).fill(false);
+		if (worker.length == 0) {
 			for (let i = 0; i < 2; i++)
 				worker[i] = new Worker('solver.js');
 		}
@@ -457,7 +481,7 @@ $(document).ready(function() {
 						}
 					});
 				let unique = [];
-				for (let i = type.length - 1; i >= 0; i--) {
+				for (let i = type.length; i--;) {
 					let j = setSuccess[n].index[i];
 					if (type[i][j][1] < 2)
 						unique.push(type[i][j][0]);
@@ -480,14 +504,14 @@ $(document).ready(function() {
 						for (let p = j + 1; p < type[i].length; p++) {
 							if (type[i][p][1] < 2 || (type[i][p][9] == type[i][j][9] && type[i][p][8] == type[i][j][8] && type[i][p][1] == type[i][j][1]))
 								continue;
-							let tempStat = sAnm.stat.concat();
-							for (let a = statMin.length - 1; a >= 0; a--) {
+							let tempStat = sAnm.stat.slice();
+							for (let a = statMin.length; a--;) {
 								let b = a + 2;
 								tempStat[a] += type[i][p][b] - type[i][j][b];
 							}
 							if (achieveCheck(tempStat, statMin) != 1)
 								continue;
-							let setTemp = {id:sAnm.id.concat(), score:sAnm.score, index:sAnm.index.concat(), stat:tempStat.concat()};
+							let setTemp = {id:sAnm.id.slice(), score:sAnm.score, index:sAnm.index.slice(), stat:tempStat.slice()};
 							setTemp.index[i] = p;
 							if ((i == 7 || i == 9) && type[7][setTemp.index[7]][9] == type[9][setTemp.index[9]][9])
 								continue;
@@ -561,41 +585,41 @@ $(document).ready(function() {
 	$.fn.dataTable.enum(uits.type);
 	const table = $('#equipTable').DataTable({
 		columns: [
-			{title: uits.title[0], data: 'name'},
-			null,	//lang2
-			null,	//id
-			{title: uits.title[1], data: 'type'},
-			{title: uits.title[2]},
-			{title: uits.title[3], data: 'rarity'},	//5
-			{title: uits.title[4]},
-			{title: uits.title[5]},
-			{title: uits.title[6]},
-			{title: uits.title[7]},
-			{title: uits.title[8]},			//10
-			{title: uits.title[9]},
-			{title: uits.title[10]},
-			{title: uits.title[11]},
-			{title: uits.masteryLong[2]},
-			{title: uits.title[12]},		//15
-			{title: uits.title[13], data: 'mastery'},
-			{title: uits.title[14], data: 'score'},
-			{title: uits.title[15], data: 'total'},
-			{title: uits.title[16], data: 16},
-			{title: uits.title[17], data: 17},	//20 -15
-			{title: uits.title[18], data: 18},
-			{title: uits.title[19], data: 19},
-			{title: uits.title[20], data: 20},
-			{title: titleMastery[0], data: 21},
-			{title: titleMastery[1], data: 22},	//25 -10
-			{title: titleMastery[2], data: 23},
-			{title: titleMastery[3], data: 24},
-			{title: titleMastery[4], data: 25},
-			{title: titleMastery[5], data: 26},
-			{title: titleRes[0], data: 27},		//30 -5
-			{title: titleRes[1], data: 28},
-			{title: uits.title[21], data: 29},
-			{title: uits.title[22], data: 30},
-			{title: uits.title[23], data: 31}
+			{title: uits.title[0], data: 'name'},		//0	name
+			null,						//	lang2
+			null,						//2	id
+			{title: uits.title[1], data: 'type'},		//	type
+			{title: uits.title[2]},				//4	level
+			{title: uits.title[3], data: 'rarity'},		//	rarity
+			{title: uits.title[4]},				//6	ap
+			{title: uits.title[5]},				//	mp
+			{title: uits.title[6]},				//8	wp
+			{title: uits.title[7]},				//	ra
+			{title: uits.title[8]},				//10	hp
+			{title: uits.title[9]},				//	lock
+			{title: uits.title[10]},			//12	dodge
+			{title: uits.title[11]},			//	ini
+			{title: uits.masteryLong[2]},			//14	cri
+			{title: uits.title[12]},			//	block
+			{title: uits.title[13], data: 'mastery'},	//16	secMasType
+			{title: uits.title[14], data: 'score'},		//	score
+			{title: uits.title[15], data: 'total'},		//18	totalMas
+			{title: uits.title[16], data: 16},		//	res
+			{title: uits.title[17], data: 17},		//20	ag
+			{title: uits.title[18], data: 18},		//	ar
+			{title: uits.title[19], data: 19},		//22	eleNum
+			{title: uits.title[20], data: 20},		//	eleMas
+			{title: titleMastery[0], data: 21},		//24	disMas
+			{title: titleMastery[1], data: 22},		//	meleMas
+			{title: titleMastery[2], data: 23},		//26	criMas
+			{title: titleMastery[3], data: 24},		//	rearMas
+			{title: titleMastery[4], data: 25},		//28	berMas
+			{title: titleMastery[5], data: 26},		//	healMas
+			{title: titleRes[0], data: 27},			//30	criRes
+			{title: titleRes[1], data: 28},			//	rearRes
+			{title: uits.title[21], data: 29},		//32	will
+			{title: uits.title[22], data: 30},		//	pp
+			{title: uits.title[23], data: 31}		//34	wis
 		],
 		pageLength: 15,
 		lengthMenu: [15, 25, 50, 100],
@@ -778,7 +802,7 @@ $(document).ready(function() {
 				type: $.fn.dataTable.absoluteOrderNumber([{value: '', position: 'bottom'}])
 			},
 			{
-				targets: [1, 2, 5, 20, 21, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11],
+				targets: [1, 2, 5, 20, 21, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34],
 				visible: false
 			},
 			{
