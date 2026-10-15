@@ -289,7 +289,7 @@ $(document).ready(function() {
 			statWeight[j] = Number(statWeight[j]) * Number(statImportant[i]);
 		}
 		let randomCount = 100000;
-		let equipQuantity = setOption[2] ? 20 : 10;
+		let equipQuantity = setOption[2] ? 25 : 15;
 		autoSets(data, statRequireObj, statWeight, setOption[0], randomCount, equipQuantity);
 	}
 	function autoSets(data, statRequire, statWeight, twoHandWeapon, randomCount, equipQuantity) {
